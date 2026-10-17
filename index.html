@@ -8270,7 +8270,7 @@ body.ls .cd-code .t{color:#7FB3F2}
   }
   var stored = null;
   try{ stored = localStorage.getItem('so-theme'); }catch(e){}
-  setTheme(stored === 'light' ? 'light' : 'dark');
+  setTheme(stored === 'dark' ? 'dark' : 'light');
   tDark.addEventListener('click', function(){ setTheme('dark'); });
   tLight.addEventListener('click', function(){ setTheme('light'); });
 
