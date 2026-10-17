@@ -8819,8 +8819,22 @@ body.ls .cd-code .t{color:#7FB3F2}
 
   /* ---------------- flow engine ---------------- */
   var timers = [];
-  function after(ms, fn){ timers.push(setTimeout(fn, ms)); }
-  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+  /* every delayed step belongs to the conversation it was scheduled in: it writes there
+     even if another surface (main column, pane, panel) took the context meanwhile */
+  function after(ms, fn){
+    var c = CTX, rec = { s: c && c.stream };
+    rec.id = setTimeout(function(){
+      timers = timers.filter(function(x){ return x !== rec; });
+      var prev = CTX; CTX = c;
+      try { fn(); } finally { if (CTX === c && prev !== c) CTX = prev; }
+    }, ms);
+    timers.push(rec);
+  }
+  /* a reset only cancels the steps of the conversation being reset */
+  function clearTimers(streams){
+    var kill = streams || [CTX && CTX.stream];
+    timers = timers.filter(function(x){ if (kill.indexOf(x.s) !== -1){ clearTimeout(x.id); return false; } return true; });
+  }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function t(ms){ return reduce ? Math.min(ms, 100) : ms; }
 
@@ -8855,6 +8869,19 @@ body.ls .cd-code .t{color:#7FB3F2}
           input:document.getElementById('convo-input') };
   }
   useCtx('main');
+  /* a click inside a conversation (approve, pick an option, a follow-up) continues that conversation */
+  function ctxFor(el){
+    for (var n = el; n && n !== document.body; n = n.parentElement){
+      var id = n.id || '';
+      if (id === 'oprail') return 'rail';
+      if (/^pg-(stream|clarify|followups|scroll)$/.test(id)) return 'panel';
+      if (/^rp-(stream|clarify|followups|scroll)$/.test(id)) return 'rest';
+      if (/^(ins|sp)-(stream|clarify|followups|scroll)$/.test(id)) return 'ins';
+      if (id === 'stream' || id === 'dock-clarify' || id === 'dock-followups') return 'main';
+    }
+    return null;
+  }
+  document.addEventListener('click', function(e){ var w = e.target && e.target.closest ? ctxFor(e.target) : null; if (w) useCtx(w); }, true);
   var ICO_THUP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 7.2v6H2.8a.8.8 0 0 1-.8-.8V8a.8.8 0 0 1 .8-.8H5Zm0 0 2.6-5.1a1.4 1.4 0 0 1 2.6.7V6h2.4a1.6 1.6 0 0 1 1.6 1.9l-.9 4.4a1.6 1.6 0 0 1-1.6 1.3H5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
   var ICO_THDN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><g transform="rotate(180 8 8)"><path d="M5 7.2v6H2.8a.8.8 0 0 1-.8-.8V8a.8.8 0 0 1 .8-.8H5Zm0 0 2.6-5.1a1.4 1.4 0 0 1 2.6.7V6h2.4a1.6 1.6 0 0 1 1.6 1.9l-.9 4.4a1.6 1.6 0 0 1-1.6 1.3H5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></g></svg>';
   function copyText(txt, btn, label){
@@ -12327,7 +12354,7 @@ brand +
   });
   function setAG(ag){
     if (ag === AG && oprail.dataset.ag === ag) return;
-    clearTimers();
+    clearTimers([document.getElementById('or-stream'), document.getElementById('sl-stream')]);
     AG = ag;
     oprail.dataset.ag = ag;
     orMM.dataset.ag = ag;
