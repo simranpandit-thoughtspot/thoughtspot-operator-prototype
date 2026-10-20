@@ -4908,6 +4908,26 @@ body.proto .ao-styles{display:flex;flex-direction:column;gap:16px}
 :root[data-theme="dark"] .ao-card{background:var(--bg-raised,#1B1E24);border-color:#2C313A}
 :root[data-theme="dark"] .ao-sec{border-top-color:#2C313A}
 :root[data-theme="dark"] .ao-checker{background-color:#2a2f38}
+/* ---- reference timings · radiance-spotter-home ---- */
+/* a new chat brings the glow back: 500ms ease-out */
+.home-radiance.rg-back{transition:opacity 500ms cubic-bezier(0,0,.2,1),transform 500ms cubic-bezier(0,0,.2,1)!important}
+/* submit (option 3): the copy, chips and panels leave instantly; the prompt lands 40px low, invisible… */
+body.proto.launching #view-home .h1,body.proto.launching #view-home .fh-chips,body.proto.launching #view-home .fh-body{transition:none!important;opacity:0!important;transform:none!important}
+body.proto.launching #view-home .prompt-wrap{transition:none!important;opacity:0;transform:translateY(calc(var(--launch-dy,0px) + 40px))}
+body.proto.launching #view-home .prompt-wrap .sendbtn{opacity:1}
+/* …and rises into place over 675ms */
+body.proto.launching.rise #view-home .prompt-wrap{transition:opacity 675ms cubic-bezier(0,0,.1,1),transform 675ms cubic-bezier(0,0,.1,1)!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
+/* landing: the header slides in (300ms), the question bubble springs in from its top-right corner */
+@keyframes cvHeadIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes bubbleIn{from{transform:scale(.85)}to{transform:none}}
+@keyframes bubbleFade{from{opacity:0}to{opacity:1}}
+body.proto.landed #view-convo .convo-head{animation:cvHeadIn 300ms cubic-bezier(.25,.46,.45,.94) both}
+body.proto.landed #view-convo .stream{animation:none}
+body.proto.landed #view-convo .stream>.turn:first-child .user-msg{transform-origin:top right;animation:bubbleIn 150ms cubic-bezier(.34,1.56,.64,1) 250ms both,bubbleFade 100ms ease-out 250ms both}
+@media (prefers-reduced-motion:reduce){
+  body.proto.launching #view-home .prompt-wrap,body.proto.launching.rise #view-home .prompt-wrap{transition:none!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
+  body.proto.landed #view-convo .convo-head,body.proto.landed #view-convo .stream>.turn:first-child .user-msg{animation:none}
+  .home-radiance.rg-back{transition:none!important}}
 /* the page banner: grey, not amber */
 .um-stale{background:var(--bg-sunken);border-color:var(--border-subtle);border-radius:10px}
 .um-stale .ic{color:var(--content-secondary)}
@@ -14667,9 +14687,12 @@ brand +
     var dy = Math.max(0, (m.bottom - (launchChat.gap || 58)) - homeForm.getBoundingClientRect().bottom);
     document.body.style.setProperty('--launch-dy', dy + 'px');
     document.body.classList.add('launching');
+    if (typeof rgMotion === 'function') rgMotion();
+    if (!reduce){ void homeWrap.offsetWidth; document.body.classList.add('rise'); }
     cvWashOn();
     setTimeout(function(){
       var fromR = homeForm.getBoundingClientRect();
+      if (typeof rgSwapMain === 'function' && RG) rgSwapMain();
       stash();
       var id = 'n' + Date.now();
       run();
@@ -14679,7 +14702,7 @@ brand +
       CHATS.unshift({ id:id, a:'operator', t:title });
       document.getElementById('convo-name').textContent = title;
       renderDevChats(id);
-      document.body.classList.remove('launching', 'chatmode');
+      document.body.classList.remove('launching', 'rise', 'chatmode');
       document.body.classList.add('landed');
       homeInput.value = ''; homeInput.style.height = '';
       /* FLIP: the conversation prompt starts where the home prompt stopped, then settles */
@@ -14691,7 +14714,7 @@ brand +
           cf.animate([{ transform:'translate(' + dx0 + 'px,' + dy0 + 'px)' }, { transform:'none' }], { duration:220, easing:'cubic-bezier(.22,.8,.2,1)' });
       }
       setTimeout(function(){ document.body.classList.remove('landed'); }, 700);
-    }, reduce ? 0 : 560);
+    }, reduce ? 0 : 680);
   }
   homeForm.addEventListener('submit', function(e){
     if (e.defaultPrevented && EP === 'prompt') return;
@@ -15225,7 +15248,7 @@ brand +
   function rgTheme(){ return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
   /* top-wash, dynamic-subtle at rest (speed 1.86 light / 1.72 dark); prominent while the agent thinks (1.72 / 1.58) */
   function rgApply(){
-    var th = rgTheme(), prom = RG_THINK;
+    var th = rgTheme(), prom = false; /* reference: dynamic-subtle in every state */
     [].forEach.call(document.querySelectorAll('.rg .radiance-local'), function(el){
       el.dataset.radianceAppearance = th;
       el.dataset.radianceLayout = 'top-wash';
@@ -15246,7 +15269,7 @@ brand +
   function rgFade(){ if (!RG) return; rgActiveRoots().forEach(function(r){ r.classList.add('rg-out'); }); }
   function rgReset(){
     clearTimeout(rgFadeT);
-    [].forEach.call(document.querySelectorAll('.rg.rg-out'), function(r){ r.classList.add('rg-snap'); r.classList.remove('rg-out'); void r.offsetWidth; r.classList.remove('rg-snap'); });
+    [].forEach.call(document.querySelectorAll('.rg.rg-out'), function(r){ r.classList.add('rg-back'); r.classList.remove('rg-out'); setTimeout(function(){ r.classList.remove('rg-back'); }, 550); });
   }
   function setGlow(on){
     RG = on;
@@ -15257,6 +15280,32 @@ brand +
   }
   [].forEach.call(rgBar.querySelectorAll('[data-rg]'), function(b){ b.addEventListener('click', function(){ setGlow(b.dataset.rg === 'on'); }); });
   new MutationObserver(function(){ rgApply(); }).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+  /* reference (radiance-spotter-home): the glow lifts only once the answer is complete — the
+     follow-ups arrive at the end of every answer — 480ms scroll + 50ms later: −500px and fade, 5000ms */
+  ['dock-followups','or-followups','pg-followups','rp-followups','ins-followups','sp-followups'].forEach(function(id){
+    var el = document.getElementById(id); if (!el) return;
+    new MutationObserver(function(){
+      if (!RG || !el.children.length) return;
+      clearTimeout(rgFadeT); rgFadeT = setTimeout(rgFade, 530);
+    }).observe(el, { childList:true });
+  });
+  /* Home holds the blobs still (reference submit-flow option 3); they start drifting on submit */
+  function rgMotion(){
+    var homeL = document.querySelector('#view-home .rg-main .radiance-local');
+    var still = currentView === 'home' && !document.body.classList.contains('launching');
+    [].forEach.call(document.querySelectorAll('.rg .radiance-local'), function(el){
+      if (el === homeL && still) el.dataset.radianceMotion = 'still'; else delete el.dataset.radianceMotion;
+    });
+    if (window.RadianceLanguageRenderer) window.RadianceLanguageRenderer.refresh();
+  }
+  /* one canvas across the hand-over: Home's running glow becomes the conversation's, so nothing pops */
+  function rgSwapMain(){
+    var h = document.querySelector('#view-home .rg-main'), c = document.querySelector('#view-convo .rg-main');
+    if (!h || !c) return;
+    var ph = document.createComment('rg'); h.parentNode.replaceChild(ph, h); c.parentNode.replaceChild(h, c); ph.parentNode.replaceChild(c, ph);
+  }
+  (function(){ var _sh = show; show = function(v){ _sh(v); rgMotion(); }; })();
+  setTimeout(rgMotion, 0);
   /* 1 · empty prompt → the box wiggles instead of sending */
   document.addEventListener('submit', function(e){
     if (!RG) return;
@@ -15282,7 +15331,6 @@ brand +
     rzDone = function(rz, keepOpen){
       _rd(rz, keepOpen);
       if (RG_THINK){ RG_THINK = false; if (RG) rgApply(); }
-      clearTimeout(rgFadeT); rgFadeT = setTimeout(rgFade, 530);
     };
     var _rc = resetConvo;
     resetConvo = function(){ _rc(); rgReset(); };
