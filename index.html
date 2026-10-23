@@ -4938,6 +4938,8 @@ body.proto .oprail #or-form .smallbtn[aria-label="Add context"]{display:flex}
 /* attached files in the prompt (Spotter Refresh FileCard): 46px cards, 2+ columns, max 10 */
 .pf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,calc(50% - 4px)),1fr));gap:8px;margin-bottom:12px}
 .pf-grid:empty{display:none}
+.pf-err{margin:8px 4px 0;font-size:14px;line-height:20px;color:var(--content-failure,#C8231C);text-align:left}
+.pf-err[hidden]{display:none}
 .fcWrap{position:relative;height:46px;min-width:0}
 .fc{display:flex;align-items:center;gap:8px;height:46px;padding:4px 8px 4px 4px;background:var(--bg-base,#fff);border:1px solid var(--border-subtle,#eaedf2);border-radius:10px;box-sizing:border-box;transition:border-color 120ms ease}
 .fcTile{display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;border-radius:6px}
@@ -15611,6 +15613,12 @@ brand +
     pfMenu.style.top = (r.bottom + 6 + h > window.innerHeight - 8 ? r.top - 6 - h : r.bottom + 6) + 'px';
     pfMenu.querySelector('button').focus({ preventScroll:true });
   }
+  function pfErr(form, msg){
+    var el = form.parentNode.querySelector('.pf-err[data-for="' + form.id + '"]');
+    if (!el){ el = document.createElement('p'); el.className = 'pf-err'; el.dataset.for = form.id; el.setAttribute('role', 'alert'); form.parentNode.insertBefore(el, form.nextSibling); }
+    el.innerHTML = msg; el.hidden = !msg;
+    clearTimeout(el._t); if (msg) el._t = setTimeout(function(){ el.hidden = true; }, 8000);
+  }
   function pfAdd(form, files){
     var list = PF[form.id] = PF[form.id] || [], skipped = [], big = [];
     [].forEach.call(files, function(file){
@@ -15623,9 +15631,10 @@ brand +
       after(t(700 + list.length * 120), function(){ f.loading = false; pfRender(form); });
     });
     pfRender(form);
-    if (skipped.length) toast('<b>Could not add ' + pfEsc(skipped[0]) + (skipped.length > 1 ? ' and ' + (skipped.length - 1) + ' more' : '') + '</b> — add PDF, image, CSV, Excel, text, JSON or CSS files.');
-    else if (big.length) toast('<b>' + pfEsc(big[0]) + ' is over ' + PF_MB + ' MB</b> — add a smaller file.');
-    else if (files.length && list.length >= PF_MAX) toast('<b>' + PF_MAX + ' files is the limit</b> — remove one to add another.');
+    if (skipped.length) pfErr(form, pfEsc(skipped[0]) + (skipped.length > 1 ? ' and ' + (skipped.length - 1) + ' more were' : ' was') + ' not added. Add PDF, image, CSV, Excel, text, JSON or CSS files up to ' + PF_MB + ' MB.');
+    else if (big.length) pfErr(form, pfEsc(big[0]) + ' was not added. Files can be up to ' + PF_MB + ' MB.');
+    else if (files.length && list.length >= PF_MAX) pfErr(form, 'You can add up to ' + PF_MAX + ' files. Remove one to add another.');
+    else pfErr(form, '');
     var ta = form.querySelector('textarea'); if (ta) ta.focus({ preventScroll:true });
   }
   document.addEventListener('click', function(e){
@@ -15646,10 +15655,10 @@ brand +
   document.addEventListener('submit', function(e){
     var form = e.target, list = PF[form.id];
     if (!list || !list.length) return;
-    if (list.some(function(x){ return x.loading; })){ e.preventDefault(); e.stopImmediatePropagation(); toast('<b>Still uploading</b> — send once the files are ready.'); return; }
+    if (list.some(function(x){ return x.loading; })){ e.preventDefault(); e.stopImmediatePropagation(); pfErr(form, 'Still uploading. Send once the files are ready.'); return; }
     var ta = form.querySelector('textarea');
     if (ta && !ta.value.trim()) ta.value = list.length > 1 ? 'Take a look at these files.' : 'Take a look at this file.';
-    PF_SENT = list.slice(); PF[form.id] = []; pfRender(form);
+    PF_SENT = list.slice(); PF[form.id] = []; pfRender(form); pfErr(form, '');
     after(t(4000), function(){ PF_SENT = null; });
   }, true);
   ['stream', 'or-stream'].forEach(function(id){
