@@ -4956,8 +4956,9 @@ body.proto .oprail #or-form .smallbtn[aria-label="Add context"]{display:flex}
 .fcWrap:hover .fcRemove,.fcRemove:focus-visible{opacity:1}
 .fcWrap:hover .fc{border-color:var(--border-default,#d4d9e0)}
 /* the sent message carries its files above the bubble */
-.um-files{align-self:flex-end;display:grid;grid-template-columns:repeat(auto-fill,202px);justify-content:end;gap:8px;width:min(92%,624px);margin-bottom:4px}
-.or-scroll .um-files{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));width:92%}
+.um-files{align-self:flex-end;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:min(92%,624px);margin:0 0 4px auto}
+.um-files .fcWrap{width:202px;flex:0 0 auto}
+.or-scroll .um-files .fcWrap{width:min(170px,calc(50% - 4px))}
 /* ---- starter prompts: a chip opens a panel of four under the prompt (Spotter Home quick search) ---- */
 body.proto #view-home .fh-chip.on{background:var(--fh-surf,#f6f8fa);border-color:var(--content-primary,#1d232f);color:var(--content-primary,#1d232f)}
 .sp-panel{position:absolute;left:48px;right:48px;top:calc(100% + 24px);z-index:40;padding:8px;border-radius:12px;background:var(--bg-raised,#fff);border:1px solid var(--border-subtle,#eaedf2);box-shadow:0 0 4px rgba(25,35,49,.06),0 12px 24px rgba(25,35,49,.1);animation:qmIn .22s cubic-bezier(.2,.8,.2,1) both;text-align:left}
@@ -9293,7 +9294,7 @@ body.ls .cd-code .t{color:#7FB3F2}
     {
       q:'Brand it to your app? Optional.',
       opts:[
-        {t:'Upload a CSS file',      m:'Your variables override the embed’s defaults', upload:true},
+        {t:'Attach a CSS file',      m:'Your variables override the embed’s defaults', upload:true},
         {t:'Use the cluster theme',  m:'Whatever Theme Builder has set today'},
         {t:'Not now',                m:'You can add branding later in Theme Builder'}
       ]
@@ -9311,78 +9312,69 @@ body.ls .cd-code .t{color:#7FB3F2}
       after(t(320), answers.brand.upload ? stepBrand : stepPreflight);
   }); }
 
-  /* ----- the optional branding step ----- */
-  function stepBrand(){
-    add('<div class="agent-msg"><p>Drop your stylesheet in and I will pass it to the embed as <code>customCSS</code>. It applies to this embed only — nothing on the cluster changes, and you can swap it later.</p></div>');
-    var c = add(
-      '<div class="card">' +
-        '<div class="card-body">' +
-          '<p class="card-title">Add your CSS</p>' +
-          '<p class="card-sub">A stylesheet of variables — colours, fonts, corner radius. Anything the SDK does not recognise is ignored.</p>' +
-          '<label class="up-drop" tabindex="0">' +
-            '<input type="file" accept=".css,text/css" hidden>' +
-            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3.4A1.6 1.6 0 0 0 5.6 20h12.8a1.6 1.6 0 0 0 1.6-1.6V15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
-            '<span><b>Choose a CSS file</b> or drop it here</span>' +
-            '<span class="up-hint">.css · applied to this embed only</span>' +
-          '</label>' +
-        '</div>' +
-        '<div class="card-actions">' +
-          '<button class="btn btn-ghost" type="button" data-a="sample">Use a sample theme</button>' +
-          '<span class="grow"></span>' +
-          '<button class="btn btn-ghost" type="button" data-a="skip">Skip — use the cluster theme</button>' +
-        '</div>' +
-      '</div>');
-    var drop = c.querySelector('.up-drop');
-    var input = c.querySelector('input[type="file"]');
-    function stop(e){ e.preventDefault(); e.stopPropagation(); }
-    ['dragenter','dragover'].forEach(function(n){ drop.addEventListener(n, function(e){ stop(e); drop.classList.add('over'); }); });
-    ['dragleave','drop'].forEach(function(n){ drop.addEventListener(n, function(e){ stop(e); drop.classList.remove('over'); }); });
-    drop.addEventListener('drop', function(e){ var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) readCss(c, f); });
-    drop.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); input.click(); } });
-    input.addEventListener('change', function(){ if (input.files && input.files[0]) readCss(c, input.files[0]); });
-    c.querySelector('[data-a="sample"]').addEventListener('click', function(){
-      brandApplied(c, { name:'stax-brand.css', size:'2.1 KB', vars:[
-        ['--ts-var-application-color', '#408F64'],
-        ['--ts-var-root-background', '#F7F8F7'],
-        ['--ts-var-viz-title-color', '#101418'],
-        ['--ts-var-button--primary-background', '#408F64']
-      ], count:14 });
-    });
-    c.querySelector('[data-a="skip"]').addEventListener('click', function(){
-      c.querySelector('.card-actions').innerHTML = '<span class="stamp off">' + I.check + ' Skipped — the cluster theme applies</span>';
-      answers.css = null;
-      after(t(360), stepPreflight);
-    });
+  /* ----- the optional branding step: asked in chat, the file comes in through + in the prompt ----- */
+  var BRAND_SAMPLE = { name:'stax-brand.css', size:'2.1 KB', vars:[
+    ['--ts-var-application-color', '#408F64'], ['--ts-var-root-background', '#F7F8F7'],
+    ['--ts-var-viz-title-color', '#101418'], ['--ts-var-button--primary-background', '#408F64']
+  ], count:14 };
+  function brandAsk(again){
+    add('<div class="agent-msg"><p>' + (again
+      ? 'I need a <code>.css</code> file for this. Attach it with <b>+</b> in the prompt box and send it, or reply <b>skip</b> to keep the cluster theme.'
+      : 'Attach your stylesheet with <b>+</b> in the prompt box and send it. I will pass it to the embed as <code>customCSS</code> — this embed only, nothing on the cluster changes. Reply <b>skip</b> to keep the cluster theme, or ask for a sample theme.') + '</p></div>');
+    var ins = ['convo-input', 'or-input'].map(function(id){ return document.getElementById(id); });
+    ins.forEach(function(i){ if (i){ i.dataset.ph = i.dataset.ph || i.placeholder; i.placeholder = 'Attach your CSS with +, or reply skip'; } });
+    window.__brandHook = function(text, files){
+      ins.forEach(function(i){ if (i && i.dataset.ph){ i.placeholder = i.dataset.ph; delete i.dataset.ph; } });
+      var css = (files || []).filter(function(f){ return /\.css$/i.test(f.name); })[0];
+      if (css && css.file) return readCssChat(css.file);
+      if (/sample/i.test(text)) return brandDone(BRAND_SAMPLE);
+      if (/skip|cluster theme|not now|no thanks|^no\b/i.test(text)){
+        answers.css = null;
+        after(t(380), function(){ add('<div class="agent-msg"><p>Keeping the cluster theme. You can add branding later in Theme Builder.</p></div>'); after(t(360), stepPreflight); });
+        return;
+      }
+      after(t(380), function(){ brandAsk(true); });
+    };
+    if (!brandAsk.wired){
+      brandAsk.wired = true;
+      /* registered after the + handler, so the attached files are already known when this runs */
+      document.addEventListener('submit', function(e){
+        var hook = window.__brandHook, form = e.target;
+        if (!hook || !form || (form.id !== 'convo-form' && form.id !== 'or-form')) return;
+        var ta = form.querySelector('textarea'), text = ta ? ta.value.trim() : '', files = window.__pfLast || [];
+        if (!text && !files.length) return;
+        e.preventDefault(); e.stopImmediatePropagation();
+        window.__brandHook = null; window.__pfLast = [];
+        add('<div class="user-msg">' + text.replace(/</g,'&lt;') + '</div>');
+        if (ta){ ta.value = ''; ta.style.height = ''; }
+        hook(text, files);
+      }, true);
+    }
   }
-  /* pull the variables out of whatever they dropped in */
-  function readCss(card, file){
+  function stepBrand(){ brandAsk(false); }
+  /* pull the variables out of the stylesheet they attached */
+  function readCssChat(file){
     var kb = Math.max(0.1, file.size / 1024).toFixed(1) + ' KB';
     var r = new FileReader();
     r.onload = function(){
       var text = String(r.result || '');
       var found = text.match(/--[\w-]+\s*:\s*[^;}]+/g) || [];
-      var vars = found.slice(0, 4).map(function(v){
-        var bits = v.split(':');
-        return [bits[0].trim(), bits.slice(1).join(':').trim()];
-      });
-      brandApplied(card, { name:file.name, size:kb, vars:vars, count:found.length });
+      brandDone({ name:file.name, size:kb, count:found.length, vars:found.slice(0, 4).map(function(v){ var bits = v.split(':'); return [bits[0].trim(), bits.slice(1).join(':').trim()]; }) });
     };
-    r.onerror = function(){ brandApplied(card, { name:file.name, size:kb, vars:[], count:0 }); };
+    r.onerror = function(){ brandDone({ name:file.name, size:kb, vars:[], count:0 }); };
     r.readAsText(file);
   }
-  function brandApplied(card, css){
+  function brandDone(css){
     answers.css = css;
-    var swatch = function(v){ return /^#|rgb|hsl/.test(v) ? '<span class="up-sw" style="background:' + v.replace(/[";]/g,'') + '"></span>' : ''; };
-    card.querySelector('.card-body').innerHTML =
-      '<p class="card-title">Your CSS is in</p>' +
-      '<div class="up-file"><span class="uf-ico">CSS</span><div><b>' + css.name.replace(/</g,'&lt;') + '</b> <span>· ' + css.size + (css.count ? ' · ' + css.count + ' variables' : '') + '</span></div></div>' +
-      (css.vars.length ? '<div class="up-vars">' + css.vars.map(function(v){
-        return '<span class="up-var">' + swatch(v[1]) + v[0].replace(/</g,'&lt;') + '</span>';
-      }).join('') + (css.count > css.vars.length ? '<span class="up-var">+' + (css.count - css.vars.length) + ' more</span>' : '') + '</div>' : '');
-    card.querySelector('.card-actions').innerHTML = '<span class="stamp ok">' + I.check + ' Applied to this embed</span>';
-    add('<div class="reads">' + readRow('Parsed <b>' + css.name.replace(/</g,'&lt;') + '</b> — ' + (css.count || 0) + ' variables, passed to the embed as <span class="tok-mono">customCSS</span>', '') + '</div>');
-    after(t(420), stepPreflight);
+    after(t(420), function(){
+      add('<div class="reads">' + readRow('Parsed <b>' + css.name.replace(/</g,'&lt;') + '</b> — ' + (css.count || 0) + ' variables, passed to the embed as <span class="tok-mono">customCSS</span>', '') + '</div>');
+      after(t(360), function(){
+        add('<div class="agent-msg"><p>Your CSS is in' + (css.count ? ': ' + css.count + ' variables' : '') + '. It applies to this embed only.</p></div>');
+        after(t(360), stepPreflight);
+      });
+    });
   }
+
 
   /* clarifying question — ClarifyingQuestion.tsx from spotter-refresh: one row is always the
      cursor, single select advances on its own after 110ms, Next with nothing picked nudges the
@@ -15421,6 +15413,7 @@ brand +
     if (!RG) return;
     var f = e.target; if (!f || !f.classList || !f.classList.contains('prompt')) return;
     var inp = f.querySelector('textarea, input:not([type="hidden"])'); if (!inp || inp.value.trim()) return;
+    if (f.querySelector('.pf-grid .fcWrap')) return;   /* attached files alone can be sent */
     e.preventDefault(); e.stopImmediatePropagation();
     f.classList.remove('is-wiggling'); void f.offsetWidth; f.classList.add('is-wiggling');
     f.addEventListener('animationend', function(){ f.classList.remove('is-wiggling'); }, { once:true });
@@ -15636,7 +15629,7 @@ brand +
       if (!kind){ skipped.push(file.name); return; }
       if (file.size > PF_MB * 1048576){ big.push(file.name); return; }
       if (list.length >= PF_MAX) return;
-      var f = { id:'f' + Date.now() + Math.random().toString(36).slice(2, 6), name:file.name, kind:kind, size:pfSize(file.size), loading:true };
+      var f = { id:'f' + Date.now() + Math.random().toString(36).slice(2, 6), name:file.name, kind:kind, size:pfSize(file.size), loading:true, file:file };
       list.push(f);
       after(t(700 + list.length * 120), function(){ f.loading = false; pfRender(form); });
     });
@@ -15664,11 +15657,12 @@ brand +
   /* sending: the files leave the prompt and land on the question bubble; files alone still send */
   document.addEventListener('submit', function(e){
     var form = e.target, list = PF[form.id];
+    window.__pfLast = [];
     if (!list || !list.length) return;
     if (list.some(function(x){ return x.loading; })){ e.preventDefault(); e.stopImmediatePropagation(); pfErr(form, 'Still uploading. Send once the files are ready.'); return; }
     var ta = form.querySelector('textarea');
     if (ta && !ta.value.trim()) ta.value = list.length > 1 ? 'Take a look at these files.' : 'Take a look at this file.';
-    PF_SENT = list.slice(); PF[form.id] = []; pfRender(form); pfErr(form, '');
+    PF_SENT = list.slice(); window.__pfLast = list.slice(); PF[form.id] = []; pfRender(form); pfErr(form, '');
     after(t(4000), function(){ PF_SENT = null; });
   }, true);
   ['stream', 'or-stream'].forEach(function(id){
