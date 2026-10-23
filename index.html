@@ -5023,6 +5023,21 @@ body.proto #view-home .radiance:has(.sp-panel:not([hidden])){z-index:3}
 body.proto #view-convo .cv-dd{max-width:min(560px,60vw)}
 body.proto #view-convo .cv-dd #convo-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body.proto #view-convo #convo-name[contenteditable="true"]{outline:none;border-bottom:1px solid #2770EF;cursor:text}
+/* ---- My chats: a three-dot on hover opens the chat menu ---- */
+.nc-row{position:relative}
+body.proto #leftnav .nav-scroll .nc-row .nav-chat{padding-right:44px}
+.nc-more{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:24px;height:24px;border:0;border-radius:6px;background:none;color:var(--content-secondary,#4a5262);cursor:pointer;opacity:0}
+.nc-row:hover .nc-more,.nc-more:focus-visible,.nc-more[aria-expanded="true"]{opacity:1}
+.nc-more:hover,.nc-more[aria-expanded="true"]{background:var(--bg-ghost-hover,#e3e8ef);color:var(--content-primary,#1d232f)}
+.nc-row:has(.nc-more[aria-expanded="true"]) .nav-chat{background:#eef2f8}
+.nc-menu{position:fixed;z-index:400;width:200px;padding:8px 0;border-radius:6px;background:var(--bg-raised,#fff);box-shadow:0 0 4px rgba(25,35,49,.08),0 12px 24px rgba(25,35,49,.12);animation:qmIn .16s cubic-bezier(.2,.8,.2,1) both}
+.nc-menu .cm{display:flex;align-items:center;width:100%;padding:6px 16px;border:0;background:none;text-align:left;cursor:pointer;font:inherit;font-size:14px;line-height:20px;font-weight:375;color:var(--content-primary,#1d232f)}
+.nc-menu .cm:hover,.nc-menu .cm:focus-visible{background:var(--bg-ghost-hover,#f3f5f8);outline:none}
+.nc-menu .cm-sep{height:1px;margin:8px 0;background:var(--border-subtle,#eaedf2)}
+.nc-row .chat-t[contenteditable="true"]{outline:none;border-bottom:1px solid #2770EF;text-overflow:clip;cursor:text}
+/* ---- Delete chat confirmation (Radiant Modal, small) ---- */
+.shm.del{width:min(460px,100%)}
+.shm.del .shm-body{padding:24px;font-size:14px;line-height:20px;color:var(--content-primary,#1d232f)}
 /* the page banner: grey, not amber */
 .um-stale{background:var(--bg-sunken);border-color:var(--border-subtle);border-radius:10px}
 .um-stale .ic{color:var(--content-secondary)}
@@ -15515,12 +15530,7 @@ brand +
     if (k === 'share'){ openShare(c); }
     else if (k === 'rename'){ railRename(); }
     else if (k === 'pin'){ c.pin = !c.pin; sortChats(); renderDevChats(c.id); }
-    else if (k === 'delete'){
-      var id = c.id;
-      CHATS = CHATS.filter(function(x){ return x.id !== id; }); delete STORE[id];
-      CUR = null; railReset(); setRailTitle(); renderDevChats(null);
-      toast('<b>Deleted</b> — the chat is gone from My chats.');
-    }
+    else if (k === 'delete'){ confirmDelete(c); }
   });
   function syncPinLabel(){ var c = railChat(), b = orDDMenu.querySelector('[data-cm="pin"]'); if (b) b.textContent = c && c.pin ? 'Unpin chat' : 'Pin chat'; }
   orDD.addEventListener('click', function(){ closeHist(); syncPinLabel(); });
@@ -15852,12 +15862,7 @@ brand +
       if (!c){ toast('Nothing to share yet — ask something first.'); return; }
       if (k === 'share') openShare(c);
       else if (k === 'pin'){ c.pin = !c.pin; sortChats(); renderDevChats(c.id); }
-      else if (k === 'delete'){
-        var id = c.id;
-        CHATS = CHATS.filter(function(x){ return x.id !== id; }); delete STORE[id];
-        CUR = null; goHome(); renderDevChats(null);
-        toast('<b>Deleted</b> — the chat is gone from My chats.');
-      }
+      else if (k === 'delete') confirmDelete(c);
       else if (k === 'rename'){
         name.setAttribute('contenteditable', 'true'); name.focus();
         var r = document.createRange(); r.selectNodeContents(name); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
@@ -15874,6 +15879,92 @@ brand +
       }
     });
   })();
+
+  /* ================= Delete chat: always confirm ================= */
+  function confirmDelete(c){
+    if (!c) return;
+    var el = document.createElement('div'); el.className = 'shm-scrim';
+    el.innerHTML = '<div class="shm del" role="alertdialog" aria-modal="true" aria-labelledby="del-t" aria-describedby="del-d">' +
+      '<div class="shm-head"><h2 id="del-t">Delete chat</h2></div>' +
+      '<div class="shm-body" id="del-d">Your chat “' + pfEsc(c.t) + '” will get permanently deleted.</div>' +
+      '<div class="shm-foot"><span class="grow"></span><button type="button" class="shm-btn sec" data-del="cancel">Cancel</button><button type="button" class="shm-btn pri" data-del="ok">Delete</button></div></div>';
+    document.body.appendChild(el);
+    var ok = el.querySelector('[data-del="ok"]'); ok.focus();
+    function close(){ el.remove(); }
+    el.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ e.stopPropagation(); close(); } });
+    el.addEventListener('click', function(e){
+      if (e.target === el || e.target.closest('[data-del="cancel"]')){ close(); return; }
+      if (!e.target.closest('[data-del="ok"]')) return;
+      close();
+      var id = c.id, open = CUR && CUR.id === id ? CUR.loc : null;
+      CHATS = CHATS.filter(function(x){ return x.id !== id; }); delete STORE[id];
+      if (open === 'main'){ CUR = null; goHome(); }
+      else if (open === 'rail'){ CUR = null; railReset(); }
+      setRailTitle(); renderDevChats(CUR ? CUR.id : null);
+      toast('<b>Chat deleted</b>');
+    });
+  }
+
+  /* ================= My chats: hover shows a three-dot with the chat menu ================= */
+  var NC_DOTS = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>';
+  var ncMenu = null, ncBtn = null;
+  function ncClose(){ if (ncMenu){ ncMenu.remove(); ncMenu = null; } if (ncBtn){ ncBtn.setAttribute('aria-expanded', 'false'); ncBtn = null; } }
+  (function(){
+    var _rd = renderDevChats;
+    renderDevChats = function(activeId){
+      _rd(activeId);
+      [].forEach.call(document.querySelectorAll('#dev-chats > [data-devchat]'), function(b){
+        var c = chatById(b.dataset.devchat); if (!c) return;
+        var row = document.createElement('div'); row.className = 'nc-row';
+        b.parentNode.insertBefore(row, b); row.appendChild(b);
+        row.insertAdjacentHTML('beforeend', '<button type="button" class="nc-more" data-chatmore="' + c.id + '" aria-haspopup="menu" aria-expanded="false" aria-label="More options for ' + pfEsc(c.t) + '">' + NC_DOTS + '</button>');
+      });
+    };
+  })();
+  function ncRename(c){
+    var row = document.querySelector('#dev-chats [data-devchat="' + c.id + '"]'); if (!row) return;
+    var t = row.querySelector('.chat-t'); t.setAttribute('contenteditable', 'true'); t.focus();
+    var r = document.createRange(); r.selectNodeContents(t); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    function done(commit){
+      t.removeAttribute('contenteditable'); t.removeEventListener('blur', onBlur); t.removeEventListener('keydown', onKey);
+      var v = t.textContent.trim();
+      if (commit && v) c.t = v.length > 60 ? v.slice(0, 58) + '…' : v;
+      if (CUR && CUR.id === c.id){ if (CUR.loc === 'main') document.getElementById('convo-name').textContent = c.t; else setRailTitle(); }
+      renderDevChats(CUR ? CUR.id : null);
+    }
+    function onBlur(){ done(true); }
+    function onKey(e){ e.stopPropagation(); if (e.key === 'Enter'){ e.preventDefault(); done(true); } else if (e.key === 'Escape'){ e.preventDefault(); done(false); } }
+    t.addEventListener('blur', onBlur); t.addEventListener('keydown', onKey);
+  }
+  document.getElementById('dev-chats').addEventListener('click', function(e){
+    var more = e.target.closest('[data-chatmore]');
+    if (more){
+      e.stopPropagation();
+      var again = ncBtn === more; ncClose(); if (again) return;
+      var c = chatById(more.dataset.chatmore); if (!c) return;
+      ncBtn = more; more.setAttribute('aria-expanded', 'true');
+      ncMenu = document.createElement('div'); ncMenu.className = 'nc-menu'; ncMenu.setAttribute('role', 'menu');
+      ncMenu.innerHTML = '<button type="button" role="menuitem" class="cm" data-nc="share">Share</button><button type="button" role="menuitem" class="cm" data-nc="rename">Rename</button><button type="button" role="menuitem" class="cm" data-nc="pin">' + (c.pin ? 'Unpin chat' : 'Pin chat') + '</button><div class="cm-sep" role="separator"></div><button type="button" role="menuitem" class="cm" data-nc="delete">Delete</button>';
+      document.body.appendChild(ncMenu);
+      var r = more.getBoundingClientRect(), h = ncMenu.offsetHeight;
+      ncMenu.style.left = (r.left) + 'px';
+      ncMenu.style.top = (r.bottom + 4 + h > window.innerHeight - 8 ? r.top - 4 - h : r.bottom + 4) + 'px';
+      ncMenu.querySelector('.cm').focus({ preventScroll:true });
+      ncMenu.addEventListener('click', function(ev){
+        var b = ev.target.closest('[data-nc]'); if (!b) return;
+        var k = b.dataset.nc; ncClose();
+        if (k === 'share') openShare(c);
+        else if (k === 'rename') ncRename(c);
+        else if (k === 'pin'){ c.pin = !c.pin; sortChats(); renderDevChats(CUR ? CUR.id : null); }
+        else if (k === 'delete') confirmDelete(c);
+      });
+      return;
+    }
+    if (e.target.closest('.chat-t[contenteditable="true"]')) e.stopPropagation();
+  }, true);
+  document.addEventListener('click', function(e){ if (ncMenu && !(e.target.closest && (e.target.closest('.nc-menu') || e.target.closest('[data-chatmore]')))) ncClose(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && ncMenu){ var b = ncBtn; ncClose(); if (b) b.focus(); } });
+  renderDevChats(null);
   setRailTitle();
 
   /* ---- org scope: All Orgs vs Primary Org. My chats stay the same; a change asked for after a switch asks where it should land ---- */
