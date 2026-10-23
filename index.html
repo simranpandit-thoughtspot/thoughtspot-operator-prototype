@@ -4928,6 +4928,99 @@ body.proto.landed #view-convo .stream>.turn:first-child .user-msg{transform-orig
   body.proto.launching #view-home .prompt-wrap,body.proto.launching.rise #view-home .prompt-wrap{transition:none!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
   body.proto.landed #view-convo .convo-head,body.proto.landed #view-convo .stream>.turn:first-child .user-msg{animation:none}
   .home-radiance.rg-back{transition:none!important}}
+/* ---- + in the prompt bar: one item, Add files (Radiant Menu) ---- */
+body.proto .oprail #or-form .smallbtn[aria-label="Add context"]{display:flex}
+.pl-menu{position:fixed;z-index:400;min-width:200px;padding:8px 0;border-radius:6px;background:var(--bg-raised,#fff);box-shadow:0 0 4px rgba(25,35,49,.08),0 12px 24px rgba(25,35,49,.12);animation:qmIn .16s cubic-bezier(.2,.8,.2,1) both}
+.pl-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:6px 16px;border:0;background:none;text-align:left;cursor:pointer;font:inherit;font-size:14px;line-height:20px;font-weight:375;color:var(--content-primary,#1d232f)}
+.pl-menu button:hover,.pl-menu button:focus-visible{background:var(--bg-ghost-hover,#f3f5f8);outline:none}
+.pl-menu svg{flex:0 0 auto;color:var(--content-secondary,#4a5262)}
+.smallbtn[aria-expanded="true"]{background:var(--bg-ghost-hover,#f3f5f8)}
+/* attached files in the prompt (Spotter Refresh FileCard): 46px cards, 2+ columns, max 10 */
+.pf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,calc(50% - 4px)),1fr));gap:8px;margin-bottom:12px}
+.pf-grid:empty{display:none}
+.fcWrap{position:relative;height:46px;min-width:0}
+.fc{display:flex;align-items:center;gap:8px;height:46px;padding:4px 8px 4px 4px;background:var(--bg-base,#fff);border:1px solid var(--border-subtle,#eaedf2);border-radius:10px;box-sizing:border-box;transition:border-color 120ms ease}
+.fcTile{display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;border-radius:6px}
+.fcTile svg{display:block;width:20px;height:20px}
+.fcLbl{font-size:10px;line-height:18px;font-weight:500}
+.fcText{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;flex:1;text-align:left}
+.fcName{font-size:14px;font-weight:400;line-height:20px;color:var(--content-primary,#1d232f);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcMeta{font-size:12px;font-weight:400;line-height:18px;color:var(--content-secondary,#4a5262);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fcWrap.loading .fcTile{opacity:.5}
+.fcWrap.loading .fcMeta::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pfSpin .8s linear infinite}
+@keyframes pfSpin{to{transform:rotate(360deg)}}
+.fcRemove{position:absolute;top:-8px;right:-8px;width:20px;height:20px;padding:0;border:none;border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 120ms ease;z-index:2}
+.fcRemove::before{content:"";position:absolute;inset:2px;border-radius:50%;background:var(--content-primary,#1d232f);z-index:-1}
+.fcWrap:hover .fcRemove,.fcRemove:focus-visible{opacity:1}
+.fcWrap:hover .fc{border-color:var(--border-default,#d4d9e0)}
+/* the sent message carries its files above the bubble */
+.um-files{align-self:flex-end;display:grid;grid-template-columns:repeat(auto-fill,202px);justify-content:end;gap:8px;width:min(92%,624px);margin-bottom:4px}
+.or-scroll .um-files{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));width:92%}
+/* ---- starter prompts: a chip opens a panel of four under the prompt (Spotter Home quick search) ---- */
+body.proto #view-home .fh-chip.on{background:var(--fh-surf,#f6f8fa);border-color:var(--content-primary,#1d232f);color:var(--content-primary,#1d232f)}
+.sp-panel{position:absolute;left:48px;right:48px;top:calc(100% + 24px);z-index:40;padding:8px;border-radius:12px;background:var(--bg-raised,#fff);border:1px solid var(--border-subtle,#eaedf2);box-shadow:0 0 4px rgba(25,35,49,.06),0 12px 24px rgba(25,35,49,.1);animation:qmIn .22s cubic-bezier(.2,.8,.2,1) both;text-align:left}
+body.proto #view-home .radiance:has(.sp-panel:not([hidden])){z-index:3}
+.sp-h{display:flex;align-items:center;gap:8px;padding:8px 8px 12px 8px;font-size:14px;line-height:20px;color:var(--content-secondary,#4a5262)}
+.sp-h svg{width:16px;height:16px;flex:0 0 auto}
+.sp-h .grow{flex:1}
+.sp-x{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:6px;background:none;color:var(--content-secondary,#4a5262);cursor:pointer}
+.sp-x:hover{background:var(--bg-ghost-hover,#f3f5f8)}
+.sp-i{display:block;width:100%;padding:10px 8px;border:0;border-radius:8px;background:none;text-align:left;cursor:pointer;font:inherit;font-size:16px;line-height:24px;color:var(--content-primary,#1d232f)}
+.sp-i:hover,.sp-i:focus-visible{background:var(--bg-ghost-hover,#f3f5f8);outline:none}
+/* ---- Share chat (Radiant Modal, medium) ---- */
+.shm-scrim{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:24px;background:rgba(29,35,47,.6);animation:shmFade .15s ease both}
+@keyframes shmFade{from{opacity:0}}
+@keyframes shmIn{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.shm{display:flex;flex-direction:column;width:min(640px,100%);max-height:calc(100vh - 48px);border-radius:8px;background:var(--bg-raised,#fff);box-shadow:0 24px 48px rgba(25,35,49,.2);overflow:hidden;animation:shmIn .2s cubic-bezier(.2,.8,.2,1) both}
+.shm-head{display:flex;align-items:center;gap:12px;padding:20px 24px;border-bottom:1px solid var(--border-subtle,#eaedf2)}
+.shm-head h2{flex:1;margin:0;font-size:18px;line-height:28px;font-weight:600;color:var(--content-primary,#1d232f)}
+.shm-body{display:flex;flex-direction:column;gap:8px;padding:24px;min-height:0;overflow:auto}
+.shm-lab{font-size:14px;line-height:20px;font-weight:500;color:var(--content-primary,#1d232f)}
+.shm-combo{position:relative}
+.shm-field{display:flex;align-items:center;gap:8px;height:36px;padding:0 8px 0 12px;border:1px solid var(--border-default,#d4d9e0);border-radius:6px;background:var(--bg-base,#fff)}
+.shm-field:focus-within{border-color:#2770EF;box-shadow:0 0 0 1px #2770EF}
+.shm-field input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;font:inherit;font-size:14px;color:var(--content-primary,#1d232f)}
+.shm-field input::placeholder{color:var(--content-tertiary,#777e8b)}
+.shm-chev{display:grid;place-items:center;width:24px;height:24px;border:0;background:none;color:var(--content-secondary,#4a5262);cursor:pointer;transition:transform .2s}
+.shm-combo.open .shm-chev{transform:rotate(180deg)}
+.shm-opts{position:absolute;left:0;right:0;top:40px;z-index:3;max-height:264px;overflow:auto;padding:8px 0;border-radius:6px;background:var(--bg-raised,#fff);box-shadow:0 0 4px rgba(25,35,49,.08),0 12px 24px rgba(25,35,49,.12)}
+.shm-opt{display:flex;align-items:center;gap:12px;width:100%;padding:6px 16px;border:0;background:none;text-align:left;cursor:pointer;font:inherit}
+.shm-opt:hover,.shm-opt.act{background:var(--bg-ghost-hover,#f3f5f8)}
+.shm-opt[aria-disabled="true"]{opacity:.45;cursor:default}
+.shm-opt-h{padding:8px 16px 4px;font-size:12px;line-height:18px;color:var(--content-tertiary,#777e8b)}
+.shm-none{padding:8px 16px;font-size:14px;color:var(--content-secondary,#4a5262)}
+.shm-ava{display:grid;place-items:center;width:32px;height:32px;flex:0 0 auto;border-radius:50%;font-size:12px;font-weight:600;color:#fff}
+.shm-ava.grp{background:var(--bg-sunken,#eaedf2);color:var(--content-secondary,#4a5262)}
+.shm-who{display:flex;flex-direction:column;min-width:0;flex:1}
+.shm-who b{font-size:14px;line-height:20px;font-weight:500;color:var(--content-primary,#1d232f);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shm-who small{font-size:12px;line-height:18px;color:var(--content-secondary,#4a5262);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shm-list{display:flex;flex-direction:column;height:300px;margin-top:8px;border:1px solid var(--border-subtle,#eaedf2);border-radius:6px;overflow:auto}
+.shm-empty{flex:1;display:flex;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:left}
+.shm-empty .shm-ava{width:40px;height:40px}
+.shm-empty b{display:block;font-size:14px;line-height:20px;font-weight:500;color:var(--content-primary,#1d232f)}
+.shm-empty span{font-size:14px;line-height:20px;color:var(--content-secondary,#4a5262)}
+.shm-row{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--border-subtle,#eaedf2)}
+.shm-tag{font-size:12px;line-height:18px;color:var(--content-secondary,#4a5262);white-space:nowrap}
+
+.shm-rm{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:6px;background:none;color:var(--content-secondary,#4a5262);cursor:pointer}
+.shm-rm:hover{background:var(--bg-ghost-hover,#f3f5f8);color:var(--content-primary,#1d232f)}
+.shm-note{margin:0;padding:16px 24px;border-top:1px solid var(--border-subtle,#eaedf2);font-size:14px;line-height:20px;color:var(--content-primary,#1d232f)}
+.shm-foot{display:flex;align-items:center;gap:8px;padding:16px 24px;background:var(--bg-sunken,#f6f8fa)}
+.shm-foot .grow{flex:1}
+.shm-btn{height:32px;padding:0 16px;border:0;border-radius:16px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.shm-btn.sec{background:var(--bg-ghost-hover,#eaedf2);color:var(--content-primary,#1d232f)}
+.shm-btn.sec:hover{background:#dde1e7}
+.shm-btn.pri{background:#2770EF;color:#fff}
+.shm-btn.pri:hover{background:#1a5fd6}
+.shm-btn.ter{padding:0 8px;background:none;color:#2770EF}
+.shm-btn.ter:hover{text-decoration:underline}
+.shm-btn:disabled{opacity:.4;cursor:default;text-decoration:none}
+:root[data-theme="dark"] .shm-btn.sec:hover{background:#2C313A}
+/* the immersive chat title gets the same chat menu as the pane */
+.cv-ddwrap{position:relative;min-width:0}
+body.proto #view-convo .cv-dd{max-width:min(560px,60vw)}
+body.proto #view-convo .cv-dd #convo-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.proto #view-convo #convo-name[contenteditable="true"]{outline:none;border-bottom:1px solid #2770EF;cursor:text}
 /* the page banner: grey, not amber */
 .um-stale{background:var(--bg-sunken);border-color:var(--border-subtle);border-radius:10px}
 .um-stale .ic{color:var(--content-secondary)}
@@ -15067,8 +15160,8 @@ brand +
   document.getElementById('fhuser').hidden = false;
   document.getElementById('hdrbell').addEventListener('click', function(){ toast('<b>3 notifications</b> — nothing wired in this prototype.'); });
   document.getElementById('fhuser').addEventListener('click', function(){ document.getElementById('profbtn').click(); });
-  var FH_H = 'What are we <em>embedding today?</em>';
-  var FH_PH = "Ask me a question. Use '@' to select columns and values";
+  var FH_H = 'What are we <em>building today?</em>';
+  var FH_PH = 'Ask Operator to embed, style, secure or debug your app';
   function fhApply(){
     var h = document.querySelector('#view-home [data-h]'); if (h) h.innerHTML = FH_H;
     var i = document.getElementById('home-input'); if (i) i.placeholder = FH_PH;
@@ -15407,8 +15500,17 @@ brand +
     closeDD();
     var c = railChat(), k = b.dataset.cm;
     if (k === 'new'){ railNewChat(); return; }
+    if (!c && k === 'share'){
+      /* a pane chat with no entry in My chats yet gets one, so it can be shared */
+      var orS = document.getElementById('or-stream'), um = orS && orS.querySelector('.user-msg');
+      if (um){
+        var ttl = um.textContent.trim(); if (ttl.length > 46) ttl = ttl.slice(0, 44) + '…';
+        c = { id:'n' + Date.now(), a:'operator', t:ttl }; CHATS.unshift(c); CUR = { id:c.id, loc:'rail' };
+        setRailTitle(); renderDevChats(c.id);
+      }
+    }
     if (!c){ if (k === 'share') toast('Nothing to share yet — ask something first.'); else toast('Start or open a chat first.'); return; }
-    if (k === 'share'){ toast('<b>Link copied</b> — anyone in Primary Org can open this chat.'); }
+    if (k === 'share'){ openShare(c); }
     else if (k === 'rename'){ railRename(); }
     else if (k === 'pin'){ c.pin = !c.pin; sortChats(); renderDevChats(c.id); }
     else if (k === 'delete'){
@@ -15431,6 +15533,337 @@ brand +
       [].forEach.call(document.querySelectorAll('#dev-chats [data-devchat]'), function(b){ var c = chatById(b.dataset.devchat); if (c && c.pin && !b.querySelector('.chat-pin')) b.insertAdjacentHTML('afterbegin', PIN_SVG); });
     };
     var _ra = railAsk; railAsk = function(text){ _ra(text); after(t(40), setRailTitle); };
+  })();
+
+  /* ================= + in the prompt bar → Add files ================= */
+  var PF_ACCEPT = '.pdf,.png,.jpg,.jpeg,.gif,.webp,.svg,.csv,.xlsx,.xls,.txt,.md,.json,.har,.css,.docx';
+  var PF_MAX = 10, PF_MB = 20;
+  var PF_CFG = {
+    pdf:{ g:'pdf', bg:'#FDECEC', c:'#C8231C', l:'PDF' },
+    img:{ g:'image', bg:'#F1ECFE', c:'#7A4BE8', l:'Image' },
+    sheet:{ g:'excel', bg:'#E8F6EE', c:'#1E8A4C', l:'Sheet' },
+    data:{ g:'database', bg:'#E8F1FE', c:'#2770EF', l:'JSON' },
+    doc:{ g:'text', bg:'#E8F1FE', c:'#2770EF', l:'DOC' },
+    text:{ g:'text', bg:'#F3F5F8', c:'#4A5262', l:'TXT' },
+    css:{ g:'label', bg:'#F3F5F8', c:'#4A5262', l:'CSS' }
+  };
+  var PF_GLYPH = {
+    excel:'<rect x="3.5" y="2.5" width="13" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 7.5h13M3.5 12.5h13M10 7.5v10" stroke="currentColor" stroke-width="1.5"/>',
+    pdf:'<path d="M5.5 2.5h6l4 4v10a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11.5 2.5v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 11h6M7 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    image:'<rect x="2.5" y="3.5" width="15" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="8" r="1.5" fill="currentColor"/><path d="m3 15 4.5-4.5 3 3 2.5-2.5 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+    text:'<path d="M4 5h12M4 8.5h12M4 12h12M4 15.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    database:'<ellipse cx="10" cy="5" rx="6" ry="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 5v10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V5M4 10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5" stroke="currentColor" stroke-width="1.5"/>'
+  };
+  var PF_UPLOAD = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.8 10v2.2c0 .6.5 1 1 1h8.4c.6 0 1-.4 1-1V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  function pfKind(name){
+    var x = (name.split('.').pop() || '').toLowerCase();
+    if (x === 'pdf') return 'pdf';
+    if (/^(png|jpe?g|gif|webp|svg)$/.test(x)) return 'img';
+    if (/^(csv|xlsx?)$/.test(x)) return 'sheet';
+    if (/^(json|har)$/.test(x)) return 'data';
+    if (x === 'docx') return 'doc';
+    if (x === 'css') return 'css';
+    if (/^(txt|md)$/.test(x)) return 'text';
+    return null;
+  }
+  function pfSize(b){ return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+  function pfEsc(t){ return String(t).replace(/[&<>"]/g, function(ch){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]; }); }
+  function pfCard(f, removable){
+    var c = PF_CFG[f.kind], ext = (f.name.split('.').pop() || '').toUpperCase(), base = pfEsc(f.name.replace(/\.[^/.]+$/, ''));
+    return '<div class="fcWrap' + (f.loading ? ' loading' : '') + '" data-pf="' + f.id + '">' +
+      '<div class="fc" title="' + pfEsc(f.name) + '"><span class="fcTile" style="background:' + c.bg + ';color:' + c.c + '">' +
+      (c.g === 'label' ? '<span class="fcLbl">' + c.l + '</span>' : '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">' + PF_GLYPH[c.g] + '</svg>') + '</span>' +
+      '<span class="fcText"><span class="fcName">' + base + '</span><span class="fcMeta">' + (f.loading ? 'Uploading' : ext + ' · ' + f.size) + '</span></span></div>' +
+      (removable ? '<button type="button" class="fcRemove" aria-label="Remove ' + pfEsc(f.name) + '"><svg width="6" height="6" viewBox="0 0 6 6" fill="none" aria-hidden="true"><path d="M1 1l4 4M5 1L1 5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></button>' : '') +
+    '</div>';
+  }
+  var PF = {};                 /* form id -> files waiting in that prompt */
+  var PF_SENT = null;          /* files riding with the message just sent */
+  var pfInput = document.createElement('input');
+  pfInput.type = 'file'; pfInput.multiple = true; pfInput.accept = PF_ACCEPT; pfInput.hidden = true;
+  document.body.appendChild(pfInput);
+  var pfForm = null, pfMenu = null, pfBtn = null;
+  function pfGrid(form){
+    var g = form.querySelector('.pf-grid');
+    if (!g){
+      g = document.createElement('div'); g.className = 'pf-grid'; form.insertBefore(g, form.firstChild);
+      /* forms whose text area carries the top padding get it on the grid instead */
+      var ta = form.querySelector('textarea');
+      if (parseFloat(getComputedStyle(form).paddingTop) < 8) g.style.marginTop = '16px';
+      if (ta && parseFloat(getComputedStyle(ta).paddingTop) >= 8) g.style.marginBottom = '0';
+    }
+    return g;
+  }
+  function pfRender(form){
+    var list = PF[form.id] || [];
+    pfGrid(form).innerHTML = list.map(function(f){ return pfCard(f, true); }).join('');
+  }
+  function pfClose(){ if (pfMenu){ pfMenu.remove(); pfMenu = null; } if (pfBtn){ pfBtn.setAttribute('aria-expanded', 'false'); pfBtn = null; } }
+  function pfOpen(btn){
+    var form = btn.closest('form'); if (!form) return;
+    var again = pfBtn === btn; pfClose(); if (again) return;
+    pfBtn = btn; pfForm = form; btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'true');
+    pfMenu = document.createElement('div'); pfMenu.className = 'pl-menu'; pfMenu.setAttribute('role', 'menu');
+    pfMenu.innerHTML = '<button type="button" role="menuitem" data-pf-add>' + PF_UPLOAD + 'Add files</button>';
+    document.body.appendChild(pfMenu);
+    var r = btn.getBoundingClientRect(), h = pfMenu.offsetHeight;
+    pfMenu.style.left = Math.max(8, r.left) + 'px';
+    pfMenu.style.top = (r.bottom + 6 + h > window.innerHeight - 8 ? r.top - 6 - h : r.bottom + 6) + 'px';
+    pfMenu.querySelector('button').focus({ preventScroll:true });
+  }
+  function pfAdd(form, files){
+    var list = PF[form.id] = PF[form.id] || [], skipped = [], big = [];
+    [].forEach.call(files, function(file){
+      var kind = pfKind(file.name);
+      if (!kind){ skipped.push(file.name); return; }
+      if (file.size > PF_MB * 1048576){ big.push(file.name); return; }
+      if (list.length >= PF_MAX) return;
+      var f = { id:'f' + Date.now() + Math.random().toString(36).slice(2, 6), name:file.name, kind:kind, size:pfSize(file.size), loading:true };
+      list.push(f);
+      after(t(700 + list.length * 120), function(){ f.loading = false; pfRender(form); });
+    });
+    pfRender(form);
+    if (skipped.length) toast('<b>Could not add ' + pfEsc(skipped[0]) + (skipped.length > 1 ? ' and ' + (skipped.length - 1) + ' more' : '') + '</b> — add PDF, image, CSV, Excel, text, JSON or CSS files.');
+    else if (big.length) toast('<b>' + pfEsc(big[0]) + ' is over ' + PF_MB + ' MB</b> — add a smaller file.');
+    else if (files.length && list.length >= PF_MAX) toast('<b>' + PF_MAX + ' files is the limit</b> — remove one to add another.');
+    var ta = form.querySelector('textarea'); if (ta) ta.focus({ preventScroll:true });
+  }
+  document.addEventListener('click', function(e){
+    var plus = e.target.closest && e.target.closest('#home-form .smallbtn[aria-label="Add context"], #convo-form .cv-plus, #or-form .smallbtn[aria-label="Add context"]');
+    if (plus){ e.preventDefault(); e.stopPropagation(); pfOpen(plus); return; }
+    if (e.target.closest && e.target.closest('[data-pf-add]')){ var f = pfForm; pfClose(); pfForm = f; pfInput.value = ''; pfInput.click(); return; }
+    var rm = e.target.closest && e.target.closest('.pf-grid .fcRemove');
+    if (rm){
+      var form = rm.closest('form'), id = rm.closest('[data-pf]').dataset.pf;
+      PF[form.id] = (PF[form.id] || []).filter(function(x){ return x.id !== id; });
+      pfRender(form); return;
+    }
+    if (pfMenu && !(e.target.closest && e.target.closest('.pl-menu'))) pfClose();
+  }, true);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && pfMenu){ var b = pfBtn; pfClose(); if (b) b.focus(); } });
+  pfInput.addEventListener('change', function(){ if (pfForm && pfInput.files.length) pfAdd(pfForm, pfInput.files); });
+  /* sending: the files leave the prompt and land on the question bubble; files alone still send */
+  document.addEventListener('submit', function(e){
+    var form = e.target, list = PF[form.id];
+    if (!list || !list.length) return;
+    if (list.some(function(x){ return x.loading; })){ e.preventDefault(); e.stopImmediatePropagation(); toast('<b>Still uploading</b> — send once the files are ready.'); return; }
+    var ta = form.querySelector('textarea');
+    if (ta && !ta.value.trim()) ta.value = list.length > 1 ? 'Take a look at these files.' : 'Take a look at this file.';
+    PF_SENT = list.slice(); PF[form.id] = []; pfRender(form);
+    after(t(4000), function(){ PF_SENT = null; });
+  }, true);
+  ['stream', 'or-stream'].forEach(function(id){
+    var st = document.getElementById(id); if (!st) return;
+    new MutationObserver(function(muts){
+      if (!PF_SENT) return;
+      muts.forEach(function(m){ [].forEach.call(m.addedNodes, function(n){
+        if (!PF_SENT || n.nodeType !== 1) return;
+        var um = n.classList.contains('user-msg') ? n : n.querySelector && n.querySelector('.user-msg');
+        if (!um) return;
+        var box = document.createElement('div'); box.className = 'um-files';
+        box.innerHTML = PF_SENT.map(function(f){ return pfCard(f, false); }).join('');
+        um.parentNode.insertBefore(box, um); PF_SENT = null;
+      }); });
+    }).observe(st, { childList:true, subtree:true });
+  });
+
+  /* ================= starter prompts under the Home chips ================= */
+  var SP = {
+    embed: { t:'Embed an object', q:[
+      { l:'Embed a Liveboard', p:'Embed the NA Commercial liveboard in React with cookieless trusted auth.', uc:1 },
+      { l:'Preview as another user', p:'Show me this embed as someone in the Sales Viewers group.', uc:3 },
+      { l:'Match my brand', p:'Make the embed match our brand — here are our colours and font.', uc:8 },
+      { l:'Add a custom action', p:'Add an action on this Liveboard that posts the selected row to our CRM.', uc:7 }
+    ]},
+    docs: { t:'View documentation', q:[
+      { l:'Find the right API', p:'Which API exports a Liveboard as TML, and what parameters does it take?', uc:11 },
+      { l:'What changed since my version', p:'What has changed in the SDK and APIs since 26.2?', uc:12 },
+      { l:'Events in the Visual Embed SDK', p:'My SpotterEmbed keeps firing AuthExpire every few minutes.', uc:10 },
+      { l:'Embed in a new framework', p:'Rewrite my React Liveboard embed for Vue 3.', uc:12 }
+    ]},
+    security: { t:'Configure Security', q:[
+      { l:'Allow my domain', p:'Add app.customer.com to the CORS and CSP allowlist.', uc:4 },
+      { l:'Set up trusted authentication', p:'Set up cookieless trusted auth for this app.', uc:5 },
+      { l:'Fix a blocked embed', p:'My embed shows a blank frame on app.customer.com.', uc:9 },
+      { l:'Point share links at my app', p:'Point share emails at our own URLs.', uc:6 }
+    ]}
+  };
+  var SP_X = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var spPanel = document.createElement('div'); spPanel.className = 'sp-panel'; spPanel.hidden = true;
+  var spWrap = document.querySelector('#view-home .prompt-wrap'); if (spWrap) spWrap.appendChild(spPanel);
+  var spChip = null, spPh = '';
+  function spClose(){
+    spPanel.hidden = true; spPanel.innerHTML = '';
+    if (spChip){ spChip.classList.remove('on'); spChip.setAttribute('aria-expanded', 'false'); spChip = null; }
+    if (spPh){ homeInput.placeholder = spPh; spPh = ''; }
+  }
+  function spOpen(chip){
+    var k = chip.dataset.fh, cat = SP[k]; if (!cat) return false;
+    var again = spChip === chip; spClose(); if (again) return true;
+    spChip = chip; chip.classList.add('on'); chip.setAttribute('aria-expanded', 'true');
+    var ic = chip.querySelector('svg') ? chip.querySelector('svg').outerHTML : '';
+    spPanel.innerHTML = '<div class="sp-h">' + ic + '<span>' + cat.t + '</span><span class="grow"></span><button type="button" class="sp-x" aria-label="Close">' + SP_X + '</button></div>' +
+      cat.q.map(function(x, n){ return '<button type="button" class="sp-i" data-sp="' + n + '">' + x.l + '</button>'; }).join('');
+    spPanel.hidden = false;
+    return true;
+  }
+  document.getElementById('view-home').addEventListener('click', function(e){
+    var chip = e.target.closest && e.target.closest('.fh-chip[data-fh]');
+    if (chip && SP[chip.dataset.fh]){ e.stopImmediatePropagation(); spOpen(chip); }
+  }, true);
+  spPanel.addEventListener('click', function(e){
+    if (e.target.closest('.sp-x')){ spClose(); return; }
+    var b = e.target.closest('.sp-i'); if (!b || !spChip) return;
+    var x = SP[spChip.dataset.fh].q[parseInt(b.dataset.sp, 10)];
+    spClose();
+    homeInput.value = x.p;
+    selectUC(x.uc, true);
+    launchChat(x.p, function(){ startFlow(x.p, 'home-form'); });
+  });
+  /* hovering a starter previews the full prompt in the box, like Spotter Home */
+  spPanel.addEventListener('mouseover', function(e){
+    var b = e.target.closest('.sp-i'); if (!b || !spChip) return;
+    if (!spPh) spPh = homeInput.placeholder;
+    homeInput.placeholder = SP[spChip.dataset.fh].q[parseInt(b.dataset.sp, 10)].p;
+  });
+  spPanel.addEventListener('mouseleave', function(){ if (spPh){ homeInput.placeholder = spPh; spPh = ''; } });
+  document.addEventListener('click', function(e){ if (spChip && !(e.target.closest && (e.target.closest('.sp-panel') || e.target.closest('.fh-chip')))) spClose(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && spChip){ var c = spChip; spClose(); c.focus(); } });
+  (function(){ var _sh = show; show = function(v){ spClose(); _sh(v); }; })();
+
+  /* ================= Share chat ================= */
+  var SH_PEOPLE = [
+    { id:'u1', n:'Priya Raman', s:'priya.raman@acme.com', c:'#2770EF' },
+    { id:'u2', n:'Marcus Lee', s:'marcus.lee@acme.com', c:'#1E8A4C' },
+    { id:'u3', n:'Aisha Khan', s:'aisha.khan@acme.com', c:'#C8231C' },
+    { id:'u4', n:'Tom Becker', s:'tom.becker@acme.com', c:'#7A4BE8' },
+    { id:'u5', n:'Elena Rossi', s:'elena.rossi@acme.com', c:'#B85C00' },
+    { id:'g1', n:'Embed developers', s:'Group · 12 members', g:true },
+    { id:'g2', n:'Security admins', s:'Group · 4 members', g:true },
+    { id:'g3', n:'Sales Viewers', s:'Group · 238 members', g:true }
+  ];
+  var SH_GRP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6" cy="5.5" r="2.3" stroke="currentColor" stroke-width="1.4"/><path d="M1.8 13c.4-2.2 2.1-3.6 4.2-3.6s3.8 1.4 4.2 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.6 3.4a2.2 2.2 0 0 1 0 4.2M12 9.6c1.2.5 2 1.7 2.2 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+  var SH_CHEV = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function shAva(x){ return x.g ? '<span class="shm-ava grp">' + SH_GRP + '</span>' : '<span class="shm-ava" style="background:' + x.c + '">' + x.n.split(' ').map(function(w){ return w[0]; }).join('') + '</span>'; }
+  function shWho(id){ return SH_PEOPLE.filter(function(x){ return x.id === id; })[0]; }
+  var shEl = null, shChat = null, shAdd = [], shOpt = -1;
+  function closeShare(){ if (shEl){ shEl.remove(); shEl = null; } shChat = null; shAdd = []; }
+  function openShare(c){
+    if (!c){ toast('Nothing to share yet — ask something first.'); return; }
+    closeShare(); shChat = c; shAdd = [];
+    shEl = document.createElement('div'); shEl.className = 'shm-scrim';
+    shEl.innerHTML = '<div class="shm" role="dialog" aria-modal="true" aria-labelledby="shm-t">' +
+      '<div class="shm-head"><h2 id="shm-t">Share chat</h2></div>' +
+      '<div class="shm-body"><label class="shm-lab" for="shm-in">Add users or groups</label>' +
+        '<div class="shm-combo"><div class="shm-field"><input id="shm-in" role="combobox" aria-expanded="false" aria-controls="shm-opts" autocomplete="off" placeholder="Search users or groups"><button type="button" class="shm-chev" tabindex="-1" aria-label="Show users and groups">' + SH_CHEV + '</button></div>' +
+        '<div class="shm-opts" id="shm-opts" role="listbox" hidden></div></div>' +
+        '<div class="shm-list" aria-live="polite"></div></div>' +
+      '<p class="shm-note">Chat will be shared up to the current moment. Future messages will not be shared.</p>' +
+      '<div class="shm-foot"><button type="button" class="shm-btn ter" data-sh="link">Copy link</button><span class="grow"></span><button type="button" class="shm-btn sec" data-sh="cancel">Cancel</button><button type="button" class="shm-btn pri" data-sh="share">Share</button></div>' +
+    '</div>';
+    document.body.appendChild(shEl);
+    shDraw();
+    var inp = shEl.querySelector('#shm-in');
+    inp.focus();
+    inp.addEventListener('input', function(){ shOpts(true); });
+    inp.addEventListener('click', function(){ shOpts(true); });
+    inp.addEventListener('keydown', function(e){
+      var opts = shEl.querySelectorAll('.shm-opt:not([aria-disabled="true"])');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); if (!opts.length) return; shOpt = (shOpt + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length; [].forEach.call(opts, function(o, i){ o.classList.toggle('act', i === shOpt); }); }
+      else if (e.key === 'Enter'){ e.preventDefault(); if (opts[shOpt]) shPick(opts[shOpt].dataset.who); }
+      else if (e.key === 'Escape'){ e.stopPropagation(); if (!shEl.querySelector('.shm-opts').hidden) shOpts(false); else closeShare(); }
+    });
+    shEl.addEventListener('click', function(e){
+      if (e.target === shEl){ closeShare(); return; }
+      if (e.target.closest('.shm-chev')){ var o = shEl.querySelector('.shm-opts'); shOpts(o.hidden); inp.focus(); return; }
+      var opt = e.target.closest('.shm-opt'); if (opt){ if (opt.getAttribute('aria-disabled') !== 'true') shPick(opt.dataset.who); return; }
+      var rm = e.target.closest('.shm-rm'); if (rm){ shAdd = shAdd.filter(function(x){ return x !== rm.dataset.who; }); shDraw(); return; }
+      if (!e.target.closest('.shm-combo')) shOpts(false);
+      var b = e.target.closest('[data-sh]'); if (!b || b.disabled) return;
+      var k = b.dataset.sh;
+      if (k === 'cancel') closeShare();
+      else if (k === 'link') toast('<b>Link copied</b> — people this chat is shared with can open it.');
+      else if (k === 'share'){
+        var c = shChat, n = shAdd.length, first = shWho(shAdd[0]).n;
+        c.shared = (c.shared || []).concat(shAdd);
+        closeShare();
+        toast('<b>Shared with ' + first + (n > 1 ? ' and ' + (n - 1) + (n > 2 ? ' others' : ' other') : '') + '</b> — they see the chat up to now.');
+      }
+    });
+    shEl.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeShare(); });
+  }
+  function shOpts(open){
+    var o = shEl.querySelector('.shm-opts'), inp = shEl.querySelector('#shm-in'), q = inp.value.trim().toLowerCase();
+    o.hidden = !open; inp.setAttribute('aria-expanded', open ? 'true' : 'false'); shEl.querySelector('.shm-combo').classList.toggle('open', !!open); shOpt = -1;
+    if (!open) return;
+    var have = (shChat.shared || []).concat(shAdd);
+    var hit = SH_PEOPLE.filter(function(x){ return !q || (x.n + ' ' + x.s).toLowerCase().indexOf(q) > -1; });
+    var row = function(x){ var on = have.indexOf(x.id) > -1; return '<button type="button" class="shm-opt" role="option" data-who="' + x.id + '"' + (on ? ' aria-disabled="true"' : '') + '>' + shAva(x) + '<span class="shm-who"><b>' + x.n + '</b><small>' + (on ? 'Already added' : x.s) + '</small></span></button>'; };
+    var users = hit.filter(function(x){ return !x.g; }), grps = hit.filter(function(x){ return x.g; });
+    o.innerHTML = !hit.length ? '<div class="shm-none">No users or groups match “' + pfEsc(inp.value.trim()) + '”</div>' :
+      (users.length ? '<div class="shm-opt-h">Users</div>' + users.map(row).join('') : '') + (grps.length ? '<div class="shm-opt-h">Groups</div>' + grps.map(row).join('') : '');
+  }
+  function shPick(id){
+    shAdd.push(id); var inp = shEl.querySelector('#shm-in'); inp.value = ''; shOpts(false); shDraw(); inp.focus();
+  }
+  function shDraw(){
+    var list = shEl.querySelector('.shm-list'), had = shChat.shared || [];
+    var row = function(id, fresh){ var x = shWho(id); return '<div class="shm-row">' + shAva(x) + '<span class="shm-who"><b>' + x.n + '</b><small>' + x.s + '</small></span><span class="shm-tag' + (fresh ? ' new' : '') + '">' + (fresh ? 'Can view' : 'Shared') + '</span>' + (fresh ? '<button type="button" class="shm-rm" data-who="' + id + '" aria-label="Remove ' + x.n + '">' + SP_X + '</button>' : '') + '</div>'; };
+    list.innerHTML = (had.length || shAdd.length)
+      ? shAdd.map(function(id){ return row(id, true); }).join('') + had.map(function(id){ return row(id, false); }).join('')
+      : '<div class="shm-empty"><span class="shm-ava grp">' + SH_GRP + '</span><div><b>No users added yet</b><span>This chat has not been shared with any user</span></div></div>';
+    shEl.querySelector('[data-sh="share"]').disabled = !shAdd.length;
+    shEl.querySelector('[data-sh="link"]').disabled = !had.length;
+  }
+
+  /* the immersive chat title opens the same chat menu as the pane */
+  (function(){
+    var name = document.getElementById('convo-name'); if (!name) return;
+    var wrap = document.createElement('div'); wrap.className = 'cv-ddwrap';
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'or-dd cv-dd'; btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'false');
+    name.parentNode.insertBefore(wrap, name); btn.appendChild(name);
+    btn.insertAdjacentHTML('beforeend', '<svg class="or-dd-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    var menu = document.createElement('div'); menu.className = 'or-ddmenu'; menu.setAttribute('role', 'menu'); menu.hidden = true;
+    menu.innerHTML = '<button type="button" role="menuitem" class="cm" data-cv="share">Share</button><button type="button" role="menuitem" class="cm" data-cv="rename">Rename</button><button type="button" role="menuitem" class="cm" data-cv="pin">Pin chat</button><div class="cm-sep" role="separator"></div><button type="button" role="menuitem" class="cm cm-danger" data-cv="delete">Delete</button>';
+    wrap.appendChild(btn); wrap.appendChild(menu);
+    function mainChat(){ return (CUR && CUR.loc === 'main') ? chatById(CUR.id) : null; }
+    function shut(){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    btn.addEventListener('click', function(e){
+      if (name.getAttribute('contenteditable') === 'true') return;
+      e.stopPropagation();
+      var open = menu.hidden; shut();
+      if (open){ var c = mainChat(); menu.querySelector('[data-cv="pin"]').textContent = c && c.pin ? 'Unpin chat' : 'Pin chat'; menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+    });
+    document.addEventListener('click', function(e){ if (!menu.hidden && !wrap.contains(e.target)) shut(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !menu.hidden){ shut(); btn.focus(); } });
+    menu.addEventListener('click', function(e){
+      var b = e.target.closest('[data-cv]'); if (!b) return;
+      shut();
+      var c = mainChat(), k = b.dataset.cv;
+      if (!c){ toast('Nothing to share yet — ask something first.'); return; }
+      if (k === 'share') openShare(c);
+      else if (k === 'pin'){ c.pin = !c.pin; sortChats(); renderDevChats(c.id); }
+      else if (k === 'delete'){
+        var id = c.id;
+        CHATS = CHATS.filter(function(x){ return x.id !== id; }); delete STORE[id];
+        CUR = null; goHome(); renderDevChats(null);
+        toast('<b>Deleted</b> — the chat is gone from My chats.');
+      }
+      else if (k === 'rename'){
+        name.setAttribute('contenteditable', 'true'); name.focus();
+        var r = document.createRange(); r.selectNodeContents(name); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        var done = function(commit){
+          name.removeAttribute('contenteditable');
+          var v = name.textContent.trim();
+          if (commit && v){ c.t = v.length > 60 ? v.slice(0, 58) + '…' : v; renderDevChats(c.id); }
+          name.textContent = c.t;
+          name.removeEventListener('blur', onBlur); name.removeEventListener('keydown', onKey);
+        };
+        var onBlur = function(){ done(true); };
+        var onKey = function(e){ if (e.key === ' ') e.stopPropagation(); if (e.key === 'Enter'){ e.preventDefault(); done(true); } else if (e.key === 'Escape'){ e.preventDefault(); done(false); } };
+        name.addEventListener('blur', onBlur); name.addEventListener('keydown', onKey);
+      }
+    });
   })();
   setRailTitle();
 
