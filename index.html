@@ -3309,6 +3309,8 @@ body.proto #nav-develop{overflow-y:auto;padding-bottom:16px}
 
 /* admin pages: the page title lines up with what it heads */
 body.proto #view-feature .px-head,body.proto #view-orgs .px-head,body.proto #view-users .px-head{margin-left:0}
+/* admin list pages run edge to edge like the product: 32px from the left nav and the window edge; the floating button keeps its bottom-right corner */
+body.proto:not(.panelin) #view-feature .px-wrap,body.proto:not(.panelin) #view-orgs .px-wrap,body.proto:not(.panelin) #view-users .px-wrap{padding:32px 32px 96px}
 body.proto .px-head h1{font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.4px}
 
 /* the full-view conversation (from a centred home prompt) */
