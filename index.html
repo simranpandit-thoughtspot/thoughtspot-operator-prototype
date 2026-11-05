@@ -944,9 +944,8 @@ body.answer .topbar{display:none}
 .uf-seg button.on{background:var(--bg-raised);color:var(--content-brand);font-weight:550;box-shadow:var(--shadow-surface)}
 .uf-check{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:8px 10px;border-radius:var(--r-8)}
 .uf-check:hover{background:var(--bg-sunken)}
-.uf-box{flex:0 0 16px;width:16px;height:16px;margin-top:2px;border:1.5px solid var(--border-bold);border-radius:4px;position:relative;transition:background .15s,border-color .15s}
-.uf-check[aria-checked="true"] .uf-box{background:var(--brand);border-color:var(--brand)}
-.uf-check[aria-checked="true"] .uf-box::after{content:"";position:absolute;left:4.5px;top:1px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.uf-box{flex:0 0 16px;width:16px;height:16px;margin-top:2px;box-sizing:border-box;border:1px solid var(--border-bold);border-radius:2px;background:var(--bg-base) center/10px 8px no-repeat;position:relative;transition:border-color .15s}
+.uf-check[aria-checked="true"] .uf-box{border-color:var(--border-brand);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%232770EF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 .uf-t{font-size:14px;line-height:20px;display:block}
 .uf-m{font-size:12px;line-height:18px;color:var(--content-tertiary);display:block}
 .uf-grp{font-size:12px;font-weight:550;letter-spacing:.5px;text-transform:uppercase;color:var(--content-tertiary);padding:var(--s-b) 10px 2px;line-height:18px}
@@ -4211,6 +4210,21 @@ body.proto.paneleft .oprail.floating{left:var(--fl-x,24px)!important;right:auto!
 .srq-btn.pri:hover{background:var(--brand-hover)}
 .srq-btn.ter{background:transparent;color:var(--brand);padding-left:4px;padding-right:4px;border-radius:6px}
 .srq-btn.ter:hover{background:var(--bg-ghost-hover)}
+.srq-cb{display:flex;align-items:center;justify-content:center;width:16px;height:16px;box-sizing:border-box;background:var(--bg-base);border:1px solid var(--border-bold);border-radius:2px;color:var(--content-brand)}
+.srq-cb[data-checked]{border-color:var(--border-brand)}
+.srq-lb{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.srq-lb .srq-l{flex:none}
+.srq-m{font-size:14px;line-height:20px;font-weight:400;color:var(--content-secondary)}
+.srq-sub{margin:4px 0 0;padding:0 12px;font-size:14px;line-height:20px;color:var(--content-secondary)}
+.srq-fields{display:flex;flex-direction:column;gap:16px;padding:4px 12px 4px}
+.srq-f{display:flex;flex-direction:column;gap:4px}
+.srq-f label{font-size:12px;line-height:18px;font-weight:400;color:var(--content-primary);transition:color .12s}
+.srq-f:focus-within label{color:var(--content-brand)}
+.srq-f input{height:32px;padding:0 12px 0 16px;border:1px solid var(--border-bold);border-radius:6px;background:var(--bg-base);font:inherit;font-size:14px;line-height:20px;font-weight:400;color:var(--content-primary);outline:none;box-sizing:border-box;transition:border-color .12s}
+.srq-f input:hover:not(:focus){border-color:var(--content-tertiary)}
+.srq-f input:focus{border-color:var(--border-brand)}
+.srq-f .srq-m{font-size:12px;line-height:18px}
+.srq-follow{padding:0 12px 0 40px}
 @media (prefers-reduced-motion: reduce){.srq.cardEnter,.srq.cardLeaving,.srq-row.rowEnter,.srq-row.rowLeaving,.srq-row.rowArriving{animation:none}.srq.cardLeaving{opacity:0}}
 
 /* tool row: 20px rail + content (Reasoning.module.css .row / .markerCol / .content) */
@@ -12591,7 +12605,7 @@ brand +
   }
   /* and the way it answers — warmer, same facts */
   var VOICE = [
-    ['I can create the account from here. Three things I cannot guess: who they are, what they are allowed to do, and which groups they land in.', 'I can set them up right here! I just need three things I can’t guess: who they are, what they can do, and which groups they join.'],
+    ['I can create the account from here. Four things I cannot guess: who they are, how they sign in, what they are allowed to do, and which groups they land in.', 'I can set them up right here! I just need four things I can’t guess: who they are, how they sign in, what they can do, and which groups they join.'],
     ['Users live on <strong>Admin · Users management</strong>, not here.', 'Road trip! Users live on <strong>Admin · Users management</strong>, so let’s hop over.'],
     ['Everything above was reading. This next step creates the account, so it is yours to approve.', 'So far I’ve only been reading. This next bit actually creates the account, so you get the final say!'],
     [' exists on the cluster now.', ' is officially on the cluster!'],
@@ -13414,76 +13428,166 @@ brand +
       {t:'Read the org — <b>38 users</b>, <b>12 groups</b>, SAML SSO is on'}
     ], function(){
       if (HM === 'proactive' && currentView !== 'users'){
-        add('<div class="agent-msg"><p>Users live on <strong>Admin · Users management</strong>, not here. I will take you there first, so the result lands where you can see it — then three things I cannot guess: who they are, what they may do, and which groups they join.</p></div>');
+        add('<div class="agent-msg"><p>Users live on <strong>Admin · Users management</strong>, not here. I will take you there first, so the result lands where you can see it — then four things I cannot guess: who they are, how they sign in, what they may do, and which groups they join.</p></div>');
         after(t(900), function(){
           goUsers();
           after(t(520), nuIdentity);
         });
         return;
       }
-      add('<div class="agent-msg"><p>I can create the account from here. Three things I cannot guess: who they are, what they are allowed to do, and which groups they land in.</p></div>');
+      add('<div class="agent-msg"><p>I can create the account from here. Four things I cannot guess: who they are, how they sign in, what they are allowed to do, and which groups they land in.</p></div>');
       after(t(340), nuIdentity);
     });
   }
 
-  /* 1 · who they are */
+  /* 1–4 · the details, asked one at a time on the clarify stepper (1 of 4 · Skip · Next) */
+  var NU_AUTH = [
+    {t:'Invite by email', m:'They get a sign-up link and set their own password'},
+    {t:'SAML SSO',        m:'They sign in with your identity provider. SAML is already on'},
+    {t:'Set a password',  m:'You set a temporary one; they change it on first sign-in'}
+  ];
+  var SRQ_TICK = '<svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function nuEsc(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   function nuIdentity(){
-    var c = add(
-      '<div class="card"><div class="card-body">' +
-        '<p class="card-title">Who is the user?</p>' +
-        '<p class="card-sub">The username has to be unique on the cluster. I checked — this one is free.</p>' +
-        '<div class="uf">' +
-          '<div class="uf-row"><label for="nu-name">Full name</label><input id="nu-name" value="' + NU.name + '"></div>' +
-          '<div class="uf-row"><label for="nu-user">Username</label><input id="nu-user" value="' + NU.user + '"></div>' +
-          '<div class="uf-row"><label for="nu-mail">Email</label><input id="nu-mail" value="' + NU.email + '"></div>' +
-          '<div class="uf-row"><label>How they sign in</label>' +
-            '<div class="uf-seg" id="nu-auth">' +
-              '<button type="button" data-a="Invite by email" class="on">Invite by email</button>' +
-              '<button type="button" data-a="SAML SSO">SAML SSO</button>' +
-              '<button type="button" data-a="Set a password">Set a password</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="uf-row" id="nu-pw-row" hidden>' +
-            '<label for="nu-pw">Temporary password</label>' +
-            '<input id="nu-pw" value="Qn7-vela-2416">' +
-            '<span class="uf-m">They are asked to change it on first sign-in. I never keep a copy — copy it before you move on.</span>' +
-          '</div>' +
-          '<div class="uf-row" id="nu-sso-row" hidden>' +
-            '<span class="uf-m">' + I.info + ' SAML is already on for this cluster. They sign in with your identity provider — I set no password, and their IdP account has to carry the same email.</span>' +
-          '</div>' +
-        '</div>' +
-      '</div><div class="card-actions">' +
-        '<button class="btn btn-primary" type="button" data-a="next">Continue</button>' +
-        '<span class="grow"></span>' +
-        '<button class="btn btn-secondary" type="button" data-a="cancel">Cancel</button>' +
-      '</div></div>');
-    var seg = c.querySelector('#nu-auth');
-    var pwRow = c.querySelector('#nu-pw-row'), ssoRow = c.querySelector('#nu-sso-row');
-    function syncAuth(){
-      pwRow.hidden  = NU.auth !== 'Set a password';
-      ssoRow.hidden = NU.auth !== 'SAML SSO';
+    var STEPS = [
+      {type:'fields', q:'Who is the user?', sub:'The username has to be unique on the cluster. I checked, this one is free.', required:true,
+       fields:[{k:'name', l:'Full name'}, {k:'user', l:'Username'}, {k:'email', l:'Email'}]},
+      {type:'single', q:'How do they sign in?', opts:NU_AUTH, key:'auth'},
+      {type:'multi',  q:'What can they do?', sub:'Privileges are cluster-wide. Groups can add more, never take any away.', opts:PV_OPTS, none:'No extra privileges'},
+      {type:'multi',  q:'Which groups?', sub:'Groups are how they inherit sharing.', opts:GR_OPTS, none:'No groups'}
+    ];
+    mountSteps(STEPS, function(){
+      NU.pv = picked(PV_OPTS); NU.groups = picked(GR_OPTS);
+      after(t(400), nuGate);
+    });
+  }
+  function mountSteps(STEPS, onDone){
+    var host = CTX.clarify, idx = 0, cur = 0, paging = false, tAuto = 0;
+    var skipped = STEPS.map(function(){ return false; });
+    var input = CTX.input, ph = input ? input.getAttribute('placeholder') : null;
+    if (input) input.setAttribute('placeholder', 'or reply directly…');
+    host.innerHTML =
+      '<div class="srq cardEnter" tabindex="0" role="group">' +
+        '<div class="srq-h"><h3 class="srq-q"></h3></div><p class="srq-sub" hidden></p>' +
+        '<div class="srq-opts"></div>' +
+        '<div class="srq-act"><div class="srq-left"></div>' +
+          '<div class="srq-right"><button type="button" class="srq-btn ter" data-skip>Skip</button>' +
+          '<span class="srq-pw"><button type="button" class="srq-btn pri" data-next>Next</button></span></div></div>' +
+      '</div>';
+    var card = host.querySelector('.srq'), qEl = card.querySelector('.srq-q'), subEl = card.querySelector('.srq-sub'),
+        opts = card.querySelector('.srq-opts'), left = card.querySelector('.srq-left'),
+        nextB = card.querySelector('[data-next]'), skipB = card.querySelector('[data-skip]');
+    function S(){ return STEPS[idx]; }
+    function isLast(){ return idx === STEPS.length - 1; }
+    function rows(){ return [].slice.call(opts.querySelectorAll('.srq-row')); }
+    function ctl(st, o){
+      if (st.type === 'multi') return '<span class="srq-cb"' + (o.on ? ' data-checked' : '') + '>' + (o.on ? SRQ_TICK : '') + '</span>';
+      var c = NU[st.key] === o.t;
+      return '<span class="srq-rb"' + (c ? ' data-checked' : '') + '>' + (c ? '<i></i>' : '') + '</span>';
     }
-    syncAuth();
-    [].forEach.call(seg.querySelectorAll('button'), function(b){
-      b.addEventListener('click', function(){
-        [].forEach.call(seg.querySelectorAll('button'), function(x){ x.classList.remove('on'); });
-        b.classList.add('on'); NU.auth = b.dataset.a; syncAuth();
+    function build(anim){
+      var st = S();
+      qEl.textContent = st.q;
+      subEl.hidden = !st.sub; subEl.textContent = st.sub || '';
+      var h = '';
+      if (st.type === 'fields'){
+        h = '<div class="srq-fields">' + st.fields.map(function(f){
+          return '<div class="srq-f"><label for="srq-' + f.k + '">' + f.l + '</label><input id="srq-' + f.k + '" data-k="' + f.k + '" value="' + nuEsc(NU[f.k]) + '"></div>';
+        }).join('') + '</div>';
+      } else {
+        h = st.opts.map(function(o, j){
+          return '<div class="srq-row" role="' + (st.type === 'multi' ? 'checkbox' : 'radio') + '" data-j="' + j + '"><div class="srq-ctl" inert>' + ctl(st, o) + '</div>' +
+            '<span class="srq-lb"><span class="srq-l">' + o.t + '</span>' + (o.m ? '<span class="srq-m">' + o.m + '</span>' : '') + '</span></div>';
+        }).join('');
+        if (st.key === 'auth') h += '<div class="srq-follow" data-pw' + (NU.auth === 'Set a password' ? '' : ' hidden') + '><div class="srq-f"><label for="srq-pw">Temporary password</label><input id="srq-pw" value="' + nuEsc(NU.pw || 'Qn7-vela-2416') + '"><span class="srq-m">I never keep a copy. Copy it before you move on.</span></div></div>';
+      }
+      opts.innerHTML = h;
+      if (anim) [].forEach.call(opts.children, function(el, j){ el.classList.add(anim === 'enter' ? 'rowEnter' : 'rowArriving'); el.style.animationDelay = (anim === 'enter' ? 100 + j * 50 : j * 34) + 'ms'; });
+      setTimeout(function(){ [].forEach.call(opts.children, function(el){ el.classList.remove('rowEnter','rowArriving'); el.style.animationDelay = ''; }); }, 420);
+      left.innerHTML = '<div class="srq-pager"><button type="button" class="srq-pn" data-prev aria-label="Previous question"' + (idx === 0 ? ' disabled' : '') + '><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.13811 2.09764L8.08092 3.04045L5.21899 5.90238L8.08092 8.76431L7.13811 9.70712L3.33337 5.90238L7.13811 2.09764Z" fill="currentColor"/></svg></button>' +
+        '<span class="srq-count">' + (idx + 1) + ' of ' + STEPS.length + '</span>' +
+        '<button type="button" class="srq-pn" data-fwd aria-label="Next question"' + (isLast() ? ' disabled' : '') + '><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.94281 9.70712L4 8.76431L6.86193 5.90238L4 3.04045L4.94281 2.09764L8.74755 5.90238L4.94281 9.70712Z" fill="currentColor"/></svg></button></div>';
+      skipB.hidden = !!st.required;
+      nextB.textContent = isLast() ? 'Submit' : 'Next';
+      setActive(Math.min(cur, Math.max(rows().length - 1, 0)));
+      if (st.type === 'fields' && anim !== 'enter'){ var f0 = opts.querySelector('input'); if (f0) f0.focus(); }
+      scrollDown();
+    }
+    function setActive(j){ cur = j; rows().forEach(function(el, i){ el.classList.toggle('rowActive', i === j); }); }
+    function save(){
+      var st = S();
+      [].forEach.call(opts.querySelectorAll('input[data-k]'), function(i){ NU[i.dataset.k] = i.value.trim(); });
+      var pw = opts.querySelector('#srq-pw'); if (pw) NU.pw = NU.auth === 'Set a password' ? pw.value.trim() : '';
+      if (st.type === 'fields'){ NU.name = NU.name || 'New user'; NU.user = NU.user || 'new.user'; }
+    }
+    function toggle(j){
+      var st = S(), o = st.opts[j]; skipped[idx] = false;
+      if (st.type === 'multi'){ o.on = !o.on; rows()[j].querySelector('.srq-ctl').innerHTML = ctl(st, o); return; }
+      NU[st.key] = o.t;
+      rows().forEach(function(el, i){ el.querySelector('.srq-ctl').innerHTML = ctl(st, st.opts[i]); });
+      var f = opts.querySelector('[data-pw]');
+      if (f){ f.hidden = o.t !== 'Set a password'; if (!f.hidden){ f.querySelector('input').focus(); return; } }
+      if (!isLast()){ clearTimeout(tAuto); tAuto = setTimeout(function(){ goTo(idx + 1); }, 110); }
+    }
+    function goTo(m){
+      if (m < 0 || m > STEPS.length - 1 || paging) return;
+      save(); clearTimeout(tAuto); paging = true;
+      card.style.setProperty('--cq-page-dir', m > idx ? 1 : -1);
+      [].forEach.call(opts.children, function(el){ el.classList.add('rowLeaving'); });
+      card.focus();
+      setTimeout(function(){ idx = m; cur = 0; build('in'); paging = false; }, 80);
+    }
+    function nudge(){ if (!card.animate || reduce) return; card.animate([{transform:'translateX(0)'},{offset:.15,transform:'translateX(-6px)'},{offset:.3,transform:'translateX(5px)'},{offset:.45,transform:'translateX(-4px)'},{offset:.6,transform:'translateX(3px)'},{offset:.75,transform:'translateX(-2px)'},{transform:'translateX(0)'}], {duration:360, easing:'cubic-bezier(0.36, 0.07, 0.19, 0.97)'}); }
+    function advance(){
+      var st = S();
+      if (st.type === 'fields' && !opts.querySelector('[data-k="name"]').value.trim()){ nudge(); opts.querySelector('[data-k="name"]').focus(); return; }
+      if (st.type === 'single' && !NU[st.key]){ nudge(); return; }
+      skipped[idx] = false;
+      if (!isLast()) goTo(idx + 1); else submit();
+    }
+    function skip(){
+      var st = S(); skipped[idx] = true;
+      if (st.type === 'multi') st.opts.forEach(function(o){ o.on = false; });
+      if (!isLast()) goTo(idx + 1); else submit();
+    }
+    function answer(st, i){
+      if (skipped[i]) return '';
+      if (st.type === 'fields') return nuEsc(NU.name) + ' · ' + nuEsc(NU.user) + (NU.email ? ' · ' + nuEsc(NU.email) : '');
+      if (st.type === 'single') return nuEsc(NU[st.key]);
+      var p = picked(st.opts); return p.length ? p.join(', ') : st.none;
+    }
+    function submit(){
+      save();
+      card.classList.remove('cardEnter'); card.classList.add('cardLeaving');
+      after(t(180), function(){
+        host.innerHTML = '';
+        if (input){ if (ph === null) input.removeAttribute('placeholder'); else input.setAttribute('placeholder', ph); }
+        add('<div class="sr-ask"><div class="sr-askcard">' + STEPS.map(function(st, i){
+          var a = answer(st, i);
+          return '<div class="sr-qa"><span class="q">' + st.q + '</span>' + (a ? '<span class="a">' + a + '</span>' : '<span class="s">Skipped</span>') + '</div>';
+        }).join('') + '</div></div>');
+        onDone();
       });
+    }
+    card.addEventListener('mouseover', function(e){ var r = e.target.closest('.srq-row'); if (r && opts.contains(r)) setActive(+r.dataset.j); });
+    card.addEventListener('click', function(e){
+      if (e.target.closest('[data-next]')){ advance(); return; }
+      if (e.target.closest('[data-skip]')){ skip(); return; }
+      if (e.target.closest('[data-prev]')){ goTo(idx - 1); return; }
+      if (e.target.closest('[data-fwd]')){ goTo(idx + 1); return; }
+      var r = e.target.closest('.srq-row'); if (!r) return; setActive(+r.dataset.j); toggle(+r.dataset.j);
     });
-    c.querySelector('[data-a="cancel"]').addEventListener('click', function(){
-      c.querySelector('.card-actions').innerHTML = '<span class="stamp off">' + I.check + ' Cancelled — nothing was created</span>';
-      [].forEach.call(c.querySelectorAll('input,.uf-seg button'), function(x){ x.disabled = true; });
+    card.addEventListener('keydown', function(e){
+      if (e.target.tagName === 'INPUT'){ if (e.key === 'Enter'){ e.preventDefault(); advance(); } return; }
+      var m = rows().length;
+      if (e.key === 'ArrowDown' && m){ e.preventDefault(); setActive((cur + 1) % m); }
+      else if (e.key === 'ArrowUp' && m){ e.preventDefault(); setActive((cur - 1 + m) % m); }
+      else if (e.key === 'ArrowLeft'){ e.preventDefault(); goTo(idx - 1); }
+      else if (e.key === 'ArrowRight'){ e.preventDefault(); goTo(idx + 1); }
+      else if (e.key === ' ' && m){ e.preventDefault(); toggle(cur); }
+      else if (e.key === 'Enter'){ e.preventDefault(); advance(); }
     });
-    c.querySelector('[data-a="next"]').addEventListener('click', function(){
-      NU.name  = (c.querySelector('#nu-name').value || '').trim() || 'New user';
-      NU.user  = (c.querySelector('#nu-user').value || '').trim() || 'new.user';
-      NU.email = (c.querySelector('#nu-mail').value || '').trim();
-      NU.pw    = NU.auth === 'Set a password' ? (c.querySelector('#nu-pw').value || '').trim() : '';
-      c.querySelector('.card-actions').innerHTML = '<span class="stamp ok">' + I.check + ' ' + NU.name + ' · ' + NU.auth + '</span>';
-      [].forEach.call(c.querySelectorAll('input,.uf-seg button'), function(x){ x.disabled = true; });
-      add('<div class="user-msg">' + NU.name + ' · ' + NU.user + ' · ' + NU.auth + '</div>');
-      after(t(360), nuPrivileges);
-    });
+    build('enter');
   }
 
   /* 2 · what they are allowed to do */
