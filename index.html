@@ -5490,6 +5490,7 @@ body.proto:not(.allorg) #view-feature .px-wrap:not(.fd-pri),body.proto.allorg #v
 #view-feature .fd-tg i{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--bg-raised);transition:transform .15s}
 #view-feature .fd-tg[aria-checked="true"]{background:var(--content-brand)}
 #view-feature .fd-tg[aria-checked="true"] i{transform:translateX(12px)}
+body.proto.unified #nav-admin .adm-chats-g{display:none!important}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
 body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
@@ -5857,6 +5858,7 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
           <button class="nav-item" type="button">Scheduled maintenance</button>
           <button class="nav-item" type="button">Terms</button>
         </div>
+        <div class="nav-group adm-chats-g" hidden><div class="nav-group-label">My chats</div><div id="adm-chats"></div></div>
         <div class="nav-group uni-chats"><div class="nav-group-label">My chats</div><div class="uni-chats-list"></div></div>
       </div>
 
@@ -16287,6 +16289,95 @@ brand +
   (function(){ var q = document.querySelector('#view-feature .fd-search input'); if (!q) return;
     q.addEventListener('input', function(){ var v = q.value.trim().toLowerCase();
       [].forEach.call(document.querySelectorAll('#view-feature .fd-card'), function(c){ c.hidden = v && c.textContent.toLowerCase().indexOf(v) < 0; }); }); })();
+  /* ================= Admin home → immersive chat (like Develop), Admin nav and its My chats stay ================= */
+  var ADM_CHAT = false;
+  function renderAdmChats(activeId){
+    var box = document.getElementById('adm-chats'); if (!box) return;
+    var list = CHATS.filter(function(c){ return c.adm; });
+    box.parentNode.hidden = !list.length;
+    box.innerHTML = list.map(function(c){
+      return '<button class="nav-chat' + (c.id === activeId ? ' on' : '') + '" type="button" data-admchat="' + c.id + '"><span class="chat-t">' + c.t + '</span></button>';
+    }).join('');
+  }
+  (function(){
+    var _sh = show;
+    show = function(v){
+      if (v !== 'convo' && ADM_CHAT && currentView === 'convo'){ stash(); ADM_CHAT = false; }
+      else if (v !== 'convo') ADM_CHAT = false;
+      _sh(v);
+      if (v === 'convo' && ADM_CHAT){
+        navAdmin.hidden = false; navDev.hidden = true; navAgent.hidden = true; navIns.hidden = true;
+        markProductTab('Admin');
+        [].forEach.call(document.querySelectorAll('#nav-admin .nav-item.on'), function(b){ b.classList.remove('on'); });
+        renderAdmChats(CUR ? CUR.id : null);
+      } else renderAdmChats(null);
+    };
+  })();
+  document.getElementById('adm-chats').addEventListener('click', function(e){
+    var b = e.target.closest('[data-admchat]'); if (!b) return;
+    var id = b.dataset.admchat;
+    if (CUR && CUR.id === id && currentView === 'convo') return;
+    stash();
+    ADM_CHAT = true;
+    useCtx('main');
+    if (STORE[id]) restore(id, 'main'); else { resetConvo(); CUR = { id:id, loc:'main' }; }
+    document.getElementById('convo-name').textContent = (chatById(id) || {}).t || 'Conversation';
+    show('convo');
+  });
+  var ORG_PICK = [
+    { t:'Primary Org', m:'38 users' },
+    { t:'Sales EMEA', m:'64 users' },
+    { t:'Partner portal', m:'112 users' },
+    { t:'Finance', m:'27 users' },
+    { t:'Every org on the cluster', m:'All 12 orgs' }
+  ];
+  /* a change: on All Orgs ask which orgs (multi-select); on Primary Org confirm it stays in this org */
+  function admScope(go){
+    if (ORG === 'all'){
+      add('<div class="agent-msg"><p>You are on <strong>All Orgs</strong>, so this can land in more than one place. Which orgs should it apply to?</p></div>');
+      var opts = ORG_PICK.map(function(o){ return { t:o.t, m:o.m }; });
+      mountSteps([{ type:'multi', q:'Which orgs should this apply to?', opts:opts, none:'No orgs' }], function(){
+        var p = picked(opts);
+        if (!p.length){ add('<div class="agent-msg"><p>No orgs picked, so nothing changes. Ask again when you know where it should go.</p></div>'); return; }
+        add('<div class="agent-msg"><p>Got it. I will make this change in <strong>' + p.join(', ') + '</strong> and nowhere else.</p></div>');
+        after(t(360), go);
+      });
+      return;
+    }
+    add('<div class="agent-msg"><p>You are on <strong>Primary Org</strong>. I will make this change in this org only.</p></div>');
+    mountClarify([{ q:'Make this change in Primary Org only?', opts:[{ t:'Yes, only in Primary Org' }, { t:'Switch to All Orgs and pick the orgs' }] }], function(pk){
+      if (pk[0] === 1){ setOrg('all'); renderAdminHome(); after(t(300), function(){ admScope(go); }); }
+      else after(t(300), go);
+    });
+  }
+  function adminLaunch(text){
+    text = (text || '').trim(); if (!text) return;
+    if (railOpen){ railReset(); closeRailQuiet(); }
+    stash();
+    ADM_CHAT = true;
+    useCtx('main'); resetConvo();
+    var id = 'a' + Date.now(), title = text.length > 46 ? text.slice(0, 44) + '…' : text;
+    CHATS.unshift({ id:id, a:'operator', t:title, adm:true });
+    CUR = { id:id, loc:'main' };
+    document.getElementById('convo-name').textContent = title;
+    show('convo');
+    if (typeof cvWashOn === 'function') cvWashOn();
+    var q = text.toLowerCase();
+    add('<div class="user-msg">' + text.replace(/</g, '&lt;') + '</div>');
+    after(t(160), function(){ opQuip(q); });
+    var go = function(){
+      if (/(add|create|new|invite|onboard).{0,24}(user|person|teammate|account)|user to (my|the) org/.test(q)) railAddUser(text);
+      else railTabHome(text, 'adminhome');
+    };
+    if (isChange(q)) after(t(520), function(){ admScope(go); });
+    else after(t(400), go);
+  }
+  /* the Admin home prompt (and its starters, tasks and overview actions) open the immersive chat */
+  document.getElementById('ah-form').addEventListener('submit', function(e){
+    e.preventDefault(); e.stopImmediatePropagation();
+    var box = document.getElementById('ah-form-in'), v = box.value; box.value = '';
+    adminLaunch(v);
+  }, true);
 
   /* ================= Share chat ================= */
   var SH_PEOPLE = [
