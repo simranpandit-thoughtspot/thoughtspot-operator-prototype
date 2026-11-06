@@ -5419,6 +5419,16 @@ body.proto.unified #ins-home .fh-chips.ins-std{display:none}
 :is(#ins-home,#view-adminhome) .prompt .hb-pill:hover{background:var(--bg-ghost-hover)}
 #view-adminhome .fh-chip svg{color:#777E8B}
 #view-adminhome .prompt-wrap{position:relative}
+/* All three homes (Develop, Insights, Admin): one background — the radiance-spotter-home renderer (Tarun Bhandari,
+   verbatim), mounted exactly as the reference Home mounts it: full width, from 60px above the page, one viewport
+   tall, opacity .76 (dark .66), top-wash mask. No other wash, ground or grain layer on these pages. */
+body.rglow :is(#view-home,#ins-home,#view-adminhome)>.rg-main{display:block!important;position:absolute!important;top:-60px!important;left:0!important;right:0!important;bottom:auto!important;height:100vh!important;z-index:-1!important;opacity:.76}
+:root[data-theme="dark"] body.rglow :is(#view-home,#ins-home,#view-adminhome)>.rg-main{opacity:.66}
+body.rglow #view-home .fh-ground::before,body.rglow #view-home .fh-ground::after,
+body.rglow :is(#view-home,#ins-home,#view-adminhome) .fh-wash,
+body.rglow :is(#ins-home,#view-adminhome)::before,body.rglow :is(#ins-home,#view-adminhome)::after,
+body.rglow #view-home .radiance::before,body.rglow #view-home .radiance::after{display:none!important}
+body.rglow :is(#ins-home,#view-adminhome){background:transparent!important}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
 body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
@@ -15724,7 +15734,9 @@ brand +
     if (!h || !c) return;
     var ph = document.createComment('rg'); h.parentNode.replaceChild(ph, h); c.parentNode.replaceChild(h, c); ph.parentNode.replaceChild(c, ph);
   }
-  (function(){ var _sh = show; show = function(v){ _sh(v); rgMotion(); }; })();
+  (function(){ var _sh = show; show = function(v){ _sh(v); rgMotion();
+    /* a home that was hidden at load has a zero-size canvas: let the renderer measure it once it shows */
+    [60, 360].forEach(function(ms){ setTimeout(function(){ if (window.RadianceLanguageRenderer) window.RadianceLanguageRenderer.refresh(); }, ms); }); }; })();
   setTimeout(rgMotion, 0);
   /* 1 · empty prompt → the box wiggles instead of sending */
   document.addEventListener('submit', function(e){
