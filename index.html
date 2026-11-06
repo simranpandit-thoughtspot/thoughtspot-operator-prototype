@@ -894,7 +894,7 @@ body.answer .topbar{display:none}
 .conn-card b{display:block;font-size:14px;font-weight:550;line-height:20px}
 .conn-card span{font-size:12px;color:var(--content-tertiary);line-height:18px}
 
-/* 8 · Feature management */
+/* 8 · Feature delegation */
 .fm-group{border:1px solid var(--border-subtle);border-radius:var(--r-12);background:var(--bg-sunken);overflow:hidden;margin-bottom:var(--s-d)}
 .fm-group-h{display:flex;align-items:center;gap:10px;padding:var(--s-d) var(--s-f);font-size:16px;font-weight:550;letter-spacing:-.2px;line-height:24px}
 .fm-card{margin:0 var(--s-d) var(--s-d);background:var(--bg-raised);border:1px solid var(--border-subtle);border-radius:var(--r-8)}
@@ -5451,33 +5451,40 @@ body.proto #view-adminhome .adm-cards{width:min(745px,100%);margin:0 auto;displa
 /* same card height as Insights' Recents and Watchlist (381px at 1440); the content spreads to fill it */
 #view-adminhome .adm-cards>.icard{display:flex;flex-direction:column;min-height:381px}
 #view-adminhome .adm-cards>.icard>.icard-b{flex:1}
-#view-adminhome #ah-overview{display:flex;flex-direction:column;gap:8px;padding:12px 16px 16px}
-#view-adminhome #ah-overview .ah-stat{flex:1}
-#view-adminhome #ah-tasks{display:flex;flex-direction:column}
-#view-adminhome #ah-tasks .ah-task{flex:1}
-#view-adminhome .ah-stat{position:relative;display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-base)}
-#view-adminhome .ah-stat .l{flex:1;min-width:0}
-#view-adminhome .ah-stat .t{font-size:14px;line-height:20px;color:var(--content-secondary)}
-#view-adminhome .ah-stat .m{font-size:12px;line-height:18px;color:var(--content-tertiary)}
-#view-adminhome .ah-stat .v{font-size:20px;line-height:28px;font-weight:550;letter-spacing:-.3px;color:var(--content-primary);transition:opacity .12s}
-/* hover: the number gives way to the action for that tile */
-#view-adminhome .ah-add{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;background:var(--bg-secondary-action);color:var(--content-primary);font-size:14px;line-height:20px;opacity:0;pointer-events:none;transition:opacity .12s}
-#view-adminhome .ah-add:hover{background:var(--bg-ghost-hover)}
-#view-adminhome .ah-stat:hover .ah-add,#view-adminhome .ah-stat:focus-within .ah-add{opacity:1;pointer-events:auto}
-#view-adminhome .ah-stat:hover .v,#view-adminhome .ah-stat:focus-within .v{opacity:0}
-#view-adminhome #ah-tasks{padding:4px 16px}
-#view-adminhome .ah-task{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border-subtle)}
-#view-adminhome .ah-task:last-child{border-bottom:none}
-#view-adminhome .ah-task .l{flex:1;min-width:0}
-#view-adminhome .ah-task .t{font-size:14px;line-height:20px;color:var(--content-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#view-adminhome .ah-task .m{font-size:12px;line-height:18px;color:var(--content-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#view-adminhome .ah-task .ctxwrap{position:relative;flex:0 0 auto}
+/* Overview and Tasks share one row: label + description, value or nothing, and a three-dot that slides in on hover */
+#view-adminhome #ah-overview,#view-adminhome #ah-tasks{display:flex;flex-direction:column;padding:6px 16px 10px}
+#view-adminhome .ah-row{flex:1;position:relative;display:flex;align-items:center;gap:12px;min-height:0;padding:0}
+#view-adminhome .ah-row .l{flex:1;min-width:0}
+#view-adminhome .ah-row .t{font-size:14px;line-height:20px;color:var(--content-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-adminhome .ah-row .m{font-size:14px;line-height:20px;color:var(--content-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-adminhome .ah-stat .v{flex:0 0 auto;font-size:18px;line-height:24px;font-weight:550;letter-spacing:-.2px;color:var(--content-primary);transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+#view-adminhome .ah-dots{position:relative;flex:0 0 auto;width:0;opacity:0;transform:translateX(6px);overflow:visible;transition:width .18s cubic-bezier(.2,.8,.2,1),opacity .15s,transform .18s cubic-bezier(.2,.8,.2,1)}
+#view-adminhome .ah-row:hover .ah-dots,#view-adminhome .ah-row:focus-within .ah-dots{width:28px;opacity:1;transform:none}
 #view-adminhome .ah-more{display:grid;place-items:center;width:28px;height:28px;border-radius:14px;color:var(--content-secondary)}
 #view-adminhome .ah-more:hover,#view-adminhome .ah-more[aria-expanded="true"]{background:var(--bg-ghost-hover);color:var(--content-primary)}
-#view-adminhome .ah-task .ctxmenu{min-width:220px}
-#view-adminhome .ah-task:last-child .ctxmenu{top:auto;bottom:calc(100% + 4px)}
+#view-adminhome .ah-row .ctxmenu{min-width:220px}
+#view-adminhome .ah-row:last-child .ctxmenu{top:auto;bottom:calc(100% + 4px)}
 /* the Operator is already the front door on these homes: no floating button */
 body:has(#view-ins:not([hidden]) #ins-home:not([hidden])) .opfab,body:has(#view-adminhome:not([hidden])) .opfab{display:none!important}
+/* Admin nav and Feature delegation: All Orgs and Primary Org each have their own */
+body.proto:not(.allorg) #nav-admin .only-all,body.proto.allorg #nav-admin .only-pri{display:none!important}
+body.proto:not(.allorg) #view-feature .px-wrap:not(.fd-pri),body.proto.allorg #view-feature .fd-pri{display:none!important}
+#view-feature .fd-pri{padding-top:24px}
+#view-feature .fd-head h1{margin:0;font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.4px;color:var(--content-primary)}
+#view-feature .fd-head p{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--content-secondary)}
+#view-feature .fd-body{max-width:870px;margin:40px auto 0}
+#view-feature .fd-search{width:300px;margin-bottom:16px}
+#view-feature .fd-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:14px;color:var(--content-primary)}
+#view-feature .fd-list{display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:12px;background:var(--bg-sunken);border:1px solid var(--border-subtle)}
+#view-feature .fd-card{display:flex;align-items:flex-start;gap:24px;padding:16px;border-radius:8px;background:var(--bg-raised);border:1px solid var(--border-subtle)}
+#view-feature .fd-card[hidden]{display:none}
+#view-feature .fd-tx{flex:1;min-width:0}
+#view-feature .fd-card h3{margin:0;font-size:16px;line-height:24px;font-weight:400;color:var(--content-primary)}
+#view-feature .fd-card p{margin:4px 0 0;font-size:14px;line-height:20px;color:var(--content-secondary)}
+#view-feature .fd-tg{position:relative;flex:0 0 auto;width:28px;height:16px;margin-top:4px;border-radius:8px;background:var(--border-bold);transition:background .15s}
+#view-feature .fd-tg i{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--bg-raised);transition:transform .15s}
+#view-feature .fd-tg[aria-checked="true"]{background:var(--content-brand)}
+#view-feature .fd-tg[aria-checked="true"] i{transform:translateX(12px)}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
 body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
@@ -5520,7 +5527,7 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
       </optgroup>
       <optgroup label="Admin">
         <option value="adminhome">Admin home (Unified)</option>
-        <option value="feature">8 · Feature management</option>
+        <option value="feature">8 · Feature delegation</option>
         <option value="orgs">9 · Org management</option>
         <option value="users">10 · Users management</option>
       </optgroup>
@@ -5797,33 +5804,53 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 
       <!-- Admin nav -->
       <div class="nav-scroll" id="nav-admin" hidden>
-        <div class="nav-title"><h2>Admin</h2></div>
+        <div class="nav-title"><h2 class="only-all">Admin</h2><h2 class="only-pri">Admin settings</h2></div>
         <div class="orgtoggle" role="group" aria-label="Org scope">
           <button type="button">All Orgs</button>
           <button type="button" class="on">Primary Org</button>
         </div>
         <button class="nav-item" type="button" data-admin="adminhome">Home</button>
-        <button class="nav-item" type="button" data-admin="orgs">Org management</button>
-        <button class="nav-item" type="button" data-admin="users">Users management</button>
-        <div class="nav-group">
+        <button class="nav-item only-all" type="button" data-admin="orgs">Org management</button>
+        <button class="nav-item only-all" type="button" data-admin="users">Users management</button>
+        <button class="nav-item only-pri" type="button" data-admin="users">User management</button>
+        <div class="nav-group only-all">
           <div class="nav-group-label">Management</div>
-          <button class="nav-item" type="button" data-admin="feature">Feature management</button>
+          <button class="nav-item" type="button" data-admin="feature">Feature delegation</button>
           <button class="nav-item" type="button">Variables</button>
           <button class="nav-item" type="button">Version control</button>
         </div>
-        <div class="nav-group">
+        <div class="nav-group only-all">
           <div class="nav-group-label">Configuration</div>
           <button class="nav-item" type="button">Application settings</button>
           <button class="nav-item" type="button">Customisation</button>
           <button class="nav-item" type="button">AI settings</button>
           <button class="nav-item" type="button">Search &amp; Spot IQ</button>
         </div>
-        <div class="nav-group">
+        <div class="nav-group only-all">
           <div class="nav-group-label">Monitor</div>
           <button class="nav-item" type="button">Usage &amp; adoption</button>
           <button class="nav-item" type="button">Performance tracking</button>
           <button class="nav-item" type="button">AI &amp; BI stats</button>
           <button class="nav-item" type="button">Billing query stats</button>
+        </div>
+        <div class="nav-group only-pri">
+          <div class="nav-group-label">Management</div>
+          <button class="nav-item" type="button" data-admin="feature">Feature delegation</button>
+          <button class="nav-item" type="button">Variables</button>
+          <button class="nav-item" type="button">Version control</button>
+        </div>
+        <div class="nav-group only-pri">
+          <div class="nav-group-label">Configuration</div>
+          <button class="nav-item" type="button">Application settings</button>
+          <button class="nav-item" type="button">Customization</button>
+          <button class="nav-item" type="button">AI settings</button>
+          <button class="nav-item" type="button">Search &amp; SpotIQ</button>
+          <button class="nav-item" type="button">Onboarding</button>
+        </div>
+        <div class="nav-group only-pri">
+          <div class="nav-group-label">Monitor</div>
+          <button class="nav-item" type="button">Scheduled maintenance</button>
+          <button class="nav-item" type="button">Terms</button>
         </div>
         <div class="nav-group uni-chats"><div class="nav-group-label">My chats</div><div class="uni-chats-list"></div></div>
       </div>
@@ -6336,7 +6363,7 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
         <div class="pg-page">
           <div class="px-wrap">
             <div class="px-head">
-              <h1>Feature management</h1>
+              <h1>Feature delegation</h1>
               <nav class="px-tabs"><button type="button" class="on">General access</button><button type="button">Early access</button></nav>
             </div>
             <div class="px-tools">
@@ -6355,6 +6382,13 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
                 <div class="fm-row">No org selected <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.2v4M8 5.1v.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="grow"></span><a href="#" onclick="return false">Allocate orgs</a></div></div>
               <div class="fm-card"><h3>Enable Connectors/MCP</h3>
                 <div class="fm-row">Solidaris , SymphonyAI , Conagra Brands <a href="#" onclick="return false">+2 more</a><span class="grow"></span><a href="#" onclick="return false">Edit orgs</a></div></div>
+            </div>
+          </div>
+          <div class="px-wrap fd-pri">
+            <div class="fd-head"><h1>Feature delegation</h1><p>Manage "Early access features" for the org. For other features, contact the Administrator.</p></div>
+            <div class="fd-body">
+              <span class="px-search fd-search"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="m10.6 10.6 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="text" placeholder="Search" aria-label="Search features"></span>
+              <div class="fd-list"><div class="fd-card"><div class="fd-tx"><h3>OAuth Redirection Behavior</h3><p>When enabled, the OAuth authentication URL opens in the current page vs a new tab/popup, applicable to liveboards, search &amp; answers</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="OAuth Redirection Behavior"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>Automatic OAuth Sign-In Trigger</h3><p>When enabled, Automatically triggers the 'Sign in with OAuth' flow when the connection authentication has expired, applicable to liveboards, search &amp; answers</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="Automatic OAuth Sign-In Trigger"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>New Model Share</h3><p>Enable access to new model share experience.</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="New Model Share"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>External semantic integrations</h3><p>Enable to connect Snowflake and Databricks semantic integrations for data modeling.</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="External semantic integrations"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>dbt MetricFlow integration</h3><p>Enable to connect dbt MetricFlow for data modeling</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="dbt MetricFlow integration"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>Iomete connector</h3><p>Enable to access the Iomete Embrace connector to analyze data directly from your Iomete database.</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="Iomete connector"><i></i></button></div><div class="fd-card"><div class="fd-tx"><h3>Contextual filtering in Liveboards</h3><p>Filter a whole Liveboard from a selection in any visualization.</p></div><button type="button" class="fd-tg" role="switch" aria-checked="true" aria-label="Contextual filtering in Liveboards"><i></i></button></div></div>
             </div>
           </div>
         </div>
@@ -12430,7 +12464,7 @@ brand +
     answer:   {l:'Answer',             s:['Embed this Answer in React','Ask Spotter to break this down by store','Pin it and embed the Liveboard']},
     data:     {l:'Data workspace',     s:['Embed Spotter on this model','Ask Spotter for total sales by month on this model','Which embeds use this model?']},
     profile:  {l:'My Profile',         s:['Which orgs am I an admin of?','Point share emails at links.customer.com','Set my embed defaults']},
-    feature:  {l:'Feature management', s:['Turn Spotter on for Conagra Brands','Add a new user to my org','Set up cookieless trusted auth']},
+    feature:  {l:'Feature delegation', s:['Turn Spotter on for Conagra Brands','Add a new user to my org','Set up cookieless trusted auth']},
     orgs:     {l:'Org management',     s:['Add a new user to my org','Set up cookieless trusted auth','Add app.customer.com to the allowlist for Nina Enterprises']},
     users:    {l:'Users management',   s:['Add a new user to my org','Set up cookieless trusted auth','Who has developer privilege?']},
     agent:    {l:'ThoughtSpot Operator',         s:['Embed the NA Commercial liveboard in React','Add app.customer.com to the allowlist','Find and run the right API']},
@@ -12563,7 +12597,7 @@ brand +
       {t:'You hold <b>can manage data</b> in this org'}
     ] : [
       {t:'Resolved the cluster — <b>champagne-master-aws</b>, 500 orgs'},
-      {t:/sso|okta|entra/.test(q) ? 'Read the authentication settings — SAML off, local accounts on' : /spotter|feature|turn on/.test(q) ? 'Read Feature management — Spotter on Liveboard is on for <b>10 orgs</b>, 3 of them Sales' : 'Read Org management — no <b>EMEA</b> org yet; 41 users tagged EMEA'},
+      {t:/sso|okta|entra/.test(q) ? 'Read the authentication settings — SAML off, local accounts on' : /spotter|feature|turn on/.test(q) ? 'Read Feature delegation — Spotter on Liveboard is on for <b>10 orgs</b>, 3 of them Sales' : 'Read Org management — no <b>EMEA</b> org yet; 41 users tagged EMEA'},
       {t:'You hold <b>administration</b> on all orgs'}
     ];
     var plan = data
@@ -12688,7 +12722,7 @@ brand +
       {t:'Added <b>Ravi Menon</b> to the Dev group', s:'2m ago · Users management'},
       {t:'Allowed <b>app.customer.com</b> on CORS', s:'1h ago · Security settings'},
       {t:'Exported TML for <b>NA Commercial</b>', s:'Yesterday · REST API'},
-      {t:'Turned on Spotter for <b>Conagra Brands</b>', s:'Mon · Feature management'}
+      {t:'Turned on Spotter for <b>Conagra Brands</b>', s:'Mon · Feature delegation'}
     ]},
     spotline:{ l:'Happening at ThoughtSpot', items:[
       {t:'All ThoughtSpot services are <b>up</b>', s:'Status · checked a minute ago'},
@@ -16152,14 +16186,15 @@ brand +
   /* ================= Admin home: Overview and Tasks, scoped to All Orgs or Primary Org ================= */
   var AH_MORE = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="13" cy="8" r="1.4"/></svg>';
   var AH_PLUS = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  var AH_PAGES = { users:['Open Users management', function(){ goUsers(); }], orgs:['Open Org management', function(){ goOrgs(); }], feature:['Open Feature management', function(){ goFeature(); }] };
+  var AH_PAGES = { users:[ORG === 'all' ? 'Open Users management' : 'Open User management', function(){ goUsers(); }], orgs:['Open Org management', function(){ goOrgs(); }], feature:['Open Feature delegation', function(){ goFeature(); }] };
   var AH_DATA = {
     all: {
       scope:'All Orgs',
       stats:[
-        { t:'Total orgs', v:'12', m:'3 created this quarter', a:'Add org', q:'Create a new org.' },
-        { t:'Total users', v:'500', m:'Across all 12 orgs', a:'Add user', q:'Add a new user to my org.' },
-        { t:'Users on SSO', v:'412', m:'82% of users · Okta SAML', a:'Set up SSO', q:'Set up Okta SSO for this org.' }
+        { t:'Total orgs', v:'12', m:'3 created this quarter', acts:[['Add org','Create a new org.'],['Open Org management','#orgs']] },
+        { t:'Total users', v:'500', m:'Across all 12 orgs', acts:[['Add user','Add a new user to my org.'],['Open Users management','#users']] },
+        { t:'Total SSO users', v:'412', m:'82% of users', acts:[['Set up SSO for more users','Set up Okta SSO for this org.'],['Open Users management','#users']] },
+        { t:'Identity providers configured', v:'2', m:'Okta SAML · Microsoft Entra ID', acts:[['Add identity provider','Add Microsoft Entra ID as an identity provider.'],['Ask Operator','Which orgs use which identity provider?']] }
       ],
       tasks:[
         { t:'SAML certificate expires in 6 days', m:'Sign-in stops for 412 users in every org', p:'users', q:'Rotate the SAML certificate before it expires.' },
@@ -16171,9 +16206,10 @@ brand +
     primary: {
       scope:'Primary Org',
       stats:[
-        { t:'Total users', v:'38', m:'4 joined this month', a:'Add user', q:'Add a new user to my org.' },
-        { t:'Total groups', v:'12', m:'2 have no members', a:'Add group', q:'Create a new group in this org.' },
-        { t:'Roles available', v:'6', m:'4 system · 2 custom', a:'Add role', q:'Create a custom role for this org.' }
+        { t:'Total users', v:'38', m:'4 joined this month', acts:[['Add user','Add a new user to my org.'],['Open User management','#users']] },
+        { t:'Total groups', v:'12', m:'2 have no members', acts:[['Add group','Create a new group in this org.'],['Ask Operator','Which groups in this org have no members?']] },
+        { t:'Total roles', v:'6', m:'4 system · 2 custom', acts:[['Add role','Create a custom role for this org.'],['Ask Operator','Which roles does this org use, and who holds them?']] },
+        { t:'Features delegated', v:'7', m:'Early access features on for this org', acts:[['Open Feature delegation','#feature'],['Ask Operator','Which early access features are on for this org?']] }
       ],
       tasks:[
         { t:'3 sign-up requests waiting for approval', m:'From SAML sign-in · oldest is 2 days old', p:'users', q:'Show me the users waiting for approval in this org.' },
@@ -16191,19 +16227,33 @@ brand +
     if (!ov || !tk) return;
     sc.textContent = d.scope;
     ov.innerHTML = d.stats.map(function(x, n){
-      return '<div class="ah-stat"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="v">' + x.v + '</span>' +
-        '<button type="button" class="ah-add" data-ahadd="' + n + '">' + AH_PLUS + x.a + '</button></div>';
+      return '<div class="ah-row ah-stat"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="v">' + x.v + '</span>' +
+        '<span class="ctxwrap ah-dots"><button type="button" class="ah-more" aria-label="Actions for ' + x.t + '" aria-haspopup="menu" aria-expanded="false" data-ahsm="' + n + '">' + AH_MORE + '</button></span></div>';
     }).join('');
     tk.innerHTML = d.tasks.map(function(x, n){
-      return '<div class="ah-task"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span>' +
-        '<span class="ctxwrap"><button type="button" class="ah-more" aria-label="Actions for ' + x.t + '" aria-haspopup="menu" aria-expanded="false" data-ahmore="' + n + '">' + AH_MORE + '</button></span></div>';
+      return '<div class="ah-row ah-task"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span>' +
+        '<span class="ctxwrap ah-dots"><button type="button" class="ah-more" aria-label="Actions for ' + x.t + '" aria-haspopup="menu" aria-expanded="false" data-ahmore="' + n + '">' + AH_MORE + '</button></span></div>';
     }).join('');
     ct.textContent = d.tasks.length;
   }
-  function ahCloseMenus(){ [].forEach.call(document.querySelectorAll('#ah-tasks .ctxmenu'), function(m){ m.remove(); }); [].forEach.call(document.querySelectorAll('#ah-tasks [aria-expanded="true"]'), function(b){ b.setAttribute('aria-expanded', 'false'); }); }
+  function ahCloseMenus(){ [].forEach.call(document.querySelectorAll('#view-adminhome .adm-cards .ctxmenu'), function(m){ m.remove(); }); [].forEach.call(document.querySelectorAll('#view-adminhome .adm-cards [aria-expanded="true"]'), function(b){ b.setAttribute('aria-expanded', 'false'); }); }
+  var AH_GO = { orgs:function(){ goOrgs(); }, users:function(){ goUsers(); }, feature:function(){ goFeature(); } };
   document.getElementById('ah-overview').addEventListener('click', function(e){
-    var b = e.target.closest('[data-ahadd]'); if (!b) return;
-    ahAsk(ahScope().stats[parseInt(b.dataset.ahadd, 10)].q);
+    var it = e.target.closest('[data-ahact]');
+    if (it){
+      var x = ahScope().stats[parseInt(it.dataset.ahstat, 10)].acts[parseInt(it.dataset.ahact, 10)];
+      ahCloseMenus();
+      if (x[1].charAt(0) === '#') AH_GO[x[1].slice(1)](); else ahAsk(x[1]);
+      return;
+    }
+    var b = e.target.closest('[data-ahsm]'); if (!b) return;
+    e.stopPropagation();
+    var open = b.getAttribute('aria-expanded') === 'true';
+    ahCloseMenus(); if (open) return;
+    var n = b.dataset.ahsm, st = ahScope().stats[parseInt(n, 10)];
+    var m = document.createElement('div'); m.className = 'ctxmenu'; m.setAttribute('role', 'menu');
+    m.innerHTML = st.acts.map(function(x, i){ return '<button type="button" role="menuitem" data-ahstat="' + n + '" data-ahact="' + i + '">' + x[0] + '</button>'; }).join('');
+    b.parentNode.appendChild(m); b.setAttribute('aria-expanded', 'true');
   });
   document.getElementById('ah-tasks').addEventListener('click', function(e){
     var it = e.target.closest('[data-ahgo],[data-ahask]');
@@ -16219,14 +16269,19 @@ brand +
     ahCloseMenus(); if (open) return;
     var n = b.dataset.ahmore, x = ahScope().tasks[parseInt(n, 10)];
     var m = document.createElement('div'); m.className = 'ctxmenu'; m.setAttribute('role', 'menu');
-    m.innerHTML = '<button type="button" role="menuitem" data-ahgo="' + n + '">' + AH_PAGES[x.p][0] + '</button><button type="button" role="menuitem" data-ahask="' + n + '">Ask Operator</button>';
+    m.innerHTML = '<button type="button" role="menuitem" data-ahgo="' + n + '">' + (x.p === 'users' ? (ORG === 'all' ? 'Open Users management' : 'Open User management') : AH_PAGES[x.p][0]) + '</button><button type="button" role="menuitem" data-ahask="' + n + '">Ask Operator</button>';
     b.parentNode.appendChild(m); b.setAttribute('aria-expanded', 'true');
   });
-  document.addEventListener('click', function(e){ if (!(e.target.closest && e.target.closest('#ah-tasks .ctxwrap'))) ahCloseMenus(); });
+  document.addEventListener('click', function(e){ if (!(e.target.closest && e.target.closest('#view-adminhome .adm-cards .ctxwrap'))) ahCloseMenus(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') ahCloseMenus(); });
   /* the scope toggle re-renders after setOrg has run */
   [].forEach.call(document.querySelectorAll('.orgtoggle button'), function(b){ b.addEventListener('click', function(){ setTimeout(renderAdminHome, 0); }); });
   renderAdminHome();
+  /* Feature delegation (Primary Org): toggles and search */
+  [].forEach.call(document.querySelectorAll('#view-feature .fd-tg'), function(t){ t.addEventListener('click', function(){ t.setAttribute('aria-checked', t.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); }); });
+  (function(){ var q = document.querySelector('#view-feature .fd-search input'); if (!q) return;
+    q.addEventListener('input', function(){ var v = q.value.trim().toLowerCase();
+      [].forEach.call(document.querySelectorAll('#view-feature .fd-card'), function(c){ c.hidden = v && c.textContent.toLowerCase().indexOf(v) < 0; }); }); })();
 
   /* ================= Share chat ================= */
   var SH_PEOPLE = [
