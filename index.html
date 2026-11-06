@@ -5504,15 +5504,26 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
     <span class="uclabel">Use case</span>
     <select class="ucsel" id="ucjump" aria-label="Jump to a use case" style="max-width:190px">
       <option value="" selected>Jump to a use case…</option>
-      <option value="1">1 · Embed from a description</option>
-      <option value="2">2 · Configure an object without leaving the page</option>
-      <option value="3">3 · Set up authentication</option>
-      <option value="4">4 · Custom actions</option>
-      <option value="5">5 · Match the brand without writing CSS</option>
-      <option value="6">6 · Error support — a blank frame</option>
-      <option value="7">7 · Events firing unexpectedly</option>
-      <option value="8">8 · Find and run the right API</option>
-      <option value="9">9 · Embed from the object itself</option>
+      <optgroup label="1 · Build an embed (Develop)">
+        <option value="1">Embed from a description</option>
+        <option value="9">Embed from the object itself</option>
+        <option value="2">Configure an object without leaving the page</option>
+        <option value="5">Match the brand without writing CSS</option>
+        <option value="4">Add custom actions</option>
+      </optgroup>
+      <optgroup label="2 · Secure the embed (Develop)">
+        <option value="3">Set up authentication</option>
+      </optgroup>
+      <optgroup label="3 · Fix and understand an embed (Develop)">
+        <option value="6">A blank frame</option>
+        <option value="7">Events firing unexpectedly</option>
+        <option value="8">Find and run the right API</option>
+      </optgroup>
+      <optgroup label="4 · Administer users and orgs (Admin)">
+        <option value="a1">Add a user to my org</option>
+        <option value="a2">Turn a feature on for some orgs</option>
+        <option value="a3">Review who has developer privilege</option>
+      </optgroup>
     </select>
     <span class="uclabel">Page</span>
     <select class="ucsel" id="pagesel" aria-label="Page" style="max-width:160px">
@@ -16660,7 +16671,20 @@ brand +
     };
   })();
   renderAoSec();
-  document.getElementById('ucjump').addEventListener('change', function(){ var v = this.value; this.value = ''; if (v) jumpUC(parseInt(v, 10)); });
+  /* 4 · Administer users and orgs: open Admin home, then run the request in the immersive chat */
+  var ADMIN_UC = { a1:{ q:'Add a new user to my org.' }, a2:{ q:'Turn on Spotter for the Sales orgs.', org:'all' }, a3:{ q:'Who has developer privilege?' } };
+  document.getElementById('ucjump').addEventListener('change', function(){
+    var v = this.value; this.value = '';
+    if (!v) return;
+    if (ADMIN_UC[v]){
+      var x = ADMIN_UC[v];
+      if (x.org && ORG !== x.org) setOrg(x.org);
+      goAdminHome();
+      setTimeout(function(){ adminLaunch(x.q); }, 300);
+      return;
+    }
+    jumpUC(parseInt(v, 10));
+  });
   syncEPView();
   lockSwitchWidth();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockSwitchWidth);
