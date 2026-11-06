@@ -5442,6 +5442,31 @@ body.proto #view-adminhome .xh-body{margin-top:0!important;padding-top:24px!impo
 body.proto #view-datahome{padding-top:0!important}
 body.proto #view-datahome .xh-hero{min-height:calc((100vh - 60px) * .4);display:flex;flex-direction:column;justify-content:flex-end;padding-top:0!important;padding-bottom:24px!important;margin-top:0!important;box-sizing:border-box}
 body.proto #view-datahome .xh-body{margin-top:0!important;padding-top:24px!important}
+
+/* Admin home bottom: Overview + Tasks, laid out like Insights' Recents + Watchlist */
+body.proto #view-adminhome .adm-cards{width:min(745px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;row-gap:24px;align-content:start;padding:0}
+@media (max-width:900px){ body.proto #view-adminhome .adm-cards{grid-template-columns:1fr} }
+#view-adminhome .ah-scope,#view-adminhome .ah-count{font-size:12px;line-height:18px;font-weight:400;color:var(--content-secondary)}
+#view-adminhome .ah-count{padding:0 8px;border-radius:999px;background:var(--bg-sunken);color:var(--content-primary)}
+#view-adminhome #ah-overview{display:flex;flex-direction:column;gap:8px;padding:16px}
+#view-adminhome .ah-stat{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-base);text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+#view-adminhome .ah-stat:hover{border-color:var(--border-bold);background:var(--bg-raised)}
+#view-adminhome .ah-stat .l{flex:1;min-width:0}
+#view-adminhome .ah-stat .t{font-size:14px;line-height:20px;color:var(--content-secondary)}
+#view-adminhome .ah-stat .m{font-size:12px;line-height:18px;color:var(--content-tertiary)}
+#view-adminhome .ah-stat .v{font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.4px;color:var(--content-primary)}
+#view-adminhome .ah-task{display:flex;align-items:flex-start;gap:12px;width:100%;padding:12px 0;text-align:left;border-bottom:1px solid var(--border-subtle);cursor:pointer}
+#view-adminhome .ah-task:last-child{border-bottom:none}
+#view-adminhome .ah-task .ic{flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:var(--bg-sunken);color:var(--content-secondary)}
+#view-adminhome .ah-task .ic.hi{background:color-mix(in srgb,var(--content-failure,#C8231C) 12%,transparent);color:var(--content-failure,#C8231C)}
+#view-adminhome .ah-task .l{flex:1;min-width:0}
+#view-adminhome .ah-task .t{font-size:14px;line-height:20px;color:var(--content-primary)}
+#view-adminhome .ah-task .m{font-size:12px;line-height:18px;color:var(--content-secondary)}
+#view-adminhome .ah-task:hover .t{color:var(--content-brand)}
+#view-adminhome .ah-task .go{flex:0 0 auto;align-self:center;font-size:12px;line-height:18px;color:var(--content-brand);opacity:0;transition:opacity .12s}
+#view-adminhome .ah-task:hover .go,#view-adminhome .ah-task:focus-visible .go{opacity:1}
+/* the Operator is already the front door on these homes: no floating button */
+body:has(#view-ins:not([hidden]) #ins-home:not([hidden])) .opfab,body:has(#view-adminhome:not([hidden])) .opfab{display:none!important}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
 body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
@@ -6205,47 +6230,17 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
         </div>
         <div class="xh-body">
           <div class="onb-mount"></div>
-          <div class="adm">
-            <section class="adm-sec">
-              <div class="adm-h"><div><h2>Needs your attention</h2><p>3 changes are waiting for your approval and 3 issues need a look. SpotterX holds every change until you say so.</p></div><button class="ag-btn" type="button" data-xq="Approve all three pending changes">Approve all</button></div>
-              <div class="adm-card">
-                <div class="adm-grp"><div class="adm-lab">Waiting for approval</div><div class="ag-row"><div class="ag-t"><b>Invite 41 EMEA users to the new org</b><span>SpotterX · groups and privileges ready · invites held</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Approve the EMEA invites" data-act="approve">Approve</button><button type="button" role="menuitem" data-xq="Show me the EMEA invite diff">Review the diff</button><button type="button" role="menuitem" data-act="reject">Reject</button></div></span></div>
-<div class="ag-row"><div class="ag-t"><b>Turn on Spotter on homepage for 3 Sales orgs</b><span>SpotterX · scoped to Sales NA, EMEA, APAC</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Approve Spotter on homepage for the Sales orgs" data-act="approve">Approve</button><button type="button" role="menuitem" data-xq="Show me the Spotter diff for the Sales orgs">Review the diff</button><button type="button" role="menuitem" data-act="reject">Reject</button></div></span></div>
-<div class="ag-row"><div class="ag-t"><b>Add app.customer.com to the CORS allowlist</b><span>Requested by damian.waldron · 2 hours ago</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Approve the CORS allowlist change" data-act="approve">Approve</button><button type="button" role="menuitem" data-xq="Review the CORS allowlist change">Review the diff</button><button type="button" role="menuitem" data-act="reject">Reject</button></div></span></div></div>
-                <div class="adm-grp"><div class="adm-lab">Issues</div><div class="ag-row"><div class="ag-t"><b>SAML certificate expires in 6 days</b><span>Okta · 1,204 users sign in with SSO</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Renew the SAML certificate">Fix with SpotterX</button><button type="button" role="menuitem" data-xq="Show me the SAML certificate details">Review</button><button type="button" role="menuitem" data-act="dismiss">Dismiss</button></div></span></div>
-<div class="ag-row"><div class="ag-t"><b>2 orgs have Spotter on but no model access</b><span>Nina Enterprises, Arjun Industries · users will see an empty Spotter</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Give Nina Enterprises and Arjun Industries access to their models">Fix with SpotterX</button><button type="button" role="menuitem" data-xq="Show me which models Nina Enterprises and Arjun Industries are missing">Review</button><button type="button" role="menuitem" data-act="dismiss">Dismiss</button></div></span></div>
-<div class="ag-row"><div class="ag-t"><b>Group conflict: 7 users in both Viewers and Admins</b><span>Admins wins · review if that is intended</span></div><span class="ag-mw"><button type="button" class="ag-menu" aria-label="More" aria-haspopup="menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg></button><div class="ag-pop" role="menu" hidden><button type="button" role="menuitem" data-xq="Show the 7 users in both Viewers and Admins">Review</button><button type="button" role="menuitem" data-xq="Remove the 7 admins from the Viewers group">Fix with SpotterX</button><button type="button" role="menuitem" data-act="dismiss">Dismiss</button></div></span></div></div>
-              </div>
-            </section>
-            <section class="adm-two">
-              <div class="adm-card adm-org">
-                <div class="adm-ch"><h3>Your org</h3><button class="linkbtn" type="button" data-goto-admin="orgs">Org management</button></div>
-                <div class="adm-stats"><div><b>500</b><span>Orgs</span></div><div><b>2,318</b><span>Users</span></div><div><b>64</b><span>Groups</span></div><div><b>1,204</b><span>On SSO</span></div></div>
-                <div class="adm-lab">Features on</div>
-                <div class="ag-feats">
-                    <span class="ag-feat on">Spotter on Liveboard <b>10 orgs</b></span>
-                    <span class="ag-feat on">Spotter on homepage <b>7 orgs</b></span>
-                    <span class="ag-feat on">Connectors / MCP <b>5 orgs</b></span>
-                    <span class="ag-feat">Auto-mode <b>off</b></span>
-                    <span class="ag-feat on">Trusted auth <b>all orgs</b></span>
-                    <span class="ag-feat">SAML SSO <b>expiring</b></span>
-                  </div>
-                
-                <button class="linkbtn adm-more" type="button" data-admin-go="feature">Feature management</button>
-              </div>
-              <div class="adm-card">
-                <div class="adm-ch"><h3>Recently changed</h3><button class="linkbtn" type="button" data-goto-admin="users">Users management</button></div>
-                
-                <div class="xh-row"><div><div class="wl-t">Spotter on Liveboard turned on for 5 orgs</div><div class="wl-m">By SpotterX · approved by you · 2 hours ago</div></div></div>
-                <div class="xh-row"><div><div class="wl-t">3 users added to Sales Viewers</div><div class="wl-m">By SpotterX · yesterday</div></div></div>
-                <div class="xh-row"><div><div class="wl-t">CORS allowlist: app.customer.com</div><div class="wl-m">By you · 3 days ago</div></div></div>
-                <p class="xh-note">Every change SpotterX makes is logged.</p>
-              
-              </div>
-            </section>
+          <!-- like Insights home: two cards. Both change with the All Orgs / Primary Org scope. -->
+          <div class="ins-cards adm-cards">
+            <div class="icard">
+              <div class="icard-h">Overview<span class="grow"></span><span class="ah-scope" id="ah-scope">Primary Org</span></div>
+              <div class="icard-b" id="ah-overview"></div>
+            </div>
+            <div class="icard">
+              <div class="icard-h">Tasks<span class="grow"></span><span class="ah-count" id="ah-count"></span></div>
+              <div class="icard-b" id="ah-tasks"></div>
+            </div>
           </div>
-          <h2 class="xh-h2">What SpotterX can do here</h2>
-          <div class="xh-can"><button type="button" class="xh-cancard" data-xq="Create an org and invite your team"><b>Create an org and invite your team</b><span>Users, groups and privileges in one approval. Invites go out when you say so.</span></button><button type="button" class="xh-cancard" data-xq="Set up SSO"><b>Set up SSO</b><span>Okta, Entra, Google — the metadata exchange, with the diff shown first.</span></button><button type="button" class="xh-cancard" data-xq="Turn features on per org"><b>Turn features on per org</b><span>Spotter, connectors, auto-mode — scoped to the orgs you pick.</span></button></div>
         </div>
       </section>
       <section id="view-data" hidden>
@@ -16143,6 +16138,71 @@ brand +
   document.addEventListener('click', function(e){ if (ahChip && !(e.target.closest && (e.target.closest('.sp-panel') || e.target.closest('#ahchips')))) ahClose(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && ahChip){ var c = ahChip; ahClose(); c.focus(); } });
   (function(){ var _sh = show; show = function(v){ ahClose(); _sh(v); }; })();
+  /* ================= Admin home: Overview and Tasks, scoped to All Orgs or Primary Org ================= */
+  var AH_I = {
+    warn:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5 14 13H2L8 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    user:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 13.5c.5-2.4 2.5-3.8 5-3.8s4.5 1.4 5 3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    key:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="5.5" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 8h6M12 8v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    gear:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.8v2M8 12.2v2M14.2 8h-2M3.8 8h-2M12.4 3.6l-1.4 1.4M5 11l-1.4 1.4M12.4 12.4 11 11M5 5 3.6 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+    chart:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 13.5h12M3.5 10.5l3-3.5 2.5 2 3.5-4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  var AH_DATA = {
+    all: {
+      scope:'All Orgs',
+      stats:[
+        { t:'Total orgs', v:'12', m:'3 created this quarter', go:'orgs' },
+        { t:'Total users', v:'500', m:'Across all 12 orgs', go:'users' },
+        { t:'Users on SSO', v:'412', m:'82% of users · Okta SAML', go:'users' }
+      ],
+      tasks:[
+        { i:'key', hi:true, t:'SAML certificate expires in 6 days', m:'Okta · sign-in stops for 412 users in every org', q:'Rotate the SAML certificate before it expires.' },
+        { i:'user', t:'Approve 41 invites to the new EMEA org', m:'Waiting since yesterday · groups and privileges ready', q:'Invite 41 EMEA users to the new org.' },
+        { i:'gear', t:'2 orgs have Spotter on without model access', m:'Sales EMEA, Partner portal · users see an error', q:'Fix Spotter model access for the Sales EMEA and Partner portal orgs.' },
+        { i:'chart', t:'3 orgs are over their query budget', m:'Billing query stats · this month', q:'Which orgs are over their query budget this month, and why?' },
+        { i:'warn', t:'Cluster upgrade to 10.9 is available', m:'Release notes and a test plan are ready', q:'What changes for us in the 10.9 upgrade?' }
+      ]
+    },
+    primary: {
+      scope:'Primary Org',
+      stats:[
+        { t:'Total users', v:'38', m:'4 joined this month', go:'users' },
+        { t:'Total groups', v:'12', m:'2 have no members', go:'users' },
+        { t:'Roles available', v:'6', m:'4 system · 2 custom', go:'users' }
+      ],
+      tasks:[
+        { i:'user', hi:true, t:'3 sign-up requests waiting for approval', m:'From SAML sign-in · oldest is 2 days old', q:'Show me the users waiting for approval in this org.' },
+        { i:'user', t:'2 users are not in any group', m:'They cannot see shared Liveboards yet', q:'Which users in this org are not in any group?' },
+        { i:'key', t:'Review who has Developer privilege', m:'5 users · last reviewed 90 days ago', q:'Who has developer privilege?' },
+        { i:'warn', t:'4 users have not signed in for 60 days', m:'Deactivate them or send a reminder', q:'Which users have not signed in for 60 days?' },
+        { i:'gear', t:'Trusted auth secret was never rotated', m:'Created 11 months ago', q:'Rotate the trusted authentication secret for this org.' }
+      ]
+    }
+  };
+  function renderAdminHome(){
+    var d = AH_DATA[ORG === 'all' ? 'all' : 'primary'];
+    var sc = document.getElementById('ah-scope'), ov = document.getElementById('ah-overview'), tk = document.getElementById('ah-tasks'), ct = document.getElementById('ah-count');
+    if (!ov || !tk) return;
+    sc.textContent = d.scope;
+    ov.innerHTML = d.stats.map(function(x){
+      return '<button type="button" class="ah-stat" data-ahgo="' + x.go + '"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="v">' + x.v + '</span></button>';
+    }).join('');
+    tk.innerHTML = d.tasks.map(function(x, n){
+      return '<button type="button" class="ah-task" data-aht="' + n + '"><span class="ic' + (x.hi ? ' hi' : '') + '">' + AH_I[x.i] + '</span><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="go">Ask Operator</span></button>';
+    }).join('');
+    ct.textContent = d.tasks.length;
+  }
+  document.getElementById('ah-overview').addEventListener('click', function(e){
+    var b = e.target.closest('[data-ahgo]'); if (!b) return;
+    if (b.dataset.ahgo === 'orgs') goOrgs(); else goUsers();
+  });
+  document.getElementById('ah-tasks').addEventListener('click', function(e){
+    var b = e.target.closest('[data-aht]'); if (!b) return;
+    var x = AH_DATA[ORG === 'all' ? 'all' : 'primary'].tasks[parseInt(b.dataset.aht, 10)];
+    var inp = document.getElementById('ah-form-in'); inp.value = x.q; document.getElementById('ah-form').requestSubmit();
+  });
+  /* the scope toggle re-renders after setOrg has run */
+  [].forEach.call(document.querySelectorAll('.orgtoggle button'), function(b){ b.addEventListener('click', function(){ setTimeout(renderAdminHome, 0); }); });
+  renderAdminHome();
 
   /* ================= Share chat ================= */
   var SH_PEOPLE = [
