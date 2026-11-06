@@ -5304,15 +5304,23 @@ body.rglow.proto .oprail:not(.inlayout) #rg-rail{display:block!important;positio
 body.rglow.proto .oprail:not(.inlayout) #rg-rail.rg-out{opacity:0!important}
 body.proto .oprail:not(.inlayout) .or-in::before,
 body.proto .oprail:not(.inlayout) .or-in::after{display:none!important}
-body.proto .oprail #or-dd{font-weight:400;letter-spacing:.084px;gap:4px;padding:0}
-body.proto .oprail #or-dd .or-dd-chev{width:12px;height:12px;margin:0 10px}
+/* Pane / Header (491:496): 56px, padding 0 12 0 16, title 14/20 regular + 32px chevron-down button; history and
+   collapse (») as 32px icon buttons, gap 8. Icons are the Radiant glyphs from the Figma component. */
+body.proto .oprail .or-head{height:56px;padding:0 12px 0 16px;gap:8px}
+body.proto .oprail #or-dd{display:inline-flex;align-items:center;gap:0;height:32px;padding:0;border-radius:0;background:transparent!important;font-size:14px;line-height:20px;font-weight:400;letter-spacing:0;color:var(--content-primary)}
+body.proto .oprail #or-dd .or-dd-ib{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:16px;transition:background .12s}
+body.proto .oprail #or-dd:hover .or-dd-ib,body.proto .oprail #or-dd[aria-expanded="true"] .or-dd-ib{background:var(--bg-ghost-hover)}
+body.proto .oprail #or-dd .or-dd-chev{width:16px;height:16px;margin:0;transform:none}
+body.proto .oprail .or-head .iconbtn{width:32px;height:32px;padding:0;border-radius:16px;color:var(--content-primary)}
+body.proto .oprail .or-head .iconbtn svg{width:16px;height:16px}
+body.proto .oprail .or-head .or-histwrap{margin-right:0}
 /* greeting: centred, both lines Title 24/32 regular, verb phrase on Content/Accent/Purple */
 body.proto .oprail #or-empty{justify-content:center}
 body.proto .oprail .or-greet{padding:0 16px;margin:0;align-items:center;text-align:center}
 body.proto .oprail .or-hero2{display:flex;flex-direction:column;align-items:center;width:100%}
-body.proto .oprail .hh-hi{justify-content:center;margin:0;font-size:24px;line-height:32px;font-weight:400;letter-spacing:0;opacity:1;color:var(--content-primary)}
+body.proto .oprail .hh-hi{justify-content:center;margin:0;font-size:24px;line-height:32px;font-weight:550;font-family:'Geist',var(--font);letter-spacing:0;opacity:1;color:var(--content-primary)}
 body.proto .oprail .hh-wave{display:none}
-body.proto .oprail .hh-big{font-size:24px;line-height:32px;font-weight:400;letter-spacing:0;text-align:center;color:var(--content-primary)}
+body.proto .oprail .hh-big{font-size:24px;line-height:32px;font-weight:550;font-family:'Geist',var(--font);letter-spacing:0;text-align:center;color:var(--content-primary)}
 body.proto .oprail .hh-big em{font-style:normal;color:#8C62F5}
 /* suggestions sit 32px under the greeting, no label */
 body.proto .oprail #or-sugg-h{display:none}
@@ -7421,7 +7429,7 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
           <b class="or-name">ThoughtSpot Operator</b>
           <span class="mm or-mm" id="or-mm" data-mood="idle" data-ag="operator"><svg viewBox="0 0 40 40" aria-hidden="true"><circle class="mm-ring" cx="20" cy="20" r="19"/><circle class="mm-bg" cx="20" cy="20" r="18.5"/><g class="mm-mark"><g transform="translate(10.5 10.5) scale(.1)"><rect x="0" y="0" width="190" height="35"/><rect x="118" y="47" width="72" height="35"/><path d="M0 47H60C90 47 111 70 111 100V190H77V108C77 94 70 82 54 82H0Z"/></g></g><g class="mm-sl"><path d="M12.5 13.5h15a2.5 2.5 0 0 1 2.5 2.5v8a2.5 2.5 0 0 1-2.5 2.5h-8.2l-4.3 3.4v-3.4h-2.5a2.5 2.5 0 0 1-2.5-2.5v-8a2.5 2.5 0 0 1 2.5-2.5Z" fill="none" stroke-width="2" stroke-linejoin="round"/><path d="M13.6 20.2h2.8l1.7-3.1 2.6 5.8 1.8-2.7h3.9" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g><path class="mm-spark" d="M26.2 22.9Q26.596 26.104 29.8 26.5Q26.596 26.896 26.2 30.1Q25.804 26.896 22.6 26.5Q25.804 26.104 26.2 22.9Z"/><g class="mm-orbit"><circle cx="20" cy="1.4" r="2.1"/></g><g class="mm-burst"><path style="--dx:-15px;--dy:-13px" d="M20 17.4Q20.286 19.714 22.6 20Q20.286 20.286 20 22.6Q19.714 20.286 17.4 20Q19.714 19.714 20 17.4Z"/><path style="--dx:16px;--dy:-12px" d="M20 17.8Q20.242 19.758 22.2 20Q20.242 20.242 20 22.2Q19.758 20.242 17.8 20Q19.758 19.758 20 17.8Z"/><path style="--dx:-14px;--dy:14px" d="M20 18Q20.22 19.78 22 20Q20.22 20.22 20 22Q19.78 20.22 18 20Q19.78 19.78 20 18Z"/><path style="--dx:15px;--dy:15px" d="M20 17.4Q20.286 19.714 22.6 20Q20.286 20.286 20 22.6Q19.714 20.286 17.4 20Q19.714 19.714 20 17.4Z"/><path style="--dx:0px;--dy:-19px" d="M20 18.2Q20.198 19.802 21.8 20Q20.198 20.198 20 21.8Q19.802 20.198 18.2 20Q19.802 19.802 20 18.2Z"/></g></svg></span>
           <div class="or-ddwrap">
-            <button type="button" class="or-dd" id="or-dd" aria-haspopup="menu" aria-expanded="false"><span id="or-dd-name">ThoughtSpot Operator</span><svg class="or-dd-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="or-dd" id="or-dd" aria-haspopup="menu" aria-expanded="false"><span id="or-dd-name">ThoughtSpot Operator</span><span class="or-dd-ib"><svg class="or-dd-chev" width="16" height="16" viewBox="8 8 16 16" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.927 14.8508L12.1841 13.5938L16 17.4097L19.8159 13.5938L21.073 14.8508L16 19.9238L10.927 14.8508Z" fill="currentColor"/></svg></span></button>
             <div class="or-ddmenu" id="or-ddmenu" role="menu" hidden>
               <button type="button" role="menuitem" class="cm" data-cm="new">New chat</button>
               <div class="cm-sep" role="separator"></div>
@@ -7438,7 +7446,7 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
           </button>
           <div class="or-histwrap">
             <button class="iconbtn" type="button" id="or-hist-btn" aria-label="Previous chats" title="Previous chats" aria-haspopup="true" aria-expanded="false">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.6 8a5.4 5.4 0 1 0 1.6-3.85" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.4 2.6v2.9h2.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.2V8l2 1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="16" height="16" viewBox="8 8 16 16" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.0001 8C12.3845 8 9.32911 10.3987 8.33838 13.6915L10.0845 14.0657C10.898 11.5763 13.239 9.77778 16.0001 9.77778C19.4365 9.77778 22.2222 12.5636 22.2222 16C22.2222 19.4364 19.4365 22.2222 16.0001 22.2222C12.8656 22.2222 10.2723 19.9043 9.84104 16.8889H8.0491C8.49127 20.8888 11.8824 24 16.0001 24C20.4183 24 24 20.4183 24 16C24 11.5817 20.4183 8 16.0001 8Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.00015 14.2218V9.77734H9.7779V12.444H12.4445V14.2218H8.00015Z" fill="currentColor"/><path d="M15.1116 16.2503L18.3594 19.5547L19.556 18.3373L16.821 15.5547V11.5547H15.1116V16.2503Z" fill="currentColor"/></svg>
             </button>
             <div class="or-hist" id="or-hist" hidden>
               <label class="or-hist-search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.5556 6.66667C11.5556 9.36672 9.36673 11.5556 6.66667 11.5556C3.96661 11.5556 1.77778 9.36672 1.77778 6.66667C1.77778 3.96661 3.96661 1.77778 6.66667 1.77778C9.36673 1.77778 11.5556 3.96661 11.5556 6.66667ZM10.9154 11.8043C9.76183 12.7593 8.28128 13.3333 6.66667 13.3333C2.98477 13.3333 0 10.3486 0 6.66667C0 2.98477 2.98477 0 6.66667 0C10.3486 0 13.3333 2.98477 13.3333 6.66667C13.3333 8.0926 12.8857 9.41398 12.1232 10.4979L15.4793 13.854L14.2222 15.1111L10.9154 11.8043Z" fill="currentColor"/></svg><input type="text" id="or-hist-q" placeholder="Search" aria-label="Search previous chats"></label>
@@ -7450,7 +7458,7 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
             <svg class="ic-dock" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 2.5v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
           </button>
           <button class="iconbtn" type="button" id="or-close" aria-label="Collapse" title="Collapse">
-            <svg class="or-chev-r" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="or-chev-r" width="16" height="16" viewBox="8 8 16 16" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.5904 20.9428L10.3333 19.6858L14.1492 15.8699L10.3333 12.054L11.5904 10.7969L16.6634 15.8699L11.5904 20.9428Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.5904 20.9428L16.3333 19.6858L20.1492 15.8699L16.3333 12.054L17.5904 10.7969L22.6634 15.8699L17.5904 20.9428Z" fill="currentColor"/></svg>
             <svg class="or-x" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             <svg class="or-chev-d" width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.6 4 8 8.4 12.4 4M3.6 9 8 13.4 12.4 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
