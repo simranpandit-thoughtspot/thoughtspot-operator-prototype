@@ -5289,8 +5289,14 @@ body.ls .cd-code .t{color:#7FB3F2}
   body.ls .cd-path{display:none}
 }
 
-/* ---- Operator pane · Figma "Radiance background" (node 502:40699), static. Replaces the animated
-   Radiant glow, which is switched off. Welcome state only; it fades once a chat starts. ---- */
+/* ---- Operator pane · Figma Section 02 "Empty · greeting" (502:39720). The Radiance renderer is the
+   pane background (Pane / Radiance glow): Idle full wash, Working prominent, Response fades up. ---- */
+body.proto .oprail:not(.inlayout){border-left:1px solid var(--border-subtle);box-shadow:0 24px 32px rgba(25,35,49,.16),0 0 4px rgba(25,35,49,.10)}
+:root[data-theme="dark"] body.proto .oprail:not(.inlayout){box-shadow:0 24px 32px rgba(0,0,0,.4),0 0 4px rgba(0,0,0,.3)}
+body.proto .oprail .or-greet{height:auto!important;min-height:0!important;flex:none!important;justify-content:flex-start}
+/* Pane / Radiance glow: the Figma Radiance background (Light / Dark), full pane, with the Section 02 motion —
+   Idle: slow drift · Working: prominent, drifts faster · Response: 530ms after the answer it lifts 500px and
+   fades over 5000ms · New chat: back in 450ms. Replaces the canvas renderer in the overlay pane. */
 :root{--op-radiance-base:#FFFFFF;--op-radiance:
     radial-gradient(circle 678px at 718px -20px, rgba(40,140,255,0.135) 0%, rgba(40,140,255,0.0405) 52%, rgba(40,140,255,0) 100%),
     radial-gradient(circle 653px at 401px -59px, rgba(140,100,255,0.117) 0%, rgba(140,100,255,0.0351) 52%, rgba(140,100,255,0) 100%),
@@ -5319,9 +5325,44 @@ body.ls .cd-code .t{color:#7FB3F2}
     radial-gradient(circle 666px at 690px -59px, rgba(39,140,255,0.42) 0%, rgba(39,140,255,0) 100%),
     radial-gradient(circle 666px at 114px -1px, rgba(138,93,255,0.46) 0%, rgba(138,93,255,0) 100%),
     radial-gradient(circle 605px at -318px -59px, rgba(255,93,142,0.42) 0%, rgba(255,93,142,0) 100%);}
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::before{top:0;height:100%;border-radius:0;-webkit-mask-image:none;mask-image:none;animation:none;opacity:1;background-color:var(--op-radiance-base);background-image:var(--op-radiance);background-size:auto;background-repeat:no-repeat}
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::after{display:block;inset:0;width:auto;height:auto;left:0;top:0;transform:none;filter:none;animation:none;z-index:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E") 0 0/200px 200px repeat;mix-blend-mode:screen}
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden])) .or-dock{background:transparent}
+body.proto .oprail:not(.inlayout) #rg-rail{display:none!important}
+body.proto .oprail:not(.inlayout) .or-in::before,
+body.proto .oprail:not(.inlayout) .or-in:has(#or-empty[hidden])::before,
+body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::before{display:block!important;content:"";position:absolute;inset:0;top:0;height:auto;z-index:0;border-radius:0;-webkit-mask-image:none;mask-image:none;pointer-events:none;opacity:1;transform:none;background-color:var(--op-radiance-base);background-image:var(--op-radiance);background-repeat:no-repeat;background-size:116% 112%;background-position:0% 0%;animation:opDrift 26s ease-in-out infinite alternate;transition:opacity 450ms ease,transform 450ms ease,filter .6s ease}
+body.proto .oprail:not(.inlayout).wash-think .or-in::before{animation-duration:13s!important;filter:saturate(1.35) contrast(1.04)}
+body.proto .oprail:not(.inlayout).wash-out .or-in::before{opacity:0!important;transform:translateY(-500px)!important;transition:opacity 5000ms cubic-bezier(0,0,.2,1),transform 5000ms cubic-bezier(0,0,.2,1)!important}
+@keyframes opDrift{0%{background-position:0% 0%}50%{background-position:70% 30%}100%{background-position:100% 10%}}
+body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::after{display:block;content:"";position:absolute;inset:0;width:auto;height:auto;left:0;top:0;transform:none;filter:none;animation:none;z-index:0;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E") 0 0/200px 200px repeat;mix-blend-mode:screen}
+@media (prefers-reduced-motion:reduce){ body.proto .oprail:not(.inlayout) .or-in::before{animation:none!important;transition:none!important} }
+body.proto .oprail #or-dd{font-weight:400;letter-spacing:.084px;gap:4px;padding:0}
+body.proto .oprail #or-dd .or-dd-chev{width:12px;height:12px;margin:0 10px}
+/* greeting: centred, both lines Title 24/32 regular, verb phrase on Content/Accent/Purple */
+body.proto .oprail #or-empty{justify-content:center}
+body.proto .oprail .or-greet{padding:0 16px;margin:0;align-items:center;text-align:center}
+body.proto .oprail .or-hero2{display:flex;flex-direction:column;align-items:center;width:100%}
+body.proto .oprail .hh-hi{justify-content:center;margin:0;font-size:24px;line-height:32px;font-weight:400;letter-spacing:0;opacity:1;color:var(--content-primary)}
+body.proto .oprail .hh-wave{display:none}
+body.proto .oprail .hh-big{font-size:24px;line-height:32px;font-weight:400;letter-spacing:0;text-align:center;color:var(--content-primary)}
+body.proto .oprail .hh-big em{font-style:normal;color:#8C62F5}
+/* suggestions sit 32px under the greeting, no label */
+body.proto .oprail #or-sugg-h{display:none}
+body.proto .oprail #or-sugg{margin-top:32px;padding:0 16px;gap:8px}
+body.proto .oprail #or-sugg button{padding:12px 20px;border-radius:40px;background:var(--bg-sunken);border:1px solid var(--border-subtle);font-size:14px;line-height:20px;font-weight:400;color:var(--content-primary);text-align:left;box-shadow:none;transform:none}
+body.proto .oprail #or-sugg button:hover{background:var(--bg-secondary-action);border-color:var(--border-bold);box-shadow:none;transform:none}
+:root:not([data-theme="dark"]) body.proto .oprail #or-sugg button{background:#F6F8FA;border-color:#EAEDF2}
+:root:not([data-theme="dark"]) body.proto .oprail #or-sugg button:hover{background:#EEF2F8;border-color:#DDE2E8}
+:root[data-theme="dark"] body.proto .oprail #or-sugg button{background:#23272F;border-color:#2C313A}
+:root[data-theme="dark"] body.proto .oprail #or-sugg button:hover{background:#2C313A;border-color:#3D434E}
+/* dock: no fill over the wash; Pane / Prompt bar — 1px Border/Subtle, small shadow, no gradient ring */
+body.proto .oprail:not(.inlayout) .or-dock{background:transparent;padding:0 16px 16px}
+body.proto .oprail .or-dock form.prompt{padding:12px 16px 16px;gap:12px;margin:0;border:1px solid var(--border-subtle);border-radius:20px;background:var(--bg-raised);box-shadow:0 2px 4px rgba(25,35,49,.04),0 0 4px rgba(25,35,49,.10)}
+body.proto .oprail .or-dock form.prompt::before{display:none}
+body.proto .oprail .or-dock form.prompt:focus-within{border-color:var(--border-brand);box-shadow:0 2px 4px rgba(25,35,49,.04),0 0 4px rgba(25,35,49,.10)}
+body.proto .oprail .or-dock .prompt-text{padding:0;min-height:24px;font-size:16px;line-height:24px;letter-spacing:.096px}
+body.proto .oprail .or-dock .prompt-text::placeholder{color:var(--content-secondary)}
+body.proto .oprail .or-dock .prompt-actions{gap:8px}
+body.proto .oprail .or-dock form.prompt:not(.has-text) .sendbtn{opacity:.5}
+body.proto .oprail .or-dock .disclaimer{margin-top:8px;text-align:center;font-size:12px;line-height:18px;color:var(--content-secondary)}
 form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.97)}
 @media (prefers-reduced-motion:reduce){ form.prompt.is-wiggling{animation:none} }
 </style>
@@ -7439,7 +7480,7 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
             <svg class="ic-dock" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 2.5v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
           </button>
           <button class="iconbtn" type="button" id="or-close" aria-label="Collapse" title="Collapse">
-            <svg class="or-chev-r" width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 3.6 4.4 4.4L4 12.4M9 3.6 13.4 8 9 12.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="or-chev-r" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <svg class="or-x" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             <svg class="or-chev-d" width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.6 4 8 8.4 12.4 4M3.6 9 8 13.4 12.4 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -15567,7 +15608,8 @@ brand +
   function rgTheme(){ return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
   /* top-wash, dynamic-subtle at rest (speed 1.86 light / 1.72 dark); prominent while the agent thinks (1.72 / 1.58) */
   function rgApply(){
-    var th = rgTheme(), prom = false; /* reference: dynamic-subtle in every state */
+    var th = rgTheme(), prom = RG_THINK; /* Figma Section 02: prominent and faster while thinking */
+    var opr = document.getElementById('oprail'); if (opr) opr.classList.toggle('wash-think', !!prom);
     [].forEach.call(document.querySelectorAll('.rg .radiance-local'), function(el){
       el.dataset.radianceAppearance = th;
       el.dataset.radianceLayout = 'top-wash';
@@ -15585,9 +15627,10 @@ brand +
     if (currentView === 'convo') out.push(document.querySelector('#view-convo .rg-main'));
     return out.filter(Boolean);
   }
-  function rgFade(){ if (!RG) return; rgActiveRoots().forEach(function(r){ r.classList.add('rg-out'); }); }
+  function rgFade(){ if (!RG) return; rgActiveRoots().forEach(function(r){ r.classList.add('rg-out'); }); var opr = document.getElementById('oprail'); if (opr && railOpen) opr.classList.add('wash-out'); }
   function rgReset(){
     clearTimeout(rgFadeT);
+    var opr = document.getElementById('oprail'); if (opr) opr.classList.remove('wash-out');
     [].forEach.call(document.querySelectorAll('.rg.rg-out'), function(r){ r.classList.add('rg-back'); r.classList.remove('rg-out'); setTimeout(function(){ r.classList.remove('rg-back'); }, 550); });
   }
   function setGlow(on){
@@ -15654,7 +15697,7 @@ brand +
     var _rc = resetConvo;
     resetConvo = function(){ _rc(); rgReset(); };
   })();
-  setGlow(false);
+  setGlow(true);   /* always on: Figma Pane / Radiance glow — Idle, Working, Response */
 
   /* ---- the pane: chat menu under the title, previous chats beside the collapse icon ---- */
   var histBtn = document.getElementById('or-hist-btn'), histPop = document.getElementById('or-hist'), histQ = document.getElementById('or-hist-q'), histList = document.getElementById('or-hist-list');
@@ -16267,5 +16310,15 @@ brand +
   fab.addEventListener('click', function(e){ e.stopPropagation(); set(!bar.classList.contains('open')); });
   document.addEventListener('click', function(e){ if (bar.classList.contains('open') && !bar.contains(e.target) && e.target !== fab && !fab.contains(e.target)) set(false); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && bar.classList.contains('open')){ set(false); fab.focus(); } });
+})();
+</script>
+<script>
+/* Pane / Prompt bar: the send disc sits at 50% until there is text or a file */
+(function(){
+  function sync(f){ if (!f) return; var t = f.querySelector('textarea'); f.classList.toggle('has-text', !!((t && t.value.trim()) || f.querySelector('.pf-grid .fcWrap'))); }
+  document.addEventListener('input', function(e){ var f = e.target.closest && e.target.closest('form.prompt'); sync(f); }, true);
+  document.addEventListener('submit', function(e){ var f = e.target; setTimeout(function(){ sync(f); }, 0); }, true);
+  new MutationObserver(function(){ [].forEach.call(document.querySelectorAll('form.prompt'), sync); }).observe(document.body, { childList:true, subtree:true });
+  [].forEach.call(document.querySelectorAll('form.prompt'), sync);
 })();
 </script>
