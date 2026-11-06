@@ -5429,6 +5429,19 @@ body.rglow :is(#view-home,#ins-home,#view-adminhome) .fh-wash,
 body.rglow :is(#ins-home,#view-adminhome)::before,body.rglow :is(#ins-home,#view-adminhome)::after,
 body.rglow #view-home .radiance::before,body.rglow #view-home .radiance::after{display:none!important}
 body.rglow :is(#ins-home,#view-adminhome){background:transparent!important}
+/* Home layout (spec, 1440 default): the content area under the 60px top bar splits 40 / 60.
+   Top 40%: the hero (heading, prompt box, chips) is bottom-aligned with a 24px bottom margin.
+   Bottom 60%: the page's own content is top-aligned with a 24px top margin. Same on every home. */
+body.proto #view-home>.radiance:not(.fh-ground){min-height:calc((100vh - 60px) * .4)!important;padding-top:0!important;padding-bottom:24px!important;justify-content:flex-end!important;box-sizing:border-box}
+body.proto #view-home #fhbody{margin-top:0!important;padding-top:24px!important}
+body.proto :is(#ins-home,#view-adminhome) .home-wrap{margin:0 auto!important;min-height:calc((100vh - 60px) * .4);display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:24px!important;box-sizing:border-box}
+body.proto #ins-home{padding-top:0!important}
+body.proto #view-adminhome{padding-top:0!important}
+body.proto #ins-home .ins-cards{margin-top:0!important;padding-top:24px!important;column-gap:24px!important;row-gap:24px!important}
+body.proto #view-adminhome .xh-body{margin-top:0!important;padding-top:24px!important}
+body.proto #view-datahome{padding-top:0!important}
+body.proto #view-datahome .xh-hero{min-height:calc((100vh - 60px) * .4);display:flex;flex-direction:column;justify-content:flex-end;padding-top:0!important;padding-bottom:24px!important;margin-top:0!important;box-sizing:border-box}
+body.proto #view-datahome .xh-body{margin-top:0!important;padding-top:24px!important}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
 body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
