@@ -5448,23 +5448,29 @@ body.proto #view-adminhome .adm-cards{width:min(745px,100%);margin:0 auto;displa
 @media (max-width:900px){ body.proto #view-adminhome .adm-cards{grid-template-columns:1fr} }
 #view-adminhome .ah-scope,#view-adminhome .ah-count{font-size:12px;line-height:18px;font-weight:400;color:var(--content-secondary)}
 #view-adminhome .ah-count{padding:0 8px;border-radius:999px;background:var(--bg-sunken);color:var(--content-primary)}
-#view-adminhome #ah-overview{display:flex;flex-direction:column;gap:8px;padding:16px}
-#view-adminhome .ah-stat{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-base);text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
-#view-adminhome .ah-stat:hover{border-color:var(--border-bold);background:var(--bg-raised)}
+#view-adminhome .adm-cards .icard-h{padding:10px 16px;font-size:16px;line-height:24px}
+#view-adminhome #ah-overview{display:flex;flex-direction:column;gap:8px;padding:12px 16px}
+#view-adminhome .ah-stat{position:relative;display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--border-subtle);border-radius:8px;background:var(--bg-base)}
 #view-adminhome .ah-stat .l{flex:1;min-width:0}
 #view-adminhome .ah-stat .t{font-size:14px;line-height:20px;color:var(--content-secondary)}
 #view-adminhome .ah-stat .m{font-size:12px;line-height:18px;color:var(--content-tertiary)}
-#view-adminhome .ah-stat .v{font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.4px;color:var(--content-primary)}
-#view-adminhome .ah-task{display:flex;align-items:flex-start;gap:12px;width:100%;padding:12px 0;text-align:left;border-bottom:1px solid var(--border-subtle);cursor:pointer}
+#view-adminhome .ah-stat .v{font-size:20px;line-height:28px;font-weight:550;letter-spacing:-.3px;color:var(--content-primary);transition:opacity .12s}
+/* hover: the number gives way to the action for that tile */
+#view-adminhome .ah-add{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;background:var(--bg-secondary-action);color:var(--content-primary);font-size:14px;line-height:20px;opacity:0;pointer-events:none;transition:opacity .12s}
+#view-adminhome .ah-add:hover{background:var(--bg-ghost-hover)}
+#view-adminhome .ah-stat:hover .ah-add,#view-adminhome .ah-stat:focus-within .ah-add{opacity:1;pointer-events:auto}
+#view-adminhome .ah-stat:hover .v,#view-adminhome .ah-stat:focus-within .v{opacity:0}
+#view-adminhome #ah-tasks{padding:4px 16px}
+#view-adminhome .ah-task{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border-subtle)}
 #view-adminhome .ah-task:last-child{border-bottom:none}
-#view-adminhome .ah-task .ic{flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:var(--bg-sunken);color:var(--content-secondary)}
-#view-adminhome .ah-task .ic.hi{background:color-mix(in srgb,var(--content-failure,#C8231C) 12%,transparent);color:var(--content-failure,#C8231C)}
 #view-adminhome .ah-task .l{flex:1;min-width:0}
-#view-adminhome .ah-task .t{font-size:14px;line-height:20px;color:var(--content-primary)}
-#view-adminhome .ah-task .m{font-size:12px;line-height:18px;color:var(--content-secondary)}
-#view-adminhome .ah-task:hover .t{color:var(--content-brand)}
-#view-adminhome .ah-task .go{flex:0 0 auto;align-self:center;font-size:12px;line-height:18px;color:var(--content-brand);opacity:0;transition:opacity .12s}
-#view-adminhome .ah-task:hover .go,#view-adminhome .ah-task:focus-visible .go{opacity:1}
+#view-adminhome .ah-task .t{font-size:14px;line-height:20px;color:var(--content-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-adminhome .ah-task .m{font-size:12px;line-height:18px;color:var(--content-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-adminhome .ah-task .ctxwrap{position:relative;flex:0 0 auto}
+#view-adminhome .ah-more{display:grid;place-items:center;width:28px;height:28px;border-radius:14px;color:var(--content-secondary)}
+#view-adminhome .ah-more:hover,#view-adminhome .ah-more[aria-expanded="true"]{background:var(--bg-ghost-hover);color:var(--content-primary)}
+#view-adminhome .ah-task .ctxmenu{min-width:220px}
+#view-adminhome .ah-task:last-child .ctxmenu{top:auto;bottom:calc(100% + 4px)}
 /* the Operator is already the front door on these homes: no floating button */
 body:has(#view-ins:not([hidden]) #ins-home:not([hidden])) .opfab,body:has(#view-adminhome:not([hidden])) .opfab{display:none!important}
 /* Admin nav: Home on top in every experience; Org management only in All Orgs */
@@ -16139,67 +16145,80 @@ brand +
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && ahChip){ var c = ahChip; ahClose(); c.focus(); } });
   (function(){ var _sh = show; show = function(v){ ahClose(); _sh(v); }; })();
   /* ================= Admin home: Overview and Tasks, scoped to All Orgs or Primary Org ================= */
-  var AH_I = {
-    warn:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5 14 13H2L8 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    user:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 13.5c.5-2.4 2.5-3.8 5-3.8s4.5 1.4 5 3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    key:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="5.5" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 8h6M12 8v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    gear:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.8v2M8 12.2v2M14.2 8h-2M3.8 8h-2M12.4 3.6l-1.4 1.4M5 11l-1.4 1.4M12.4 12.4 11 11M5 5 3.6 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    chart:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 13.5h12M3.5 10.5l3-3.5 2.5 2 3.5-4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-  };
+  var AH_MORE = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="13" cy="8" r="1.4"/></svg>';
+  var AH_PLUS = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var AH_PAGES = { users:['Open Users management', function(){ goUsers(); }], orgs:['Open Org management', function(){ goOrgs(); }], feature:['Open Feature management', function(){ goFeature(); }] };
   var AH_DATA = {
     all: {
       scope:'All Orgs',
       stats:[
-        { t:'Total orgs', v:'12', m:'3 created this quarter', go:'orgs' },
-        { t:'Total users', v:'500', m:'Across all 12 orgs', go:'users' },
-        { t:'Users on SSO', v:'412', m:'82% of users · Okta SAML', go:'users' }
+        { t:'Total orgs', v:'12', m:'3 created this quarter', a:'Add org', q:'Create a new org.' },
+        { t:'Total users', v:'500', m:'Across all 12 orgs', a:'Add user', q:'Add a new user to my org.' },
+        { t:'Users on SSO', v:'412', m:'82% of users · Okta SAML', a:'Set up SSO', q:'Set up Okta SSO for this org.' }
       ],
       tasks:[
-        { i:'key', hi:true, t:'SAML certificate expires in 6 days', m:'Okta · sign-in stops for 412 users in every org', q:'Rotate the SAML certificate before it expires.' },
-        { i:'user', t:'Approve 41 invites to the new EMEA org', m:'Waiting since yesterday · groups and privileges ready', q:'Invite 41 EMEA users to the new org.' },
-        { i:'gear', t:'2 orgs have Spotter on without model access', m:'Sales EMEA, Partner portal · users see an error', q:'Fix Spotter model access for the Sales EMEA and Partner portal orgs.' },
-        { i:'chart', t:'3 orgs are over their query budget', m:'Billing query stats · this month', q:'Which orgs are over their query budget this month, and why?' },
-        { i:'warn', t:'Cluster upgrade to 10.9 is available', m:'Release notes and a test plan are ready', q:'What changes for us in the 10.9 upgrade?' }
+        { t:'SAML certificate expires in 6 days', m:'Sign-in stops for 412 users in every org', p:'users', q:'Rotate the SAML certificate before it expires.' },
+        { t:'Approve 41 invites to the new EMEA org', m:'Waiting since yesterday', p:'orgs', q:'Invite 41 EMEA users to the new org.' },
+        { t:'2 orgs have Spotter on without model access', m:'Sales EMEA and Partner portal', p:'feature', q:'Fix Spotter model access for the Sales EMEA and Partner portal orgs.' },
+        { t:'3 orgs are over their query budget', m:'Billing query stats · this month', p:'orgs', q:'Which orgs are over their query budget this month, and why?' }
       ]
     },
     primary: {
       scope:'Primary Org',
       stats:[
-        { t:'Total users', v:'38', m:'4 joined this month', go:'users' },
-        { t:'Total groups', v:'12', m:'2 have no members', go:'users' },
-        { t:'Roles available', v:'6', m:'4 system · 2 custom', go:'users' }
+        { t:'Total users', v:'38', m:'4 joined this month', a:'Add user', q:'Add a new user to my org.' },
+        { t:'Total groups', v:'12', m:'2 have no members', a:'Add group', q:'Create a new group in this org.' },
+        { t:'Roles available', v:'6', m:'4 system · 2 custom', a:'Add role', q:'Create a custom role for this org.' }
       ],
       tasks:[
-        { i:'user', hi:true, t:'3 sign-up requests waiting for approval', m:'From SAML sign-in · oldest is 2 days old', q:'Show me the users waiting for approval in this org.' },
-        { i:'user', t:'2 users are not in any group', m:'They cannot see shared Liveboards yet', q:'Which users in this org are not in any group?' },
-        { i:'key', t:'Review who has Developer privilege', m:'5 users · last reviewed 90 days ago', q:'Who has developer privilege?' },
-        { i:'warn', t:'4 users have not signed in for 60 days', m:'Deactivate them or send a reminder', q:'Which users have not signed in for 60 days?' },
-        { i:'gear', t:'Trusted auth secret was never rotated', m:'Created 11 months ago', q:'Rotate the trusted authentication secret for this org.' }
+        { t:'3 sign-up requests waiting for approval', m:'From SAML sign-in · oldest is 2 days old', p:'users', q:'Show me the users waiting for approval in this org.' },
+        { t:'2 users are not in any group', m:'They cannot see shared Liveboards yet', p:'users', q:'Which users in this org are not in any group?' },
+        { t:'Review who has Developer privilege', m:'5 users · last reviewed 90 days ago', p:'users', q:'Who has developer privilege?' },
+        { t:'4 users have not signed in for 60 days', m:'Deactivate them or send a reminder', p:'users', q:'Which users have not signed in for 60 days?' }
       ]
     }
   };
+  function ahScope(){ return AH_DATA[ORG === 'all' ? 'all' : 'primary']; }
+  function ahAsk(q){ var inp = document.getElementById('ah-form-in'); inp.value = q; document.getElementById('ah-form').requestSubmit(); }
   function renderAdminHome(){
-    var d = AH_DATA[ORG === 'all' ? 'all' : 'primary'];
+    var d = ahScope();
     var sc = document.getElementById('ah-scope'), ov = document.getElementById('ah-overview'), tk = document.getElementById('ah-tasks'), ct = document.getElementById('ah-count');
     if (!ov || !tk) return;
     sc.textContent = d.scope;
-    ov.innerHTML = d.stats.map(function(x){
-      return '<button type="button" class="ah-stat" data-ahgo="' + x.go + '"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="v">' + x.v + '</span></button>';
+    ov.innerHTML = d.stats.map(function(x, n){
+      return '<div class="ah-stat"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="v">' + x.v + '</span>' +
+        '<button type="button" class="ah-add" data-ahadd="' + n + '">' + AH_PLUS + x.a + '</button></div>';
     }).join('');
     tk.innerHTML = d.tasks.map(function(x, n){
-      return '<button type="button" class="ah-task" data-aht="' + n + '"><span class="ic' + (x.hi ? ' hi' : '') + '">' + AH_I[x.i] + '</span><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span><span class="go">Ask Operator</span></button>';
+      return '<div class="ah-task"><span class="l"><div class="t">' + x.t + '</div><div class="m">' + x.m + '</div></span>' +
+        '<span class="ctxwrap"><button type="button" class="ah-more" aria-label="Actions for ' + x.t + '" aria-haspopup="menu" aria-expanded="false" data-ahmore="' + n + '">' + AH_MORE + '</button></span></div>';
     }).join('');
     ct.textContent = d.tasks.length;
   }
+  function ahCloseMenus(){ [].forEach.call(document.querySelectorAll('#ah-tasks .ctxmenu'), function(m){ m.remove(); }); [].forEach.call(document.querySelectorAll('#ah-tasks [aria-expanded="true"]'), function(b){ b.setAttribute('aria-expanded', 'false'); }); }
   document.getElementById('ah-overview').addEventListener('click', function(e){
-    var b = e.target.closest('[data-ahgo]'); if (!b) return;
-    if (b.dataset.ahgo === 'orgs') goOrgs(); else goUsers();
+    var b = e.target.closest('[data-ahadd]'); if (!b) return;
+    ahAsk(ahScope().stats[parseInt(b.dataset.ahadd, 10)].q);
   });
   document.getElementById('ah-tasks').addEventListener('click', function(e){
-    var b = e.target.closest('[data-aht]'); if (!b) return;
-    var x = AH_DATA[ORG === 'all' ? 'all' : 'primary'].tasks[parseInt(b.dataset.aht, 10)];
-    var inp = document.getElementById('ah-form-in'); inp.value = x.q; document.getElementById('ah-form').requestSubmit();
+    var it = e.target.closest('[data-ahgo],[data-ahask]');
+    if (it){
+      var x = ahScope().tasks[parseInt(it.dataset.ahgo || it.dataset.ahask, 10)];
+      ahCloseMenus();
+      if (it.dataset.ahgo) AH_PAGES[x.p][1](); else ahAsk(x.q);
+      return;
+    }
+    var b = e.target.closest('[data-ahmore]'); if (!b) return;
+    e.stopPropagation();
+    var open = b.getAttribute('aria-expanded') === 'true';
+    ahCloseMenus(); if (open) return;
+    var n = b.dataset.ahmore, x = ahScope().tasks[parseInt(n, 10)];
+    var m = document.createElement('div'); m.className = 'ctxmenu'; m.setAttribute('role', 'menu');
+    m.innerHTML = '<button type="button" role="menuitem" data-ahgo="' + n + '">' + AH_PAGES[x.p][0] + '</button><button type="button" role="menuitem" data-ahask="' + n + '">Ask Operator</button>';
+    b.parentNode.appendChild(m); b.setAttribute('aria-expanded', 'true');
   });
+  document.addEventListener('click', function(e){ if (!(e.target.closest && e.target.closest('#ah-tasks .ctxwrap'))) ahCloseMenus(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') ahCloseMenus(); });
   /* the scope toggle re-renders after setOrg has run */
   [].forEach.call(document.querySelectorAll('.orgtoggle button'), function(b){ b.addEventListener('click', function(){ setTimeout(renderAdminHome, 0); }); });
   renderAdminHome();
