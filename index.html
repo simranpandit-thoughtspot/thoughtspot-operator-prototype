@@ -5294,46 +5294,15 @@ body.ls .cd-code .t{color:#7FB3F2}
 body.proto .oprail:not(.inlayout){border-left:1px solid var(--border-subtle);box-shadow:0 24px 32px rgba(25,35,49,.16),0 0 4px rgba(25,35,49,.10)}
 :root[data-theme="dark"] body.proto .oprail:not(.inlayout){box-shadow:0 24px 32px rgba(0,0,0,.4),0 0 4px rgba(0,0,0,.3)}
 body.proto .oprail .or-greet{height:auto!important;min-height:0!important;flex:none!important;justify-content:flex-start}
-/* Pane / Radiance glow: the Figma Radiance background (Light / Dark), full pane, with the Section 02 motion —
-   Idle: slow drift · Working: prominent, drifts faster · Response: 530ms after the answer it lifts 500px and
-   fades over 5000ms · New chat: back in 450ms. Replaces the canvas renderer in the overlay pane. */
-:root{--op-radiance-base:#FFFFFF;--op-radiance:
-    radial-gradient(circle 678px at 718px -20px, rgba(40,140,255,0.135) 0%, rgba(40,140,255,0.0405) 52%, rgba(40,140,255,0) 100%),
-    radial-gradient(circle 653px at 401px -59px, rgba(140,100,255,0.117) 0%, rgba(140,100,255,0.0351) 52%, rgba(140,100,255,0) 100%),
-    radial-gradient(circle 629px at -2px -88px, rgba(255,120,160,0.117) 0%, rgba(255,120,160,0.0351) 52%, rgba(255,120,160,0) 100%),
-    radial-gradient(circle 605px at -289px -78px, rgba(80,220,180,0.054) 0%, rgba(80,220,180,0.0162) 52%, rgba(80,220,180,0) 100%),
-    linear-gradient(180deg, rgba(200,220,255,.0945) 0%, rgba(140,100,255,.0558) 18%, rgba(255,120,160,.0468) 34%, rgba(80,220,180,.0216) 58%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 691px at 373px 286px, rgba(255,240,180,0.075) 0%, rgba(255,240,180,0) 100%),
-    radial-gradient(circle 915px at 546px 287px, rgba(255,200,220,0.075) 0%, rgba(255,200,220,0) 100%),
-    radial-gradient(circle 834px at -30px 286px, rgba(200,220,255,0.1) 0%, rgba(200,220,255,0) 100%),
-    radial-gradient(circle 446px at 372px 152px, rgba(80,220,180,0.1) 0%, rgba(80,220,180,0) 100%),
-    radial-gradient(circle 488px at -116px 172px, rgba(255,180,100,0.44) 0%, rgba(255,180,100,0) 100%),
-    radial-gradient(circle 610px at 660px -60px, rgba(40,140,255,0.58) 0%, rgba(40,140,255,0) 100%),
-    radial-gradient(circle 610px at 84px -2px, rgba(140,100,255,0.6) 0%, rgba(140,100,255,0) 100%),
-    radial-gradient(circle 548px at -318px -60px, rgba(255,120,160,0.58) 0%, rgba(255,120,160,0) 100%);}
-:root[data-theme="dark"]{--op-radiance-base:#1A1B1E;--op-radiance:
-    radial-gradient(circle 678px at 718px -20px, rgba(39,140,255,0.112) 0%, rgba(39,140,255,0.034) 54%, rgba(39,140,255,0) 100%),
-    radial-gradient(circle 653px at 373px -59px, rgba(138,93,255,0.103) 0%, rgba(138,93,255,0.031) 54%, rgba(138,93,255,0) 100%),
-    radial-gradient(circle 629px at -30px -88px, rgba(255,93,142,0.09) 0%, rgba(255,93,142,0.027) 54%, rgba(255,93,142,0) 100%),
-    radial-gradient(circle 605px at -261px -78px, rgba(45,220,177,0.03) 0%, rgba(45,220,177,0.009) 54%, rgba(45,220,177,0) 100%),
-    linear-gradient(180deg, rgba(138,93,255,.071) 0%, rgba(39,140,255,.05) 18%, rgba(255,93,142,.037) 34%, rgba(45,220,177,.015) 58%, rgba(0,0,0,0) 100%),
-    radial-gradient(circle 727px at 373px 286px, rgba(255,232,150,0.055) 0%, rgba(255,232,150,0) 100%),
-    radial-gradient(circle 930px at 546px 286px, rgba(255,170,210,0.075) 0%, rgba(255,170,210,0) 100%),
-    radial-gradient(circle 870px at -30px 286px, rgba(160,196,255,0.08) 0%, rgba(160,196,255,0) 100%),
-    radial-gradient(circle 482px at 402px 152px, rgba(45,220,177,0.07) 0%, rgba(45,220,177,0) 100%),
-    radial-gradient(circle 524px at -116px 190px, rgba(255,180,90,0.24) 0%, rgba(255,180,90,0) 100%),
-    radial-gradient(circle 666px at 690px -59px, rgba(39,140,255,0.42) 0%, rgba(39,140,255,0) 100%),
-    radial-gradient(circle 666px at 114px -1px, rgba(138,93,255,0.46) 0%, rgba(138,93,255,0) 100%),
-    radial-gradient(circle 605px at -318px -59px, rgba(255,93,142,0.42) 0%, rgba(255,93,142,0) 100%);}
-body.proto .oprail:not(.inlayout) #rg-rail{display:none!important}
+/* Pane / Radiance glow — the same Radiance canvas as "In the layout": rendered at full window width and
+   clipped by the pane, so the overlay shows the same right-hand slice of the wash (opacity .76, top-wash).
+   Idle / Working (prominent) / Response (lift 500px, fade 5000ms) come from the renderer and .rg-out. */
+body.rglow.proto .oprail:not(.inlayout) #rg-rail{display:block!important;position:absolute!important;top:0!important;bottom:0!important;left:auto!important;right:0!important;width:100vw!important;height:auto!important;inset:auto 0 0 auto;z-index:-1!important;opacity:.76}
+body.rglow.proto.paneleft .oprail:not(.inlayout) #rg-rail{left:0!important;right:auto!important;transform:scaleX(-1)}
+:root[data-theme="dark"] body.rglow.proto .oprail:not(.inlayout) #rg-rail{opacity:.66}
+body.rglow.proto .oprail:not(.inlayout) #rg-rail.rg-out{opacity:0!important}
 body.proto .oprail:not(.inlayout) .or-in::before,
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty[hidden])::before,
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::before{display:block!important;content:"";position:absolute;inset:0;top:0;height:auto;z-index:0;border-radius:0;-webkit-mask-image:none;mask-image:none;pointer-events:none;opacity:1;transform:none;background-color:var(--op-radiance-base);background-image:var(--op-radiance);background-repeat:no-repeat;background-size:116% 112%;background-position:0% 0%;animation:opDrift 26s ease-in-out infinite alternate;transition:opacity 450ms ease,transform 450ms ease,filter .6s ease}
-body.proto .oprail:not(.inlayout).wash-think .or-in::before{animation-duration:13s!important;filter:saturate(1.35) contrast(1.04)}
-body.proto .oprail:not(.inlayout).wash-out .or-in::before{opacity:0!important;transform:translateY(-500px)!important;transition:opacity 5000ms cubic-bezier(0,0,.2,1),transform 5000ms cubic-bezier(0,0,.2,1)!important}
-@keyframes opDrift{0%{background-position:0% 0%}50%{background-position:70% 30%}100%{background-position:100% 10%}}
-body.proto .oprail:not(.inlayout) .or-in:has(#or-empty:not([hidden]))::after{display:block;content:"";position:absolute;inset:0;width:auto;height:auto;left:0;top:0;transform:none;filter:none;animation:none;z-index:0;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E") 0 0/200px 200px repeat;mix-blend-mode:screen}
-@media (prefers-reduced-motion:reduce){ body.proto .oprail:not(.inlayout) .or-in::before{animation:none!important;transition:none!important} }
+body.proto .oprail:not(.inlayout) .or-in::after{display:none!important}
 body.proto .oprail #or-dd{font-weight:400;letter-spacing:.084px;gap:4px;padding:0}
 body.proto .oprail #or-dd .or-dd-chev{width:12px;height:12px;margin:0 10px}
 /* greeting: centred, both lines Title 24/32 regular, verb phrase on Content/Accent/Purple */
