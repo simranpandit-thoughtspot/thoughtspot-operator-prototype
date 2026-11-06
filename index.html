@@ -5460,7 +5460,11 @@ body.proto #view-adminhome .adm-cards{width:min(745px,100%);margin:0 auto;displa
 #view-adminhome .ah-row .m{font-size:14px;line-height:20px;color:var(--content-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #view-adminhome .ah-stat .v{flex:0 0 auto;font-size:18px;line-height:24px;font-weight:550;letter-spacing:-.2px;color:var(--content-primary);transition:transform .18s cubic-bezier(.2,.8,.2,1)}
 #view-adminhome .ah-dots{position:relative;flex:0 0 auto;width:0;opacity:0;transform:translateX(6px);overflow:visible;transition:width .18s cubic-bezier(.2,.8,.2,1),opacity .15s,transform .18s cubic-bezier(.2,.8,.2,1)}
-#view-adminhome .ah-row:hover .ah-dots,#view-adminhome .ah-row:focus-within .ah-dots{width:28px;opacity:1;transform:none}
+/* Overview: the three-dot slides in only after a 0.4s hover, so skimming the numbers does not set it off; it leaves at once */
+#view-adminhome #ah-overview .ah-row:hover .ah-dots{width:28px;opacity:1;transform:none;transition-delay:.4s}
+#view-adminhome #ah-overview .ah-row:focus-within .ah-dots{width:28px;opacity:1;transform:none;transition-delay:0s}
+/* Tasks: the three-dot is always there */
+#view-adminhome #ah-tasks .ah-dots{width:28px;opacity:1;transform:none;transition:none}
 #view-adminhome .ah-more{display:grid;place-items:center;width:28px;height:28px;border-radius:14px;color:var(--content-secondary)}
 #view-adminhome .ah-more:hover,#view-adminhome .ah-more[aria-expanded="true"]{background:var(--bg-ghost-hover);color:var(--content-primary)}
 #view-adminhome .ah-row .ctxmenu{min-width:220px}
