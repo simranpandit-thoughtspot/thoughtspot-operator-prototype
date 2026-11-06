@@ -2547,16 +2547,19 @@ body.panelin #view-home .radiance,body.panelin #view-home .section,body.panelin 
 body.fullbleed #view-home .radiance,body.ep-leftnav #view-home .radiance,body.fullbleed #view-home .section,body.ep-leftnav #view-home .section,body.fullbleed #ins-home,body.ep-leftnav #ins-home{grid-template-columns:repeat(12,var(--g-col));padding-left:var(--g-margin)}
 body.panelin.ep-leftnav #view-home .radiance,body.panelin.ep-leftnav #view-home .section,body.panelin.ep-leftnav #ins-home{grid-template-columns:repeat(9,var(--g-col))}
 /* Develop home: prompt on columns 5–10, the cards and Recents on 3–11 */
-#view-home .home-wrap{grid-column:3/9;max-width:none;margin:0;padding:150px 0 0}
+#view-home .home-wrap, the cards and Recents on 3–11 */
+:is(#ins-home,#view-adminhome) .home-wrap{grid-column:3/9;max-width:none;margin:0;padding:150px 0 0}
 #view-home .section{max-width:none;margin:0}
 /* the build cards centre under the prompt rather than sit on columns */
 #view-home .w3-cards{grid-column:1/-1;width:100%;max-width:var(--col-wide);justify-self:center}
 #view-home .w3-recent{display:none}
 #view-home .w3-cards{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--g-gutter)}
 #view-home .w3card{grid-column:auto}
-body.panelin #view-home .home-wrap{grid-column:2/7}
+body.panelin #view-home .home-wrap,
+body.panelin :is(#ins-home,#view-adminhome) .home-wrap{grid-column:2/7}
 body.panelin #view-home .w3-cards{grid-column:1/-1}
-body.ep-leftnav #view-home .home-wrap{grid-column:4/10}
+body.ep-leftnav #view-home .home-wrap,
+body.ep-leftnav :is(#ins-home,#view-adminhome) .home-wrap{grid-column:4/10}
 body.ep-leftnav #view-home .w3-cards{grid-column:1/-1}
 /* Insights home: prompt on 5–10, Recents 4–7, Watchlist 8–11 */
 #ins-home .ins-hero{grid-column:3/9;max-width:none;margin:0;padding:150px 0 0}
@@ -3090,21 +3093,35 @@ body.proto #view-home{display:block;position:relative;min-height:100%}
 body.proto #view-home .fh-wash{position:absolute;left:0;right:0;top:0;height:567px;background:url(data:image/jpeg;base64,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gCiinAUhiCnCgCigYuaWm0tIYtKBSCnUhBS0UuKQC04CkxTgKRSAU4UgpRUjFooFLikBepTxRg0GuY3EpaKMGmAhpKdikxQAUUUUCA0UUtAxtBpaSgBpptSYphHNUgGmkp2KTFMBtJTqSqGNpp6U/FNIpjGUlPIppFUAlJS0UwGEUmKfimkUx2G02nYpMVQDTzTTT8U000UMNNJ4p7CmEYqkMbSGnYpDzTGMIppp5pCKq5Qw00inkGm4p3GNNNxTyM00incY00Yp2KTFFxjcUU7FGKLjG0Yp+2kxSuA2jmnYpMGi4Cc0UuKMGgBOKKXFGKVxiUtLijFIBtFKR7UYoASjFLilApXATFLilxS4pXAbijFOxRtouIbilAp2KTFK4BijFKBS4pXEJilxRilxSuISjFOwaUDii4DMZNLilxQRRckSkp2KMe1FxDMYpacVoxRcQgoNLigCi4mNxRT9tG32ouSNAzRin4pCKVxDSKSn4pNuadyRuKXFOAoxRcTExSEU/HtSYouSxhFFOIpNtO5DQ3FFOxRinclobikxT8UmKLisNxTcVJikIp3EMxSU/FIVp3ENoxS49qXFFxWG4oxTsUbaLisMx70YpxWjFO4rDaXFLijBouA2jFO20YouIaBTsUbaUCi4rCYpMYp+KMcUXCwyinYowadwsNNJT8UbaLgIBxS4pcUYouAhFJT8Um2i4CYpaMUuKLjsJSgUoFOxRcLCAUoFKBQBSuOwYopcUYouMKcOKQClApXCwuKMUAU7FK47CYpwFG2lxSuOwCiilApDExSigCnAUXAQdKcKNtKBSuAClpMU4ClcdhwpRSUoFSOwtLSUopBYUClpPwpaVwsXgaU0goNc5uLS00GlzQMWmnrTqSgBtKKKSmAppaTriloENooooGFIaWkNCAYRSU8009aoBppKU0lMYlJS0lUAhppFONJTRQykpxFNNUhCUUUZpgNIptONIaaGNNNpxpDVIY000inUhqkAw00inkZppGKopDaSlxSGmMQ00inGkNA0xpFNqSmkU0yhlGKdikxTAbilpcUUDExRTqKQDaTFOoxSC43bS4pcUYoC43FGKdijFK4XG4pcU6ikO43FJin4oIouA3FLilxRikAmKWjFGKQXCilooEJRilpcUrgNFLilxS4oEJilApcUuKQriYoxSmjFIQhFJin4pNuaAG0o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jFMLBRRijFABRRilxQMSijFGKACijFGDQAUUYoxQAUUUUAFFFFABRRRQAUYooxQAYpMUuKMUAJijFLijFFwExRinYoxQA0CjFLijFACYpcUYpcUgExSYp2KMUANxSYp2KMUxiCil20mKQBRmgZpcUAFGKKMUhBRRRigBCKSnYoxTuMbRS4oxQAlFLijFACUUYowaAuFGKKWgQlGaXBo20DE60YpdtGDSATFG2jmloAbikxT6TFACUZpcGjFABmkNLijFACZooK4pMUwFpKNppcEUAGKTFLzRQAmKKWlxSAZRmnbaTbTATNFGDRigBeKMUmKMUALS0mKWgAoxRijFIQmKKXFJg0wCijFGKYBRRg0YoAKKMUUAFFGKMUAFJilxRigBKOlLikwaACkpcUuKAExR0oowaADNLQFooAKKKXFABRRRigQlLRig0AGaQClxRigAxSYpcUYoATFFLijFACUUuKXbRcBtGKdto20AJRS7aNtAhKWjFGKAJ6KRaWpGNIxSU803FMAooopDCkp1NoAWikpaAA0UUUxCUUUUAFFFFABRRRTAKKKKQBRRRQMKKKKBBRRRQAUYoooASiloxTGJRS4pKBBRRRQAUUUUDCiiigAopaSkAUUUUAFFFFMAoopcUgEpcUUUAGKSlooASilxSUwCilooASilopAFFGKKADFJ0pc0UAJmjGaMUmaYwopaMUAFFJRmkAtFGaKBBRSZpaACkxS0mKQCYo6UvWjFABRRilxQAmM0baWigA6UUUUAFFFJigYYoxS0hoAMUYpM0vWgBOaKWigBKM4paMUAJnNJinYFG0UAJRRtNJTAWkxRn2ozQAYo6UZpaAEzRRijFACGjNLikxQADFLikooAXFGKSigBaKSigB1JRmikIMUlLRimAlFGKKYBRRRQAUUUUAFFGKXFIBKKWigBMUYpaWgBtFLRigBKKKKYBRRRQAUuaSigQuaBSUUALRRmjNABRRmigAopcUtFwExS0UUCCiiikMKKKQmmIKSlpKYyYUtNp1QAUhpaQ9KAENJS0UDCjFFFABRRRQAlLmkpaACiiimIKSiigYUUtFACUUUUCCiiimAUUUUh3CiiigAooozQIKKKKACiiigAxRiiigBKKWimAlFLiigLiUUUUAFFFLigdxKKWigVwooooC4UUUUguFFFFA7hSUtFABSUUUwCiiigBaKSigBcUCikpALQRmkozQAnSjNOpCKACkxRRmgAozS0YNACUtJiloAKKWjFIBKKKKQBRRRQAUUUUwCiiigAooooAKKKKBiUUGkoAKKBS0AAHqaWkpaAEpaKKACkpaKAEpCKWigBNtGCKWigBKKWjFACUtFFACYpKdSU7gJRRRRcAoooouAUtJS0BYKKKWkISkxTqKYDcUYp2KSgBMUtJRQAtJRS0AJS0lGaAFpKKKACiijNMQUlLRQAmKKWigBKKXFJigAooooAKKMUuKAACjpS0UAFGaKKADNGaKKAFopKKLALSUUUwsFJS0UASdKKWkPFQAuaKSikAGilopgJRRRQMKKKKAEooooAKWkooAWkpaKBCUUUUAFFFFAwooooFYKKKKACiiigAooooGFGaKKACiiigAooozQIKKM0UAFFFFABRRRQMKKKKACiiigVgooooCwUUUUBYKKKKACjNFGKAsFJzS0UxiUUuKMUgEopcUYoASiloxQISiloouMTFFLRQAYpMUtFIBKKKKYBRRRQAUUUUDFzRxSUUhBRRRmgAoopaAEooxRQAmDRzS0nNMAopeaKAEopaMUhiUUuKTFAgooooAKKKKACjNFFAxaTFFFABRRRQFwooooEFFFFAwooooEFJilzSZoGGKKKM0wFopKKAFozSUUCDNLTaWgApaSloATFFGaKAEozS4pMUAFFFFMQUUUUAFGKKKACiiigAooooAKKXFFABijApaKAExRS0UAJRS0nFACUZopdtABQaKTmgAzRSUUxi0UUoFABRS0UhElFGaKkBKKDRTGLRSCjNIQYoozRTGFFJRQAtFGaKBBSUtJQMWkpaSgBaKKKAEpaSigQUUUUDCiiigAooopisFFFFABRSZpc0AFFFFIAooooGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUCsFFFFABRRRmgYUUUUAFFFGaQBSUuaM0AJRRRQAUUZopjCiiigAoozRmgAoozRSEGaKKKADFGBRRQAuKTFFGaADmilzSUDCijiigAzRSUUCF4pKKKYBRRmigAooopALSUClzQAlFFFABRSUtOwBRRRSsAUUmaKLALSYozRTAKKWkxQAUUlFMBaSilpAFFFFABS03NLmgBaSjNFAhKMUuaM0DEopaSmIKKKWgBKXF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lFAC0UlGaBWFoozRQAUYoooC4YpMUtFAXExRS0UDEopaKAEopaKAEopaKAEopaKAEopaKAEopaKAExS4oooFcMUUUUBcKKKM0AFFGaSgLC5ozSUUDCiijFABRS4ooAMUUUUAFFFGaBBRRmkoAWikooGLRSUuaACijNGaACijNJmgBaKSjNAC4pMUuaOtADcUU7FJQAdaTFLiigBKKWkxTGFFFFAAaKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApMUtFACUUtJigQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFJS0UAJRS0lABRRS0AJRS0UAJRS0UAFFFFABRRRQAUUUUAFFFFABRRRQAUUAZpdtACAUo4ozSE5oAUmkoooAfRRRSAKKKKACiiigAooooAKKKKACiiigAooooAKMUUUAJRS0YoAAaKSigBaKTNLmgQUUUUDDFJilooASilooASilxRigBKKKKADNLmkooAXNGaSigLC5opKKBWFopKKAsLRSUUBYWikooCwtFJRQFhc0ZpKKB2FzSZoooAKKKKACilxRigBKKWigBKXFFFABRRRQAUUUmaBC0ZpKKACilFFAwxRRRQAUUUUAFFFFABRiiigAoxRRQAYpMUtFACUUuKSgBc0daSigBcUlLmigBKKXFJQAUYoooATFFOzRwaYxtFLijFACUUYooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKADFJilooASilxSGgQUUUUAFFFFABRRRQAUUYoxQAUUuKMUDEzRS0UBYTFLgUUUAJijFOoouIbRTqTFFwEopcUmDQAUUUUAFFFFABRRRQAUUuPejGOtACYpcCjdSUAKeOKTmiigAooooAKKKMGgB9FFFIAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACjFFFABikpaKAEozS4pKAFzRSUUALRRmjNAgoozRQMKKKKACiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRRRQAUUUUAFFFFArhRRmkzQAtGaSigBc0lFLigYlGKWigAxRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABikpaMUAJRmiigBc0UlFAC4pMUuaKAEopaMUAJRmiigBaOKSigBcUmKKM0AGKTFOzRxQA3FGKdikxQAmKKWigBKKWigBKKWincdxKKWikISilop3C4mKMUtFIBMUbaWii4DcUuKWkxTGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFLSUUALmikoosFhaTAopaQhNtG00ucUuRQA0L60vAozRTuA0mjNOoxRcBtFLgUYFFwEopcUbaAEoAzTtvvRigLgBiilxRigQUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFJilooASilooASiloxQAmaXNJijFAC5ozSUUALmikooAWikooELRSUUALRSUUALRSUUALRSUUALRSUUALmjNJRQOwuaM0mKMUAGaKXFGKAEoxS0UAJilxRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAYoxRRQAlFLSYoAKM0UUALRSUZoAWkNLmigBKKWigBKKXFJQAUUUUAFGaKKADNLmkooAXijFJRQAYooozQAUUuaM0AJRS0UAJRS4oxQAlFLijFACUUuKMUAJRilxRigBtFOxSYp3HcSilxRigBKKMUuKAEopaKAEopc0ZoASlxSZooAWikooAM0ZoooAKKKKACiiigAooooAM0uaMUUhBS8UlFAC5ozTc0UBYdmkzSUUwsOooopAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRiiigAxRiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKTFFFABRRRQAUUUUAKKKKKACiiigAxRiiigBKKKKACiiigAooooAKKKKACiiigAooooAKM0UUAGaXNFFABmjNFFABmjNFFABmjNFFACZozRRQAUUUUAJRRRQAYooooAMUUUUXC4YoxRRRcLhRiiigAoooouFwxS4oooAKKKKACiiigApKKKADFFFFFwuFGKKKAP/Z) top center/100% auto no-repeat;pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
 body.proto #view-home .fh-wash::after{content:"";position:absolute;left:0;right:0;top:36px;height:343px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0'/></filter><rect width='90' height='90' filter='url(%23n)'/></svg>") top left/90px 90px;opacity:.18;mix-blend-mode:multiply;pointer-events:none;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
 body.proto #view-home .radiance{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:336px;padding:24px 0 48px;position:relative;z-index:1}
-body.proto #view-home .home-wrap{padding:0;margin:0;max-width:none;width:745px;display:flex;flex-direction:column;align-items:center;gap:24px}
-body.proto #view-home .h1{font-size:24px;line-height:32px;font-weight:550;letter-spacing:0;color:var(--fh-ink);text-align:center;margin:0}
-body.proto #view-home .h1 em{font-style:normal;color:var(--fh-purple)}
-body.proto #view-home .prompt-wrap{width:745px}
-body.proto #view-home .prompt{display:flex;flex-direction:column;width:745px;background:#fff;border:1px solid var(--fh-line);border-radius:12px;padding:16px;gap:24px;box-shadow:0 2px 4px rgba(25,35,49,.04),0 0 4px rgba(25,35,49,.06)}
-body.proto #view-home .prompt-text{font-size:16px;font-weight:400;line-height:24px;color:var(--fh-ink);padding:0;min-height:24px}
-body.proto #view-home .prompt-text::placeholder{color:var(--fh-mute)}
-body.proto #view-home .prompt-actions{padding:0;margin:0}
-body.proto #view-home .prompt .smallbtn{width:32px;height:32px;color:#1d232f;background:none}
-body.proto #view-home .prompt .sendbtn{width:32px;height:32px;border-radius:18px;background:var(--fh-blue);color:#fff}
+body.proto #view-home .home-wrap,
+body.proto :is(#ins-home,#view-adminhome) .home-wrap{padding:0;margin:0;max-width:none;width:745px;display:flex;flex-direction:column;align-items:center;gap:24px}
+body.proto #view-home .h1,
+body.proto :is(#ins-home,#view-adminhome) .h1{font-size:24px;line-height:32px;font-weight:550;letter-spacing:0;color:var(--fh-ink);text-align:center;margin:0}
+body.proto #view-home .h1 em,
+body.proto :is(#ins-home,#view-adminhome) .h1 em{font-style:normal;color:var(--fh-purple)}
+body.proto #view-home .prompt-wrap,
+body.proto :is(#ins-home,#view-adminhome) .prompt-wrap{width:745px}
+body.proto #view-home .prompt,
+body.proto :is(#ins-home,#view-adminhome) .prompt{display:flex;flex-direction:column;width:745px;background:#fff;border:1px solid var(--fh-line);border-radius:12px;padding:16px;gap:24px;box-shadow:0 2px 4px rgba(25,35,49,.04),0 0 4px rgba(25,35,49,.06)}
+body.proto #view-home .prompt-text,
+body.proto :is(#ins-home,#view-adminhome) .prompt-text{font-size:16px;font-weight:400;line-height:24px;color:var(--fh-ink);padding:0;min-height:24px}
+body.proto #view-home .prompt-text::placeholder,
+body.proto :is(#ins-home,#view-adminhome) .prompt-text::placeholder{color:var(--fh-mute)}
+body.proto #view-home .prompt-actions,
+body.proto :is(#ins-home,#view-adminhome) .prompt-actions{padding:0;margin:0}
+body.proto #view-home .prompt .smallbtn,
+body.proto :is(#ins-home,#view-adminhome) .prompt .smallbtn{width:32px;height:32px;color:#1d232f;background:none}
+body.proto #view-home .prompt .sendbtn,
+body.proto :is(#ins-home,#view-adminhome) .prompt .sendbtn{width:32px;height:32px;border-radius:18px;background:var(--fh-blue);color:#fff}
 body.proto #view-home [data-starters]{display:none}
-body.proto #view-home .fh-chips{display:flex;gap:16px;justify-content:center}
-body.proto #view-home .fh-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid var(--fh-line);border-radius:40px;background:#fff;font-size:14px;font-weight:400;color:var(--fh-mute);cursor:pointer;line-height:20px}
-body.proto #view-home .fh-chip svg{width:14px;height:14px;color:#1d232f}
-body.proto #view-home .fh-chip:hover{background:var(--fh-surf)}
+body.proto #view-home .fh-chips,
+body.proto :is(#ins-home,#view-adminhome) .fh-chips{display:flex;gap:16px;justify-content:center}
+body.proto #view-home .fh-chip,
+body.proto :is(#ins-home,#view-adminhome) .fh-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid var(--fh-line);border-radius:40px;background:#fff;font-size:14px;font-weight:400;color:var(--fh-mute);cursor:pointer;line-height:20px}
+body.proto #view-home .fh-chip svg,
+body.proto :is(#ins-home,#view-adminhome) .fh-chip svg{width:14px;height:14px;color:#1d232f}
+body.proto #view-home .fh-chip:hover,
+body.proto :is(#ins-home,#view-adminhome) .fh-chip:hover{background:var(--fh-surf)}
 body.proto #view-home #iter-3,body.proto #view-home .home-foot{display:none}
 body.proto #view-home .fh-body{position:relative;z-index:1;width:1132px;max-width:calc(100% - 47px);margin:0 auto;padding:22px 0 64px;display:flex;flex-direction:column;gap:64px}
 body.proto .fh-sec{display:flex;flex-direction:column;gap:16px}
@@ -3401,14 +3418,18 @@ body.proto #nav-develop .nav-group > [data-goto="home"]:not(.nav-back), body.pro
 body.proto #nav-develop:has([data-goto="home"].on) .nav-newchat-p{background:rgba(113,161,244,.12);color:var(--fh-blue,#2770ef);font-weight:550}
 
 /* the launch: the gradient lifts away, the rest sinks and fades, the prompt glides to where the reply box lives */
-body.proto #view-home .fh-wash,body.proto #view-home .h1,body.proto #view-home .fh-chips,body.proto #view-home .fh-body,body.proto #view-home .prompt-wrap{
+body.proto #view-home .fh-wash,body.proto #view-home .h1,body.proto :is(#ins-home,#view-adminhome) .h1,body.proto #view-home .fh-chips,body.proto :is(#ins-home,#view-adminhome) .fh-chips,body.proto #view-home .fh-body,body.proto #view-home .prompt-wrap,body.proto :is(#ins-home,#view-adminhome) .prompt-wrap{
   transition:transform .6s cubic-bezier(.22,.8,.2,1),opacity .45s ease}
 body.proto.launching #view-home .fh-wash{transform:translateY(-160px);opacity:0}
-body.proto.launching #view-home .h1{transform:translateY(-24px);opacity:0;animation:none}
-body.proto.launching #view-home .fh-chips{transform:translateY(32px);opacity:0;transition-delay:.02s}
+body.proto.launching #view-home .h1,
+body.proto.launching :is(#ins-home,#view-adminhome) .h1{transform:translateY(-24px);opacity:0;animation:none}
+body.proto.launching #view-home .fh-chips,
+body.proto.launching :is(#ins-home,#view-adminhome) .fh-chips{transform:translateY(32px);opacity:0;transition-delay:.02s}
 body.proto.launching #view-home .fh-body{transform:translateY(48px);opacity:0}
-body.proto.launching #view-home .prompt-wrap{transform:translateY(var(--launch-dy,0px));position:relative;z-index:3}
-body.proto.launching #view-home .prompt-wrap .sendbtn{opacity:.4}
+body.proto.launching #view-home .prompt-wrap,
+body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap{transform:translateY(var(--launch-dy,0px));position:relative;z-index:3}
+body.proto.launching #view-home .prompt-wrap .sendbtn,
+body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap .sendbtn{opacity:.4}
 body.proto.launching .main{overflow:hidden}
 /* and the conversation settles in */
 @keyframes cvIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -3416,7 +3437,7 @@ body.proto.launching .main{overflow:hidden}
 body.proto.landed #view-convo .convo-head,body.proto.landed #view-convo .stream{animation:cvIn .45s cubic-bezier(.22,.8,.2,1) both}
 body.proto.landed #view-convo .dock{animation:cvDock .3s ease both}
 @media (prefers-reduced-motion:reduce){
-  body.proto #view-home .fh-wash,body.proto #view-home .h1,body.proto #view-home .fh-chips,body.proto #view-home .fh-body,body.proto #view-home .prompt-wrap{transition:none}
+  body.proto #view-home .fh-wash,body.proto #view-home .h1,body.proto :is(#ins-home,#view-adminhome) .h1,body.proto #view-home .fh-chips,body.proto :is(#ins-home,#view-adminhome) .fh-chips,body.proto #view-home .fh-body,body.proto #view-home .prompt-wrap,body.proto :is(#ins-home,#view-adminhome) .prompt-wrap{transition:none}
   body.proto.landed #view-convo .convo-head,body.proto.landed #view-convo .stream,body.proto.landed #view-convo .dock{animation:none}}
 
 /* ---- Radiance background (Radiant 3.0 component, Light/Dark) ---- */
@@ -3462,9 +3483,11 @@ body.proto:has(.oprail.inlayout.open){--canvas-w:calc(100vw - var(--nav-w) - var
 body.proto.it2:has(.oprail.inlayout.open){--canvas-w:calc(100vw - var(--nav-w) - var(--pane-w,400px))}
 body.proto .main{--g-col:calc((var(--canvas-w) - 48px - 216px) / 10)}
 body.proto.fullbleed .main,body.proto.ep-leftnav .main{--g-col:calc((var(--canvas-w) - 48px - 264px) / 12)}
-body.proto #view-home .prompt-wrap{width:min(745px,100% - 48px)}
+body.proto #view-home .prompt-wrap,
+body.proto :is(#ins-home,#view-adminhome) .prompt-wrap{width:min(745px,100% - 48px)}
 body.proto #view-home .fh-body{max-width:calc(100% - 48px)}
-body.proto #view-home .fh-chips{flex-wrap:wrap;padding:0 24px}
+body.proto #view-home .fh-chips,
+body.proto :is(#ins-home,#view-adminhome) .fh-chips{flex-wrap:wrap;padding:0 24px}
 
 /* ---- pane in the layout, Specific agent: nav + canvas are one rounded unit on the ground ---- */
 body.proto.it2 .nav{transition:background-color .45s var(--op-ease),border-color .45s var(--op-ease),margin .34s var(--op-ease),border-radius .34s var(--op-ease)}
@@ -3567,15 +3590,22 @@ body.proto.unified #view-home .radiance,body.proto.unified.nofeat #view-home .ra
 body.proto.unified #ins-home .ins-hero{flex:none;justify-content:flex-start;padding:var(--xh-top) 0 0}
 body.proto.unified #ins-home .ins-cards{flex:none;padding-top:48px}
 body.proto.unified .xh-hero{padding:var(--xh-top) 0 0}
-body.proto.unified #view-home .h1,body.proto.unified #ins-home .ins-hero .h1,body.proto.unified .xh-hero .h1{
+body.proto.unified #view-home .h1,
+body.proto.unified :is(#ins-home,#view-adminhome) .h1,body.proto.unified #ins-home .ins-hero .h1,body.proto.unified .xh-hero .h1{
   margin:0 0 24px;font-family:inherit;font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.3px;text-align:center;color:#1d232f;animation:none}
-body.proto.unified #view-home .h1 em,body.proto.unified #ins-home .ins-hero .h1 em,body.proto.unified .xh-hero .h1 em{font-style:normal;font-weight:550;color:#8c62f5}
+body.proto.unified #view-home .h1 em,
+body.proto.unified :is(#ins-home,#view-adminhome) .h1 em,body.proto.unified #ins-home .ins-hero .h1 em,body.proto.unified .xh-hero .h1 em{font-style:normal;font-weight:550;color:#8c62f5}
 /* the Develop home accent: AA on the lightest stop of the wash (≥4.5:1 against #F3DFF0 / #ECE4F8) */
-body.proto.unified #view-home .h1 em{color:var(--fh-purple)}
+body.proto.unified #view-home .h1 em,
+/* the Develop home accent: AA on the lightest stop of the wash (≥4.5:1 against #F3DFF0 / #ECE4F8) */
+body.proto.unified :is(#ins-home,#view-adminhome) .h1 em{color:var(--fh-purple)}
 body.proto.unified #view-home .radiance{gap:0}
-body.proto.unified #view-home .home-wrap{gap:0;width:min(745px,100%)}
-body.proto.unified #view-home .prompt-wrap{margin:0;width:min(745px,100%)}
-body.proto.unified #view-home .fh-chips,body.proto.unified #ins-home .ih-chips,body.proto.unified .xh-hero .ih-chips{margin-top:24px}
+body.proto.unified #view-home .home-wrap,
+body.proto.unified :is(#ins-home,#view-adminhome) .home-wrap{gap:0;width:min(745px,100%)}
+body.proto.unified #view-home .prompt-wrap,
+body.proto.unified :is(#ins-home,#view-adminhome) .prompt-wrap{margin:0;width:min(745px,100%)}
+body.proto.unified #view-home .fh-chips,
+body.proto.unified :is(#ins-home,#view-adminhome) .fh-chips,body.proto.unified #ins-home .ih-chips,body.proto.unified .xh-hero .ih-chips{margin-top:24px}
 body.proto.unified #view-home .fh-body{padding-top:48px}
 
 /* ---- Unified: the same Radiance background on every tab's home ---- */
@@ -3595,7 +3625,7 @@ body.proto .xh-q .ih-chip{flex:0 1 auto;min-width:0;padding:0 14px;gap:6px}
 body.proto .xh-q .ih-chip svg{flex:0 0 auto}
 body.proto .xh-q .ih-chip .ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* the Data and Admin homes belong to the Unified experience only */
-body.proto:not(.unified) #nav-admin [data-admin="adminhome"],body.proto:not(.unified) #dn-home{display:none}
+body.proto:not(.unified) #dn-home{display:none}
 
 /* ---- Unified: My chats on every tab ---- */
 body.proto:not(.unified) .uni-chats{display:none}
@@ -3809,9 +3839,12 @@ body.proto .sl-src a:hover .sl-ic{background:#EAEDF2;color:#1D232F}
 body.proto:not(.unified) #view-home{display:flex;flex-direction:column;min-height:100%;box-sizing:border-box}
 body.proto:not(.unified) #view-home .radiance{flex:0 0 auto;min-height:var(--hero-min,0px);box-sizing:border-box;justify-content:flex-start;padding:48px 24px 24px}
 body.proto:not(.unified) #view-home .fh-body{flex:1 0 auto;padding-top:24px}
-body.proto:not(.unified) #view-home .home-wrap{gap:0}
-body.proto:not(.unified) #view-home .h1{margin:0 0 24px}
-body.proto:not(.unified) #view-home .fh-chips{margin-top:24px}
+body.proto:not(.unified) #view-home .home-wrap,
+body.proto:not(.unified) :is(#ins-home,#view-adminhome) .home-wrap{gap:0}
+body.proto:not(.unified) #view-home .h1,
+body.proto:not(.unified) :is(#ins-home,#view-adminhome) .h1{margin:0 0 24px}
+body.proto:not(.unified) #view-home .fh-chips,
+body.proto:not(.unified) :is(#ins-home,#view-adminhome) .fh-chips{margin-top:24px}
 body.proto:not(.unified).nofeat #view-home{justify-content:flex-start;padding:0}
 body.proto:not(.unified).nofeat #view-home .radiance{flex:0 0 auto;min-height:var(--hero-min,0px);padding:48px 24px 24px;justify-content:flex-start}
 
@@ -3911,13 +3944,18 @@ body.proto .or-scroll .stream,body.proto #pg-scroll .stream,body.proto #rp-scrol
 body.proto .or-scroll .stream:empty{padding-top:0}
 
 /* ---- Unified: the same 100px prompt box on every tab's home ---- */
-body.proto #view-home .prompt{padding:16px 16px 12px;gap:12px;min-height:100px;box-sizing:border-box}
-body.proto #view-home .prompt .prompt-actions{min-height:34px;align-items:center}
+body.proto #view-home .prompt,
+
+/* ---- Unified: the same 100px prompt box on every tab's home ---- */
+body.proto :is(#ins-home,#view-adminhome) .prompt{padding:16px 16px 12px;gap:12px;min-height:100px;box-sizing:border-box}
+body.proto #view-home .prompt .prompt-actions,
+body.proto :is(#ins-home,#view-adminhome) .prompt .prompt-actions{min-height:34px;align-items:center}
 body.proto.unified .ih-bar{min-height:100px;box-sizing:border-box}
 body.proto.unified .ih-row{min-height:34px}
 
 /* ---- Unified: one vertical rhythm — chips 36px, then 48px to the onboarding card, then 48px to the content ---- */
-body.proto.unified #view-home .fh-chip{height:36px;padding:0 16px;box-sizing:border-box}
+body.proto.unified #view-home .fh-chip, then 48px to the content ---- */
+body.proto.unified :is(#ins-home,#view-adminhome) .fh-chip{height:36px;padding:0 16px;box-sizing:border-box}
 body.proto.unified #view-home .fh-body{padding-top:48px;gap:48px}
 body.proto.unified #view-home .onb-mount{margin:0}
 body.proto.unified #view-home .onb-mount:empty{display:none}
@@ -4325,10 +4363,14 @@ body.proto.paneleft.navfold.it2:has(.oprail.inlayout.open) .main{margin:8px 0;bo
 :root[data-theme="dark"] body.proto #nav-develop .orgtoggle button.on{background:#1B1E24}
 :root[data-theme="dark"] body.proto #nav-develop .nav-item:hover{background:#16181D}
 :root[data-theme="dark"] body.proto .main{background:#1B1E24}
-:root[data-theme="dark"] body.proto #view-home .prompt{background:#23272F}
-:root[data-theme="dark"] body.proto #view-home .prompt .smallbtn{color:#E7EAEE}
-:root[data-theme="dark"] body.proto #view-home .fh-chip{background:#23272F}
-:root[data-theme="dark"] body.proto #view-home .fh-chip svg{color:#E7EAEE}
+:root[data-theme="dark"] body.proto #view-home .prompt,
+:root[data-theme="dark"] body.proto :is(#ins-home,#view-adminhome) .prompt{background:#23272F}
+:root[data-theme="dark"] body.proto #view-home .prompt .smallbtn,
+:root[data-theme="dark"] body.proto :is(#ins-home,#view-adminhome) .prompt .smallbtn{color:#E7EAEE}
+:root[data-theme="dark"] body.proto #view-home .fh-chip,
+:root[data-theme="dark"] body.proto :is(#ins-home,#view-adminhome) .fh-chip{background:#23272F}
+:root[data-theme="dark"] body.proto #view-home .fh-chip svg,
+:root[data-theme="dark"] body.proto :is(#ins-home,#view-adminhome) .fh-chip svg{color:#E7EAEE}
 :root[data-theme="dark"] body.proto .fh-build{background:#23272F;border:1px solid #2C313A}
 :root[data-theme="dark"] body.proto .fh-build .ed{color:#E7EAEE}
 :root[data-theme="dark"] body.proto .fh-feat{background:#23272F}
@@ -4401,7 +4443,8 @@ body.proto.paneleft.navfold.it2:has(.oprail.inlayout.open) .main{margin:8px 0;bo
 :root[data-theme="dark"] body.proto .xh-cancard:hover{box-shadow:0 4px 16px #0000004d}
 :root[data-theme="dark"] body.proto .xh-cancard b{color:#E7EAEE}
 :root[data-theme="dark"] body.proto .xh-cancard span{color:#C3C8D0}
-:root[data-theme="dark"] body.proto.unified #view-home .h1,:root[data-theme="dark"] body.proto.unified #ins-home .ins-hero .h1,:root[data-theme="dark"] body.proto.unified .xh-hero .h1{color:#E7EAEE}
+:root[data-theme="dark"] body.proto.unified #view-home .h1,
+:root[data-theme="dark"] body.proto.unified :is(#ins-home,#view-adminhome) .h1,:root[data-theme="dark"] body.proto.unified #ins-home .ins-hero .h1,:root[data-theme="dark"] body.proto.unified .xh-hero .h1{color:#E7EAEE}
 :root[data-theme="dark"] body.proto .uni-chats .nav-chat{color:var(--fh-ink,#E7EAEE)}
 :root[data-theme="dark"] body.proto .do-ic{background:#16181D;color:#C3C8D0}
 :root[data-theme="dark"] body.proto .do-ic.model{background:#2A2345}
@@ -4513,47 +4556,58 @@ body.proto .dock-clarify ~ .prompt{border-radius:20px!important}
 /* ============ Operator prompt bar = Spotter PromptBar (spotter-refresh PromptBar.module.css) ============
    20px corner, subtle border (stronger on hover); focused: a purple → cyan → blue gradient ring
    with a soft blue glow. 16/24 text with a 16px top inset, 32px + and send, ghost model picker. */
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form){position:relative;display:flex;flex-direction:column;gap:12px;min-height:0;padding:0 16px 16px;
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form){position:relative;display:flex;flex-direction:column;gap:12px;min-height:0;padding:0 16px 16px;
   border-radius:20px!important;background:var(--bg-raised);border:1px solid var(--border-subtle);
   box-shadow:0 2px 4px #1923310a,0 0 4px #1923311a;transition:box-shadow .15s ease;justify-content:flex-start}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form):hover:not(:focus-within){border-color:#DBDFE7}
-:root[data-theme="dark"] body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form):hover:not(:focus-within){border-color:#3D434E}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form)::before{content:"";position:absolute;inset:-1px;border-radius:20px;padding:1px;pointer-events:none;opacity:0;transition:opacity .15s ease;
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form):hover:not(:focus-within){border-color:#DBDFE7}
+:root[data-theme="dark"] body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form):hover:not(:focus-within){border-color:#3D434E}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form)::before{content:"";position:absolute;inset:-1px;border-radius:20px;padding:1px;pointer-events:none;opacity:0;transition:opacity .15s ease;
   background:linear-gradient(90deg,rgba(140,98,245,.5) 2%,rgba(72,209,224,.5) 49%,rgba(39,112,239,.5) 96%);
   -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form):focus-within{border-color:transparent;box-shadow:0 3px 12px 0 rgba(4,101,237,.12),0 4px 24px 0 rgba(56,125,222,.12);
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form):focus-within{border-color:transparent;box-shadow:0 3px 12px 0 rgba(4,101,237,.12),0 4px 24px 0 rgba(56,125,222,.12);
   transition:border-color .15s ease,box-shadow .15s ease}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form):focus-within::before{opacity:1}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-text{display:block;width:100%;box-sizing:border-box;margin:0;padding:16px 8px 0 4px;min-height:40px;max-height:184px;
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form):focus-within::before{opacity:1}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-text{display:block;width:100%;box-sizing:border-box;margin:0;padding:16px 8px 0 4px;min-height:40px;max-height:184px;
   font-size:16px;line-height:24px;font-weight:400;letter-spacing:-0.004em;color:var(--content-primary);background:transparent}
-body.proto #home-form .prompt-text{min-height:64px}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-text::placeholder{color:var(--content-secondary)}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions{display:flex;align-items:center;gap:4px;margin:0;min-height:32px;flex-wrap:nowrap}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions .grow{flex:1}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .smallbtn,body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .resetbtn,body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) #or-reset{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 32px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--content-primary);order:0;transition:background .12s ease}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .smallbtn:hover,body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .resetbtn:hover,body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) #or-reset:hover{background:var(--bg-ghost-hover)}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 32px;margin-left:4px;border-radius:50%;background:#2770EF;color:#fff;order:1;transition:background .12s ease}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn:hover{background:#2359B6}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn:active{background:#163772}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn{width:auto;height:auto;gap:4px;padding:6px 6px 6px 8px;border-radius:6px;background:transparent;font-size:14px;line-height:20px;color:var(--content-primary)}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn:hover{background:var(--bg-ghost-hover)}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn .dot{display:none}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn .pilltext{max-width:168px}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn::after{content:"";width:16px;height:16px;flex:0 0 16px;background:currentColor;
+body.proto #home-form .prompt-text,
+body.proto #ih-form .prompt-text,
+body.proto #ah-form .prompt-text{min-height:64px}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-text::placeholder{color:var(--content-secondary)}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions{display:flex;align-items:center;gap:4px;margin:0;min-height:32px;flex-wrap:nowrap}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions .grow{flex:1}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .smallbtn,body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .resetbtn,body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) #or-reset{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 32px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--content-primary);order:0;transition:background .12s ease}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .smallbtn:hover,body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .resetbtn:hover,body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) #or-reset:hover{background:var(--bg-ghost-hover)}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 32px;margin-left:4px;border-radius:50%;background:#2770EF;color:#fff;order:1;transition:background .12s ease}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn:hover{background:#2359B6}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .sendbtn:active{background:#163772}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn{width:auto;height:auto;gap:4px;padding:6px 6px 6px 8px;border-radius:6px;background:transparent;font-size:14px;line-height:20px;color:var(--content-primary)}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn:hover{background:var(--bg-ghost-hover)}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn .dot{display:none}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn .pilltext{max-width:168px}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .pillbtn::after{content:"";width:16px;height:16px;flex:0 0 16px;background:currentColor;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 5.9 4.3 4.6 8 8.3l3.7-3.7L13 5.9l-5 5z'/%3E%3C/svg%3E") center/16px no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 5.9 4.3 4.6 8 8.3l3.7-3.7L13 5.9l-5 5z'/%3E%3C/svg%3E") center/16px no-repeat}
 /* prompt box spec (Spotter chat-input inputCard): 745 wide, padding 0 16 16, 2 text lines + 32px
    action row = 126 tall; the same box on home and in the conversation so the glide is seamless */
-body.proto #view-home .home-wrap{padding-left:0;padding-right:0}
-body.proto #view-home #home-form,body.proto #view-convo #convo-form{width:745px;max-width:100%;box-sizing:border-box;padding:0 16px 16px;gap:12px}
+body.proto #view-home .home-wrap, 2 text lines + 32px
+   action row = 126 tall; the same box on home and in the conversation so the glide is seamless */
+body.proto :is(#ins-home,#view-adminhome) .home-wrap{padding-left:0;padding-right:0}
+body.proto #view-home #home-form,
+body.proto #ih-form,
+body.proto #ah-form,body.proto #view-convo #convo-form{width:745px;max-width:100%;box-sizing:border-box;padding:0 16px 16px;gap:12px}
 body.proto #view-convo .dock-inner{max-width:745px}
-body.proto #view-home .home-wrap .prompt-wrap{width:min(745px,100%)}
-body.proto #view-home #home-form .prompt-actions{min-height:32px;height:32px}
-body.proto :is(#home-form,#convo-form) .prompt-text{min-height:64px;height:64px}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions{height:32px;min-height:32px}
-body.proto :is(#home-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions > *{max-height:32px}
+body.proto #view-home .home-wrap .prompt-wrap,
+body.proto :is(#ins-home,#view-adminhome) .home-wrap .prompt-wrap{width:min(745px,100%)}
+body.proto #view-home #home-form .prompt-actions,
+body.proto #ih-form .prompt-actions,
+body.proto #ah-form .prompt-actions,
+body.proto :is(#ins-home,#view-adminhome) .prompt .prompt-actions{min-height:32px;height:32px}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form) .prompt-text{min-height:64px;height:64px}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions{height:32px;min-height:32px}
+body.proto :is(#home-form,#ih-form,#ah-form,#convo-form,#or-form,#pg-form,#rp-form) .prompt-actions > *{max-height:32px}
 /* the glide finishes before the hand-off at 560ms, and the docked prompt doesn't fade in on landing */
-body.proto.launching #view-home .prompt-wrap{transition:transform .54s cubic-bezier(.22,.8,.2,1)}
+body.proto.launching #view-home .prompt-wrap, and the docked prompt doesn't fade in on landing */
+body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap{transition:transform .54s cubic-bezier(.22,.8,.2,1)}
 body.proto.landed #view-convo .dock{animation:none}
 /* ============ Spotter Refresh reasoning + response cards (Reasoning Cards doc · ThoughtSpot Operator) ============ */
 /* reasoning — tool rows on the 20px rail (Reasoning.module.css) */
@@ -4974,11 +5028,16 @@ body.proto .ao-styles{display:flex;flex-direction:column;gap:16px}
 /* a new chat brings the glow back: 500ms ease-out */
 .home-radiance.rg-back{transition:opacity 500ms cubic-bezier(0,0,.2,1),transform 500ms cubic-bezier(0,0,.2,1)!important}
 /* submit (option 3): the copy, chips and panels leave instantly; the prompt lands 40px low, invisible… */
-body.proto.launching #view-home .h1,body.proto.launching #view-home .fh-chips,body.proto.launching #view-home .fh-body{transition:none!important;opacity:0!important;transform:none!important}
-body.proto.launching #view-home .prompt-wrap{transition:none!important;opacity:0;transform:translateY(calc(var(--launch-dy,0px) + 40px))}
-body.proto.launching #view-home .prompt-wrap .sendbtn{opacity:1}
+body.proto.launching #view-home .h1, invisible… */
+body.proto.launching :is(#ins-home,#view-adminhome) .h1,body.proto.launching #view-home .fh-chips,body.proto.launching :is(#ins-home,#view-adminhome) .fh-chips,body.proto.launching #view-home .fh-body{transition:none!important;opacity:0!important;transform:none!important}
+body.proto.launching #view-home .prompt-wrap,
+body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap{transition:none!important;opacity:0;transform:translateY(calc(var(--launch-dy,0px) + 40px))}
+body.proto.launching #view-home .prompt-wrap .sendbtn,
+body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap .sendbtn{opacity:1}
 /* …and rises into place over 675ms */
-body.proto.launching.rise #view-home .prompt-wrap{transition:opacity 675ms cubic-bezier(0,0,.1,1),transform 675ms cubic-bezier(0,0,.1,1)!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
+body.proto.launching.rise #view-home .prompt-wrap,
+/* …and rises into place over 675ms */
+body.proto.launching.rise :is(#ins-home,#view-adminhome) .prompt-wrap{transition:opacity 675ms cubic-bezier(0,0,.1,1),transform 675ms cubic-bezier(0,0,.1,1)!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
 /* landing: the header slides in (300ms), the question bubble springs in from its top-right corner */
 @keyframes cvHeadIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
 @keyframes bubbleIn{from{transform:scale(.85)}to{transform:none}}
@@ -4987,7 +5046,8 @@ body.proto.landed #view-convo .convo-head{animation:cvHeadIn 300ms cubic-bezier(
 body.proto.landed #view-convo .stream{animation:none}
 body.proto.landed #view-convo .stream>.turn:first-child .user-msg{transform-origin:top right;animation:bubbleIn 150ms cubic-bezier(.34,1.56,.64,1) 250ms both,bubbleFade 100ms ease-out 250ms both}
 @media (prefers-reduced-motion:reduce){
-  body.proto.launching #view-home .prompt-wrap,body.proto.launching.rise #view-home .prompt-wrap{transition:none!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
+  body.proto.launching #view-home .prompt-wrap,
+  body.proto.launching :is(#ins-home,#view-adminhome) .prompt-wrap,body.proto.launching.rise #view-home .prompt-wrap,body.proto.launching.rise :is(#ins-home,#view-adminhome) .prompt-wrap{transition:none!important;opacity:1;transform:translateY(var(--launch-dy,0px))}
   body.proto.landed #view-convo .convo-head,body.proto.landed #view-convo .stream>.turn:first-child .user-msg{animation:none}
   .home-radiance.rg-back{transition:none!important}}
 /* ---- + in the prompt bar: one item, Add files (Radiant Menu) ---- */
@@ -5022,7 +5082,9 @@ body.proto .oprail #or-form .smallbtn[aria-label="Add context"]{display:flex}
 .um-files .fcWrap{width:202px;flex:0 0 auto}
 .or-scroll .um-files .fcWrap{width:min(170px,calc(50% - 4px))}
 /* ---- starter prompts: a chip opens a panel of four under the prompt (Spotter Home quick search) ---- */
-body.proto #view-home .fh-chip.on{background:var(--fh-surf,#f6f8fa);border-color:var(--content-primary,#1d232f);color:var(--content-primary,#1d232f)}
+body.proto #view-home .fh-chip.on,
+/* ---- starter prompts: a chip opens a panel of four under the prompt (Spotter Home quick search) ---- */
+body.proto :is(#ins-home,#view-adminhome) .fh-chip.on{background:var(--fh-surf,#f6f8fa);border-color:var(--content-primary,#1d232f);color:var(--content-primary,#1d232f)}
 .sp-panel{position:absolute;left:48px;right:48px;top:calc(100% + 24px);z-index:40;padding:8px;border-radius:12px;background:var(--bg-raised,#fff);border:1px solid var(--border-subtle,#eaedf2);box-shadow:0 0 4px rgba(25,35,49,.06),0 12px 24px rgba(25,35,49,.1);animation:qmIn .22s cubic-bezier(.2,.8,.2,1) both;text-align:left}
 body.proto #view-home .radiance:has(.sp-panel:not([hidden])){z-index:3}
 .sp-h{display:flex;align-items:center;gap:8px;padding:8px 8px 12px 8px;font-size:14px;line-height:20px;color:var(--content-secondary,#4a5262)}
@@ -5343,6 +5405,22 @@ body.proto .oprail .or-dock form.prompt:not(.has-text) .sendbtn{opacity:.5}
 body.proto .oprail .or-dock .disclaimer{margin-top:8px;text-align:center;font-size:12px;line-height:18px;color:var(--content-secondary)}
 form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.97)}
 @media (prefers-reduced-motion:reduce){ form.prompt.is-wiggling{animation:none} }
+
+/* Insights and Admin homes share the Develop home hero: same Radiance canvas, prompt box, chips and spacing */
+body.rglow #ins-home,body.rglow #view-adminhome{position:relative;isolation:isolate}
+body.rglow #ins-home>.xwash,body.rglow #view-adminhome>.xwash{display:none}
+body.rglow #ins-home>.rg-main,body.rglow #view-adminhome>.rg-main{display:block;position:absolute!important;z-index:-1!important}
+:is(#ins-home,#view-adminhome) .home-wrap{margin:48px auto 0!important}
+body.proto #ins-home #ih-form,body.proto #view-adminhome #ah-form{padding:0 16px 16px;gap:12px}
+body.proto:not(.unified) #ins-home .fh-chips.only-uni{display:none!important}
+:is(#ins-home,#view-adminhome) .h1{opacity:1;animation:none}
+body.proto.unified #ins-home .fh-chips.ins-std{display:none}
+:is(#ins-home,#view-adminhome) .prompt .hb-pill{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:16px;font-size:14px;line-height:20px;color:var(--content-primary);background:transparent}
+:is(#ins-home,#view-adminhome) .prompt .hb-pill:hover{background:var(--bg-ghost-hover)}
+#view-adminhome .fh-chip svg{color:#777E8B}
+#view-adminhome .prompt-wrap{position:relative}
+/* Admin nav: Home on top in every experience; Org management only in All Orgs */
+body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
 </style>
 
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><symbol id="ico-gear" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></symbol><symbol id="ico-ai" viewBox="0 0 24 24"><path d="M9.4 4.1c.2-.6 1-.6 1.2 0l1.6 4.4a1 1 0 0 0 .6.6l4.4 1.6c.6.2.6 1 0 1.2l-4.4 1.6a1 1 0 0 0-.6.6l-1.6 4.4c-.2.6-1 .6-1.2 0l-1.6-4.4a1 1 0 0 0-.6-.6l-4.4-1.6c-.6-.2-.6-1 0-1.2l4.4-1.6a1 1 0 0 0 .6-.6l1.6-4.4Z"/><path d="M18 1.6c.13-.4.65-.4.78 0l.62 1.86a.7.7 0 0 0 .44.44l1.86.62c.4.13.4.65 0 .78l-1.86.62a.7.7 0 0 0-.44.44l-.62 1.86c-.13.4-.65.4-.78 0l-.62-1.86a.7.7 0 0 0-.44-.44l-1.86-.62c-.4-.13-.4-.65 0-.78l1.86-.62a.7.7 0 0 0 .44-.44L18 1.6Z"/></symbol></defs></svg>
@@ -5670,7 +5748,7 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
         <button class="nav-item" type="button" data-admin="users">Users management</button>
         <div class="nav-group">
           <div class="nav-group-label">Management</div>
-          <button class="nav-item on" type="button" data-admin="feature">Feature management</button>
+          <button class="nav-item" type="button" data-admin="feature">Feature management</button>
           <button class="nav-item" type="button">Variables</button>
           <button class="nav-item" type="button">Version control</button>
         </div>
@@ -6082,20 +6160,25 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
           <div class="xh-can"><button type="button" class="xh-cancard" data-xq="Connect a warehouse"><b>Connect a warehouse</b><span>Snowflake, BigQuery, Databricks, Redshift, Postgres — OAuth or keys, tested before it is saved.</span></button><button type="button" class="xh-cancard" data-xq="Build a model from tables"><b>Build a model from tables</b><span>Finds the joins, names the measures, writes the Spotter synonyms — you approve the diff.</span></button><button type="button" class="xh-cancard" data-xq="Check data quality"><b>Check data quality</b><span>Nulls, duplicates, stale partitions — read-only, nothing changes.</span></button><button type="button" class="xh-cancard" data-xq="Teach Spotter memory"><b>Teach Spotter memory</b><span>Business terms and preferred measures, saved to the model so every question benefits.</span></button></div>
         </div>
       </section>
-      <section id="view-adminhome" class="xhome radiance" hidden><div class="fh-wash xwash" aria-hidden="true"><div class="rb rb-blobs"></div><div class="rb rb-wash"></div><div class="rb rb-grain"></div></div>
-        <div class="xh-hero">
-          <h1 class="h1">What are we <em>setting up today</em>?</h1>
-          <form class="ih-bar xh-bar" id="ah-form" data-ctx="Primary Org">
-                <label for="ah-form-in" class="vh">Ask SpotterX</label>
-                <textarea class="ih-text" id="ah-form-in" rows="1" placeholder="Ask SpotterX"></textarea>
-                <div class="ih-row">
-                  <button type="button" class="ih-models">Primary Org <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                  <button type="button" class="ih-ico" aria-label="Add context"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <section id="view-adminhome" class="xhome radiance" hidden><div class="home-radiance rg rg-main" aria-hidden="true"><div class="radiance-local"></div></div><div class="fh-wash xwash" aria-hidden="true"><div class="rb rb-blobs"></div><div class="rb rb-wash"></div><div class="rb rb-grain"></div></div>
+        <div class="home-wrap adm-hw">
+          <h1 class="h1">What are we <em>configuring today?</em></h1>
+          <div class="prompt-wrap">
+          <form class="prompt" id="ah-form" data-ctx="Primary Org">
+                <label for="ah-form-in" class="vh">Ask ThoughtSpot Operator</label>
+                <textarea class="prompt-text" id="ah-form-in" rows="1" placeholder="Ask about users, settings or usage…"></textarea>
+                <div class="prompt-actions">
+                  <button type="button" class="smallbtn" aria-label="Add context"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
                   <span class="grow"></span>
-                  <button type="submit" class="ih-send" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3.5M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <button type="submit" class="sendbtn" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3.5M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 </div>
               </form>
-          <div class="ih-chips xh-q"><button type="button" class="ih-chip" data-xq="Create an EMEA org and invite the team"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Create an EMEA org and invite the team</span></button><button type="button" class="ih-chip" data-xq="Set up Okta SSO"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Set up Okta SSO</span></button><button type="button" class="ih-chip" data-xq="Turn on Spotter for Sales orgs"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Turn on Spotter for Sales orgs</span></button></div>
+          </div>
+          <div class="fh-chips" id="ahchips">
+            <button class="fh-chip" type="button" data-ah="manage" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6" cy="5.5" r="2.4" stroke="currentColor" stroke-width="1.4"/><path d="M1.8 13.2c.4-2.3 2.1-3.7 4.2-3.7s3.8 1.4 4.2 3.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.6 3.4a2.3 2.3 0 0 1 0 4.4M12.2 9.8c1 .6 1.7 1.8 2 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Management</button>
+            <button class="fh-chip" type="button" data-ah="config" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="10" cy="4.5" r="1.6" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="11.5" r="1.6" stroke="currentColor" stroke-width="1.4"/></svg>Configuration</button>
+            <button class="fh-chip" type="button" data-ah="monitor" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 13.5h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3.5 10.5l3-3.5 2.5 2 3.5-4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Monitoring</button>
+          </div>
         </div>
         <div class="xh-body">
           <div class="onb-mount"></div>
@@ -7011,30 +7094,26 @@ form.prompt.is-wiggling{animation:prompt-wiggle 360ms cubic-bezier(.36,.07,.19,.
         <div class="ins-main" id="ins-main">
 
           <!-- Insights home -->
-          <div class="ins-home radiance" id="ins-home"><div class="fh-wash xwash" aria-hidden="true"><div class="rb rb-blobs"></div><div class="rb rb-wash"></div><div class="rb rb-grain"></div></div>
-            <div class="ins-hero">
+          <div class="ins-home radiance" id="ins-home"><div class="home-radiance rg rg-main" aria-hidden="true"><div class="radiance-local"></div></div><div class="fh-wash xwash" aria-hidden="true"><div class="rb rb-blobs"></div><div class="rb rb-wash"></div><div class="rb rb-grain"></div></div>
+            <div class="home-wrap ins-hw">
               <h1 class="h1">Lets <em>make sense</em> of your data together.</h1>
-              <form class="ih-bar" id="ih-form">
+              <div class="prompt-wrap">
+              <form class="prompt" id="ih-form">
                 <label for="ih-input" class="vh">Ask Spotter</label>
-                <textarea class="ih-text" id="ih-input" rows="1" placeholder="Ask me a question. Use '@' to select columns and values"></textarea>
-                <div class="ih-row">
-                  <div class="ih-mode" role="group" aria-label="Mode">
-                    <button type="button" class="on" aria-label="Search" title="Search"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M6.2 0h2.3v4.7c-.9.1-1.7.5-2.3 1.1V0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m13.2 12.1-1.1 1.1-1.8-1.9c-1.2.6-2.7.4-3.6-.6a3.1 3.1 0 1 1 4.8-.4l1.7 1.8ZM8.9 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/><path d="M5.1 8.6c0-.6.1-1.2.3-1.7V2.7H3.1V10h2.2c-.1-.5-.2-.9-.2-1.4ZM0 5.3h2.3V10H0z" fill="currentColor"/></svg></button>
-                    <button type="button" aria-label="Deep analysis" title="Deep analysis"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="6" r="1.4" fill="currentColor"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/><path d="M6 10h.01M10 6h.01M6.8 6.8l2.4 2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
-                  </div>
-                  <span class="ih-div"></span>
-                  <button type="button" class="ih-models">All data models <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                  <button type="button" class="ih-ico" aria-label="Add context"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+                <textarea class="prompt-text" id="ih-input" rows="1" placeholder="Ask me a question. Use '@' to select columns and values"></textarea>
+                <div class="prompt-actions">
+                  <button type="button" class="smallbtn" aria-label="Add context"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+                  <button type="button" class="hb-pill">All data models <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                   <span class="grow"></span>
-                  <button type="button" class="ih-ico" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 5h6M11.5 5h2M2.5 11h2M7.5 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="5" r="1.6" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11" r="1.6" stroke="currentColor" stroke-width="1.5"/></svg></button>
-                  <button type="submit" class="ih-send" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3.5M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <button type="submit" class="sendbtn" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3.5M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 </div>
               </form>
-<div class="ih-chips xh-q only-uni"><button type="button" class="ih-chip" data-xq="Top 5 stores by revenue"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Top 5 stores by revenue</span></button><button type="button" class="ih-chip" data-xq="Why did sales drop 35% MoM?"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Why did sales drop 35% MoM?</span></button><button type="button" class="ih-chip" data-xq="Build a Liveboard on regional sales"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg><span class="ct">Build a Liveboard on regional sales</span></button></div>
-              <div class="ih-chips">
-                <button type="button" class="ih-chip"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M6.2 0h2.3v4.7c-.9.1-1.7.5-2.3 1.1V0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m13.2 12.1-1.1 1.1-1.8-1.9c-1.2.6-2.7.4-3.6-.6a3.1 3.1 0 1 1 4.8-.4l1.7 1.8ZM8.9 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/><path d="M5.1 8.6c0-.6.1-1.2.3-1.7V2.7H3.1V10h2.2c-.1-.5-.2-.9-.2-1.4ZM0 5.3h2.3V10H0z" fill="currentColor"/></svg>Quick search</button>
-                <button type="button" class="ih-chip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="6" r="1.4" fill="currentColor"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/><path d="M6.8 6.8l2.4 2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Deep analysis</button>
-                <button type="button" class="ih-chip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6.4 6.3a1.7 1.7 0 0 1 3.2.6c0 1.1-1.6 1.4-1.6 2.3M8 11.2h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Know your data</button>
+              </div>
+              <div class="fh-chips xh-q only-uni"><button type="button" class="fh-chip" data-xq="Top 5 stores by revenue"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg>Top 5 stores by revenue</button><button type="button" class="fh-chip" data-xq="Why did sales drop 35% MoM?"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg>Why did sales drop 35% MoM?</button><button type="button" class="fh-chip" data-xq="Build a Liveboard on regional sales"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-ai"/></svg>Build a Liveboard on regional sales</button></div>
+              <div class="fh-chips ins-std">
+                <button type="button" class="fh-chip"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M6.2 0h2.3v4.7c-.9.1-1.7.5-2.3 1.1V0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m13.2 12.1-1.1 1.1-1.8-1.9c-1.2.6-2.7.4-3.6-.6a3.1 3.1 0 1 1 4.8-.4l1.7 1.8ZM8.9 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/><path d="M5.1 8.6c0-.6.1-1.2.3-1.7V2.7H3.1V10h2.2c-.1-.5-.2-.9-.2-1.4ZM0 5.3h2.3V10H0z" fill="currentColor"/></svg>Quick search</button>
+                <button type="button" class="fh-chip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="6" r="1.4" fill="currentColor"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/><path d="M6.8 6.8l2.4 2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Deep analysis</button>
+                <button type="button" class="fh-chip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M6.4 6.3a1.7 1.7 0 0 1 3.2.6c0 1.1-1.6 1.4-1.6 2.3M8 11.2h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Know your data</button>
               </div>
             </div>
             <div class="onb-mount"></div>
@@ -11726,7 +11805,7 @@ brand +
       if (lab === 'Insights') goInsHome();
       else if (lab === 'Develop') goHome();
       else if (lab === 'Data') goData();
-      else if (lab === 'Admin') goFeature();
+      else if (lab === 'Admin') goAdminHome();
     });
   });
   [].forEach.call(document.querySelectorAll('#nav-insights [data-ins]'), function(b){
@@ -13934,7 +14013,7 @@ brand +
       if (which === 'Insights') goInsHome();
       else if (which === 'Develop') goHome();
       else if (which === 'Data') goData();
-      else if (which === 'Admin') goFeature();
+      else if (which === 'Admin') goAdminHome();
     });
   });
 
@@ -15163,7 +15242,7 @@ brand +
   [].forEach.call(document.querySelectorAll('#expbar [data-exp]'), function(b){
     b.addEventListener('click', function(){
       if (b.dataset.exp === 'unified') UNI.enable(); else UNI.disable();
-      if (b.dataset.exp !== 'unified'){ if (currentView === 'adminhome') goFeature(); else if (currentView === 'datahome') goData(); }
+      if (b.dataset.exp !== 'unified'){ if (currentView === 'datahome') goData(); }
       [].forEach.call(document.querySelectorAll('#expbar [data-exp]'), function(x){ var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
       toast(b.dataset.exp === 'unified' ? '<b>Unified experience</b> — SpotterX is the one agent on every tab.' : '<b>Specific agent experience</b> — each tab has its own agent.');
     });
@@ -15631,10 +15710,11 @@ brand +
   });
   /* Home holds the blobs still (reference submit-flow option 3); they start drifting on submit */
   function rgMotion(){
-    var homeL = document.querySelector('#view-home .rg-main .radiance-local');
-    var still = currentView === 'home' && !document.body.classList.contains('launching');
+    var launching = document.body.classList.contains('launching');
     [].forEach.call(document.querySelectorAll('.rg .radiance-local'), function(el){
-      if (el === homeL && still) el.dataset.radianceMotion = 'still'; else delete el.dataset.radianceMotion;
+      var host = el.closest('#view-home,#ins-home,#view-adminhome'), sec = host && (host.closest('section') || host);
+      var still = !launching && host && el.parentElement.classList.contains('rg-main') && sec && !sec.hidden && !(host.id === 'ins-home' && host.hidden);
+      if (still) el.dataset.radianceMotion = 'still'; else delete el.dataset.radianceMotion;
     });
     if (window.RadianceLanguageRenderer) window.RadianceLanguageRenderer.refresh();
   }
@@ -15981,6 +16061,64 @@ brand +
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && spChip){ var c = spChip; spClose(); c.focus(); } });
   (function(){ var _sh = show; show = function(v){ spClose(); _sh(v); }; })();
 
+  /* ================= Admin home: starter prompts under Management · Configuration · Monitoring ================= */
+  var AH = {
+    manage: { t:'Management', q:[
+      { l:'Add a new user', p:'Add a new user to my org.' },
+      { l:'Who has developer privilege?', p:'Who has developer privilege?' },
+      { l:'Create an org and invite the team', p:'Create an EMEA org and invite the team.', all:true },
+      { l:'Turn on a feature for some orgs', p:'Turn on Spotter for the Sales orgs.' },
+      { l:'Promote changes with version control', p:'Set up version control so we can promote Liveboards from dev to prod.' }
+    ]},
+    config: { t:'Configuration', q:[
+      { l:'Application settings', p:'Point share emails and links at our own app URL.' },
+      { l:'Customise the look', p:'Match ThoughtSpot to our brand — here are our colours and font.' },
+      { l:'AI settings', p:'Turn on Spotter for Analysts and keep it off for Viewers.' },
+      { l:'Search & SpotIQ', p:'Exclude the staging tables from search and SpotIQ.' },
+      { l:'Single sign-on', p:'Set up Okta SSO for this org.' }
+    ]},
+    monitor: { t:'Monitoring', q:[
+      { l:'Usage & adoption', p:'How many people used ThoughtSpot this week, and who stopped?' },
+      { l:'Performance tracking', p:'Which Liveboards load slowest, and why?' },
+      { l:'AI & BI stats', p:'How is Spotter being used compared with search this month?' },
+      { l:'Billing query stats', p:'Which users and Liveboards drove the most queries this month?' }
+    ]}
+  };
+  var ahPanel = document.createElement('div'); ahPanel.className = 'sp-panel'; ahPanel.hidden = true;
+  var ahWrap = document.querySelector('#view-adminhome .prompt-wrap'), ahIn = document.getElementById('ah-form-in');
+  if (ahWrap) ahWrap.appendChild(ahPanel);
+  var ahChip = null, ahPh = '';
+  function ahList(k){ return AH[k].q.filter(function(x){ return !x.all || ORG === 'all'; }); }
+  function ahClose(){
+    ahPanel.hidden = true; ahPanel.innerHTML = '';
+    if (ahChip){ ahChip.classList.remove('on'); ahChip.setAttribute('aria-expanded', 'false'); ahChip = null; }
+    if (ahPh){ ahIn.placeholder = ahPh; ahPh = ''; }
+  }
+  function ahOpen(chip){
+    var again = ahChip === chip; ahClose(); if (again) return;
+    var k = chip.dataset.ah; ahChip = chip; chip.classList.add('on'); chip.setAttribute('aria-expanded', 'true');
+    var ic = chip.querySelector('svg') ? chip.querySelector('svg').outerHTML : '';
+    ahPanel.innerHTML = '<div class="sp-h">' + ic + '<span>' + AH[k].t + '</span><span class="grow"></span><button type="button" class="sp-x" aria-label="Close">' + SP_X + '</button></div>' +
+      ahList(k).map(function(x, n){ return '<button type="button" class="sp-i" data-sp="' + n + '">' + x.l + '</button>'; }).join('');
+    ahPanel.hidden = false;
+  }
+  [].forEach.call(document.querySelectorAll('#ahchips [data-ah]'), function(c){ c.addEventListener('click', function(e){ e.stopPropagation(); ahOpen(c); }); });
+  ahPanel.addEventListener('click', function(e){
+    if (e.target.closest('.sp-x')){ ahClose(); return; }
+    var b = e.target.closest('.sp-i'); if (!b || !ahChip) return;
+    var x = ahList(ahChip.dataset.ah)[parseInt(b.dataset.sp, 10)];
+    ahClose(); ahIn.value = x.p; document.getElementById('ah-form').requestSubmit();
+  });
+  ahPanel.addEventListener('mouseover', function(e){
+    var b = e.target.closest('.sp-i'); if (!b || !ahChip) return;
+    if (!ahPh) ahPh = ahIn.placeholder;
+    ahIn.placeholder = ahList(ahChip.dataset.ah)[parseInt(b.dataset.sp, 10)].p;
+  });
+  ahPanel.addEventListener('mouseleave', function(){ if (ahPh){ ahIn.placeholder = ahPh; ahPh = ''; } });
+  document.addEventListener('click', function(e){ if (ahChip && !(e.target.closest && (e.target.closest('.sp-panel') || e.target.closest('#ahchips')))) ahClose(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && ahChip){ var c = ahChip; ahClose(); c.focus(); } });
+  (function(){ var _sh = show; show = function(v){ ahClose(); _sh(v); }; })();
+
   /* ================= Share chat ================= */
   var SH_PEOPLE = [
     { id:'u1', n:'Priya Raman', s:'priya.raman@acme.com', c:'#2770EF' },
@@ -16225,7 +16363,8 @@ brand +
     var aoViews = { aosec:1, aostyles:1 }, bothViews = { home:1, links:1, convo:1, adminhome:1, orgs:1, users:1, feature:1 };
     /* leave a page that only exists in the other scope; Links settings exists in both, so an open pane chat survives the move */
     var leave = railOpen ? function(){ goLinks(); markDevNav('links'); } : goHome;
-    if (w === 'primary' && aoViews[currentView]) leave();
+    if (w === 'primary' && currentView === 'orgs') goAdminHome();
+    else if (w === 'primary' && aoViews[currentView]) leave();
     else if (w === 'all' && !aoViews[currentView] && !bothViews[currentView]) leave();
     renderAoSec();
     toast(w === 'all' ? '<b>All Orgs</b> — you are looking at cluster-wide settings.' : '<b>Primary Org</b> — settings for this org.');
