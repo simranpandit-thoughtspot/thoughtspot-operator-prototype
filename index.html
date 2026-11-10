@@ -5471,6 +5471,12 @@ body.proto #view-adminhome .adm-cards{width:min(745px,100%);margin:0 auto;displa
 #view-adminhome .ah-row:last-child .ctxmenu{top:auto;bottom:calc(100% + 4px)}
 /* the Operator is already the front door on these homes: no floating button */
 body:has(#view-ins:not([hidden]) #ins-home:not([hidden])) .opfab,body:has(#view-adminhome:not([hidden])) .opfab{display:none!important}
+body:has(#view-datahome:not([hidden])) .opfab,body:has(#view-convo:not([hidden])) .opfab,body:has(#view-home:not([hidden])) .opfab{display:none!important}
+/* a Radiance canvas nobody can see must not keep drawing: the renderer skips anything that is not displayed or is
+   visibility:hidden, so the closed pane, the unused page wash and a wash that has finished fading are switched off */
+body.rglow.proto .oprail:not(.open):not(.inlayout) #rg-rail,body.rglow.proto .oprail.inlayout:not(.open) #rg-rail,body .oprail:not(.open) #rg-rail{display:none!important}
+body.rglow.proto.it2:not(:has(.oprail.inlayout.open)) #rg-body{visibility:hidden}
+.home-radiance.rg-out{visibility:hidden;transition:opacity 5000ms cubic-bezier(0,0,.2,1),transform 5000ms cubic-bezier(0,0,.2,1),visibility 0s linear 5000ms}
 /* Admin nav and Feature delegation: All Orgs and Primary Org each have their own */
 body.proto:not(.allorg) #nav-admin .only-all,body.proto.allorg #nav-admin .only-pri{display:none!important}
 body.proto:not(.allorg) #view-feature .px-wrap:not(.fd-pri),body.proto.allorg #view-feature .fd-pri{display:none!important}
@@ -8706,6 +8712,7 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
   };
 
   var PROMPT = 'Embed the NA Commercial liveboard in React with cookieless trusted auth.';
+  var UC1_TEXT = null;   /* the prompt as typed, when the embed flow starts from a home page */
 
   /* ---------------- the two agents ---------------- */
   var HEADING = {
@@ -9443,7 +9450,8 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
     setAgent('operator');
     document.getElementById('convo-name').textContent = 'Embed NA Commercial in React';
     goConvo();
-    add('<div class="user-msg">' + PROMPT + '</div>');
+    add('<div class="user-msg">' + (UC1_TEXT ? UC1_TEXT.replace(/</g,'&lt;') : PROMPT) + '</div>');
+    UC1_TEXT = null;
     after(t(400), stepReason);
   }
 
@@ -11908,7 +11916,7 @@ brand +
     if (EP === 'prompt' && promptAgent === 'ops'){
       var v = box.value || 'Embed this home page in our portal.';
       box.value = ''; box.style.height = 'auto';
-      railReset(); openRail(v, true);
+      homeLaunch(v, 'ins');
       return;
     }
     toast('Spotter (the analyst) is not wired in this prototype — the Operator is');
@@ -12587,6 +12595,7 @@ brand +
     after(t(160), function(){ opQuip(q); });
     if (currentView === 'datahome' || currentView === 'adminhome'){ after(t(400), function(){ railTabHome(text, currentView); }); return; }
     if (currentView === 'links' || /share links?|link settings|links? (point|at)|unsubscribe link|generic link/.test(q)){ after(t(400), function(){ railLinks(text); }); return; }
+    if (DEVPRIV_RE.test(q)){ after(t(400), function(){ admDevPriv(text); }); return; }
     if (/(add|create|new|invite|onboard).{0,24}(user|person|teammate|account)|user to (my|the) org/.test(q))
       after(t(400), function(){ railAddUser(text); });
     else if (/custom action|an action on|posts? the selected|crm|callback/.test(q)) after(t(400), function(){ railAction(text); });
@@ -14648,11 +14657,8 @@ brand +
     e.preventDefault();
     var v = convoInput.value.trim();
     if (!v) return;
-    add('<div class="user-msg">' + v.replace(/</g,'&lt;') + '</div>');
     convoInput.value = ''; autosize(convoInput);
-    after(t(450), function(){
-      add('<div class="agent-msg"><p>This prototype plays one scripted flow — use case 1. Your question is noted but not wired.</p></div>');
-    });
+    chatFollow(v);
   });
 
   /* ================= PLAYGROUND DRAFTS =================
@@ -15131,7 +15137,7 @@ brand +
   show = function(view){
     var prev = currentView;
     /* the homepage agent and the pane never sit side by side: the pane folds its chat away into My chats */
-    if ((view === 'home' || view === 'convo') && railOpen){
+    if (isHomeView(view) && railOpen){
       if (CUR && CUR.loc === 'rail') stash();
       railReset(); closeRailQuiet();
     }
@@ -15141,7 +15147,7 @@ brand +
       navAgent.hidden = true; navDev.hidden = false; markDevNav('home');
     }
     renderDevChats(view === 'convo' && CUR ? CUR.id : null);
-    if (prev === 'convo' && view !== 'convo' && view !== 'home') carryToRail();
+    if (prev === 'convo' && !isHomeView(view)) carryToRail();
   };
   /* reopen any chat from My chats with its history, ready to continue */
   var _openChat = openChat;
@@ -15219,7 +15225,7 @@ brand +
     e.preventDefault(); e.stopImmediatePropagation();
     var text = homeInput.value.trim();
     if (!text) return;
-    launchChat(text, function(){ startFlow(text, 'home-form'); });
+    devRun(text);
   }, true);
 
   /* + New chat: the home page with only the agent on it */
@@ -15351,6 +15357,9 @@ brand +
   /* asking from any tab's home hands the question to SpotterX in the pane, carrying the tab */
   function xAsk(text){
     text = (text || '').trim(); if (!text) return;
+    if (currentView === 'adminhome'){ homeLaunch(text, 'admin'); return; }
+    if (currentView === 'datahome'){ homeLaunch(text, 'data'); return; }
+    if (currentView === 'inshome'){ homeLaunch(text, 'ins'); return; }
     if (railOpen){ railReset(); }
     openRail(text, true);
   }
@@ -15378,6 +15387,7 @@ brand +
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-unichat]'); if (!b) return;
     var id = b.dataset.unichat, c = chatById(id);
+    if (isHomeView(currentView)){ openChat(id); return; }   /* no pane on home pages: the chat opens full-page */
     if (CUR && CUR.id === id && CUR.loc === 'rail' && railOpen) return;
     stash();
     if (STORE[id]){ useCtx('rail'); restore(id, 'rail'); orEmpty.hidden = true; if (!railOpen) openRail(null, false); }
@@ -16130,8 +16140,7 @@ brand +
     var x = SP[spChip.dataset.fh].q[parseInt(b.dataset.sp, 10)];
     spClose();
     homeInput.value = x.p;
-    selectUC(x.uc, true);
-    launchChat(x.p, function(){ startFlow(x.p, 'home-form'); });
+    devRun(x.p);
   });
   /* hovering a starter previews the full prompt in the box, like Spotter Home */
   spPanel.addEventListener('mouseover', function(e){
@@ -16300,11 +16309,23 @@ brand +
   (function(){ var q = document.querySelector('#view-feature .fd-search input'); if (!q) return;
     q.addEventListener('input', function(){ var v = q.value.trim().toLowerCase();
       [].forEach.call(document.querySelectorAll('#view-feature .fd-card'), function(c){ c.hidden = v && c.textContent.toLowerCase().indexOf(v) < 0; }); }); })();
-  /* ================= Admin home → immersive chat (like Develop), Admin nav and its My chats stay ================= */
-  var ADM_CHAT = false;
+  /* ================= Home pages → immersive chat. One router decides what a prompt runs. =================
+     Develop, Admin, Data and Insights homes all open the full-page chat and keep their own nav.
+     The prompt that was typed is the prompt that runs: each request goes to its own flow, a request that
+     belongs to the other tab asks to switch first, and anything unscripted says so instead of guessing.
+     The right overlay pane never opens on a home page or in the immersive chat. */
+  var HOME_CHAT = null;          /* which tab owns the open immersive chat: 'admin' | 'data' | 'ins' | null (Develop) */
+  function isHomeView(v){ return v === 'home' || v === 'adminhome' || v === 'datahome' || v === 'inshome' || v === 'convo'; }
+  var DEVPRIV_RE = /developer privilege|who (has|holds|have).{0,24}privilege/;
+  var ADDUSER_RE = /(add|create|new|invite|onboard).{0,24}(user|person|teammate|account)|user to (my|the) org/;
+  /* anything that is plainly an Admin job, asked on Develop */
+  var ADMIN_RE = /privilege|\busers?\b|\bgroups?\b|\broles?\b|\borgs?\b|\bsso\b|saml|okta|entra|identity provider|feature delegation|turn on spotter|sign-?up request|licen[sc]e/;
+  /* anything that is plainly a Develop job, asked on Admin */
+  var DEV_RE = /\bembed|cors|\bcsp\b|allowlist|trusted auth|cookieless|blank frame|white frame|authexpire|\bsdk\b|rest api|which api|what api|\btml\b|endpoint|custom action|\bcrm\b|brand|theme|\bcss\b|playground|share (links?|emails?)/;
+  function escTxt(v){ return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   function renderAdmChats(activeId){
     var box = document.getElementById('adm-chats'); if (!box) return;
-    var list = CHATS.filter(function(c){ return c.adm; });
+    var list = CHATS.filter(function(c){ return c.tab === 'admin'; });
     box.parentNode.hidden = !list.length;
     box.innerHTML = list.map(function(c){
       return '<button class="nav-chat' + (c.id === activeId ? ' on' : '') + '" type="button" data-admchat="' + c.id + '"><span class="chat-t">' + c.t + '</span></button>';
@@ -16313,27 +16334,37 @@ brand +
   (function(){
     var _sh = show;
     show = function(v){
-      if (v !== 'convo' && ADM_CHAT && currentView === 'convo'){ stash(); ADM_CHAT = false; }
-      else if (v !== 'convo') ADM_CHAT = false;
+      if (v !== 'convo' && HOME_CHAT && currentView === 'convo'){
+        /* leaving a tab's immersive chat: stop the flow where it is and park the chat in My chats */
+        clearTimers([document.getElementById('stream')]); stash();
+      }
+      if (v !== 'convo') HOME_CHAT = null;
       _sh(v);
-      if (v === 'convo' && ADM_CHAT){
-        navAdmin.hidden = false; navDev.hidden = true; navAgent.hidden = true; navIns.hidden = true;
-        markProductTab('Admin');
-        [].forEach.call(document.querySelectorAll('#nav-admin .nav-item.on'), function(b){ b.classList.remove('on'); });
-        renderAdmChats(CUR ? CUR.id : null);
+      if (v === 'convo' && HOME_CHAT){
+        navAdmin.hidden = HOME_CHAT !== 'admin'; navData.hidden = HOME_CHAT !== 'data'; navIns.hidden = HOME_CHAT !== 'ins';
+        navDev.hidden = true; navAgent.hidden = true;
+        markProductTab(HOME_CHAT === 'admin' ? 'Admin' : HOME_CHAT === 'data' ? 'Data' : 'Insights');
+        [].forEach.call(document.querySelectorAll('#nav-admin .nav-item.on, #nav-data .nav-item.on'), function(b){ b.classList.remove('on'); });
+        renderAdmChats(HOME_CHAT === 'admin' && CUR ? CUR.id : null);
       } else renderAdmChats(null);
+    };
+    /* a chat reopened from any My chats list comes back in the tab it was started in */
+    var _oc = openChat;
+    openChat = function(id){ var c = chatById(id); HOME_CHAT = c && c.tab ? c.tab : null; _oc(id); };
+    /* the pane has no place on a home page or beside the immersive chat */
+    var _or = openRail;
+    openRail = function(){
+      if (isHomeView(currentView)) return;
+      _or.apply(this, arguments);
+      /* the pane's wash was switched off while it was closed: let the renderer measure it again */
+      [40, 380].forEach(function(ms){ setTimeout(function(){ if (window.RadianceLanguageRenderer) window.RadianceLanguageRenderer.refresh(); }, ms); });
     };
   })();
   document.getElementById('adm-chats').addEventListener('click', function(e){
     var b = e.target.closest('[data-admchat]'); if (!b) return;
     var id = b.dataset.admchat;
     if (CUR && CUR.id === id && currentView === 'convo') return;
-    stash();
-    ADM_CHAT = true;
-    useCtx('main');
-    if (STORE[id]) restore(id, 'main'); else { resetConvo(); CUR = { id:id, loc:'main' }; }
-    document.getElementById('convo-name').textContent = (chatById(id) || {}).t || 'Conversation';
-    show('convo');
+    openChat(id);
   });
   var ORG_PICK = [
     { t:'Primary Org', m:'38 users' },
@@ -16349,45 +16380,175 @@ brand +
       var opts = ORG_PICK.map(function(o){ return { t:o.t, m:o.m }; });
       mountSteps([{ type:'multi', q:'Which orgs should this apply to?', opts:opts, none:'No orgs' }], function(){
         var p = picked(opts);
-        if (!p.length){ add('<div class="agent-msg"><p>No orgs picked, so nothing changes. Ask again when you know where it should go.</p></div>'); return; }
+        if (!p.length){ add('<div class="agent-msg"><p>No orgs picked, so nothing changes. Ask again when you know where it should go.</p></div>'); if (typeof setMood === 'function') setMood('idle'); return; }
         add('<div class="agent-msg"><p>Got it. I will make this change in <strong>' + p.join(', ') + '</strong> and nowhere else.</p></div>');
         after(t(360), go);
       });
       return;
     }
     add('<div class="agent-msg"><p>You are on <strong>Primary Org</strong>. I will make this change in this org only.</p></div>');
-    mountClarify([{ q:'Make this change in Primary Org only?', opts:[{ t:'Yes, only in Primary Org' }, { t:'Switch to All Orgs and pick the orgs' }] }], function(pk){
-      if (pk[0] === 1){ setOrg('all'); renderAdminHome(); after(t(300), function(){ admScope(go); }); }
+    mountClarify([{ q:'Make this change in Primary Org only?', opts:[{ t:'Yes, only in Primary Org' }, { t:'Switch to All Orgs and pick the orgs' }] }], function(pk, skipped){
+      if (/^switch/i.test(lastAnswer())){ setOrg('all'); renderAdminHome(); after(t(300), function(){ admScope(go); }); }
       else after(t(300), go);
     });
   }
-  function adminLaunch(text){
+  /* what the person actually answered on the last question card */
+  function lastAnswer(){ var a = CTX.stream.querySelectorAll('.sr-askcard .sr-qa .a'); return a.length ? a[a.length - 1].textContent.trim() : ''; }
+
+  /* ---- the request belongs to the other tab: say so, and offer to switch ---- */
+  function crossTab(text, to){
+    var admin = to === 'admin';
+    add('<div class="agent-msg"><p>' + (admin
+      ? 'That is an <strong>Admin</strong> task. Users, groups, orgs and feature access are managed from Admin home, so I can’t do it from Develop.'
+      : 'That is a <strong>Develop</strong> task. Embeds, security settings and APIs are handled from Develop home, so I can’t do it from Admin.') + '</p></div>');
+    if (typeof setMood === 'function') setMood('waiting');
+    mountClarify([{ q:'Switch to ' + (admin ? 'Admin' : 'Develop') + ' home and continue there?', opts:[{ t:'Yes, switch to ' + (admin ? 'Admin' : 'Develop') + ' home' }, { t:'No, stay here' }] }], function(){
+      if (/^yes/i.test(lastAnswer())){
+        add('<div class="agent-msg"><p>Switching. I will pick this up on ' + (admin ? 'Admin' : 'Develop') + ' home with the same request.</p></div>');
+        after(t(700), function(){
+          if (admin){ goAdminHome(); after(t(320), function(){ homeLaunch(text, 'admin'); }); }
+          else { goHome(); after(t(380), function(){ devRun(text); }); }
+        });
+      } else {
+        add('<div class="agent-msg"><p>Okay, staying here. Nothing was done.</p></div>');
+        if (typeof setMood === 'function') setMood('idle');
+      }
+    });
+  }
+  /* ---- nothing scripted for this request: say so and offer what is ---- */
+  function noFlow(tab){
+    var dev = tab !== 'admin';
+    var list = dev
+      ? ['Embed the NA Commercial liveboard in React with cookieless trusted auth.', 'Set up cookieless trusted auth for this app.', 'My embed shows a blank frame on app.customer.com.', 'Which API exports a Liveboard as TML, and what parameters does it take?']
+      : ['Add a new user to my org.', 'Turn on Spotter for the Sales orgs.', 'Who has developer privilege?'];
+    add('<div class="agent-msg"><p>I don’t have a flow for that in this prototype yet, so I haven’t done anything. Here is what I can do from ' + (dev ? 'Develop' : 'Admin') + ' home:</p></div>');
+    if (typeof setMood === 'function') setMood('idle');
+    railFollow(list.map(function(p){ return { t:p.replace(/\.$/, ''), go:function(){ chatFollow(p); } }; }));
+  }
+
+  /* ---- Admin: who has developer privilege (a question, so nothing to approve until a change is asked for) ---- */
+  function admDevPriv(text){
+    var all = ORG === 'all';
+    railReads(all ? [
+      {t:'Resolved the cluster — <b>champagne-master-aws</b>, All Orgs'},
+      {t:'Read users and groups in every org — <b>23 users</b> hold Developer across <b>12 orgs</b>'},
+      {t:'Read how each one got it — <b>17</b> through a group, <b>6</b> assigned directly'},
+      {t:'You hold <b>administration</b> on all orgs'}
+    ] : [
+      {t:'Resolved the cluster — <b>champagne-master-aws</b>, Primary Org'},
+      {t:'Read users and groups — <b>5 users</b> hold Developer in this org'},
+      {t:'Read how each one got it — <b>3</b> through the Dev group, <b>2</b> assigned directly'},
+      {t:'You hold <b>manage users and groups</b> in this org'}
+    ], function(){
+      add('<div class="agent-msg">' + (all
+        ? '<p><strong>23 people</strong> have Developer privilege across the cluster. The orgs with the most:</p>' +
+          '<p><strong>Primary Org</strong> — 5 users<br><strong>Sales EMEA</strong> — 6 users<br><strong>Partner portal</strong> — 4 users<br><strong>Finance</strong> — 2 users<br>8 other orgs — 6 users</p>' +
+          '<p>Six of the 23 were given it directly instead of through a group. Switch to Primary Org to see names.</p>'
+        : '<p><strong>Five people</strong> have Developer privilege in Primary Org:</p>' +
+          '<p><strong>Simran Pandit</strong> — assigned directly, also an administrator<br>' +
+          '<strong>Nina James</strong> — through the Dev group<br>' +
+          '<strong>Arjun Singh</strong> — through the Dev group<br>' +
+          '<strong>Leila Khan</strong> — through the Dev group<br>' +
+          '<strong>Kiran Patel</strong> — assigned directly, has not signed in for 64 days</p>' +
+          '<p>This was last reviewed 90 days ago. Kiran Patel is the one worth a look: a direct assignment on an account nobody is using.</p>') + '</div>');
+      if (typeof setMood === 'function') setMood('idle');
+      var fu = [{ t:'Open User management', go:function(){ goUsers(); } }];
+      if (!all) fu.push({ t:'Remove it from Kiran Patel', go:function(){
+        add('<div class="user-msg">Remove it from Kiran Patel</div>');
+        add('<div class="agent-msg"><p>That changes what Kiran can do, so it is yours to approve.</p></div>');
+        if (typeof setMood === 'function') setMood('waiting');
+        gateCard({
+          title:'Remove Developer privilege from Kiran Patel',
+          where:'User management · Primary Org · champagne-master-aws',
+          rows:[{ l:'Developer privilege', was:'Assigned directly', now:'Removed' }, { l:'Users with Developer', was:'5', now:'4' }],
+          blast:'Kiran Patel only. They lose the Develop tab, the Playground and REST API access; everything they have built stays. You can give it back at any time.',
+          onOk:function(){ add('<div class="agent-msg"><p>Done. Kiran Patel no longer has Developer privilege, and four people do. It is logged for admins.</p></div>'); if (typeof setMood === 'function') setMood('idle'); },
+          onNo:function(){ add('<div class="agent-msg"><p>Left as it is. Kiran Patel still has Developer privilege.</p></div>'); if (typeof setMood === 'function') setMood('idle'); }
+        });
+      }});
+      fu.push({ t:'Mark as reviewed', go:function(){
+        add('<div class="user-msg">Mark as reviewed</div>');
+        add('<div class="agent-msg"><p>Marked as reviewed today. The task comes off your Admin home list.</p></div>');
+      }});
+      railFollow(fu);
+    });
+  }
+
+  /* ---- routers: which flow a prompt runs ---- */
+  function adminRoute(text){
+    var q = (text || '').toLowerCase();
+    if (ADDUSER_RE.test(q)) return { change:true, go:function(){ railAddUser(text); } };
+    if (DEVPRIV_RE.test(q)) return { go:function(){ admDevPriv(text); } };
+    if (/spotter|feature|turn (on|off)|\bsso\b|okta|entra|emea|(create|new).{0,12}org/.test(q)) return { change:isChange(q), go:function(){ railTabHome(text, 'adminhome'); } };
+    if (DEV_RE.test(q)) return { go:function(){ crossTab(text, 'develop'); } };
+    return { go:function(){ noFlow('admin'); } };
+  }
+  function devRoute(text){
+    var q = (text || '').toLowerCase();
+    if (/blank|not load|won.t (load|render)|white frame|\bfail|\berror/.test(q)) return { go:function(){ railDiagnose(text); } };
+    if (/authexpire|\bevents?\b|firing|fires/.test(q)) return { go:function(){ railEvents(text); } };
+    if (/brand|theme|colou?r|font|\bcss\b/.test(q)) return { go:function(){ railBrand(text); } };
+    if (/custom action|an action on|posts? the selected|\bcrm\b|callback/.test(q)) return { go:function(){ railAction(text); } };
+    if (/which api|what api|parameters|export|\btml\b|endpoint|rest api|what has changed|since \d/.test(q)) return { go:function(){ railApi(text); } };
+    if (/share (links?|emails?)|link settings|own urls/.test(q)) return { go:function(){ railLinks(text); } };
+    if (/\bembed\b|rewrite/.test(q)) return { own:true, go:function(){ UC1_TEXT = text; selectUC(1, true); runUC1(); } };
+    if (/cors|\bcsp\b|allowlist|allow .{0,20}domain|origin/.test(q)) return { go:function(){ railSecurity(text); } };
+    if (/trusted auth|cookieless|authentication|token/.test(q)) return { go:function(){ railAuth(text); } };
+    if (ADDUSER_RE.test(q) || ADMIN_RE.test(q)) return { go:function(){ crossTab(text, 'admin'); } };
+    return { go:function(){ noFlow('develop'); } };
+  }
+  /* start a routed flow in the immersive chat: the user's own words, then the flow that matches them */
+  function chatBegin(text, r){
+    if (r.own){ r.go(); return; }
+    var q = (text || '').toLowerCase();
+    add('<div class="user-msg">' + escTxt(text) + '</div>');
+    after(t(160), function(){ opQuip(q); });
+    if (r.change) after(t(520), function(){ admScope(r.go); });
+    else after(t(420), r.go);
+  }
+  /* a prompt typed into a chat that is already open */
+  function chatFollow(text){
+    text = (text || '').trim(); if (!text) return;
+    useCtx('main');
+    CTX.followups.innerHTML = '';
+    chatBegin(text, HOME_CHAT === 'admin' ? adminRoute(text) : HOME_CHAT === 'data' ? { go:function(){ railTabHome(text, 'datahome'); } } : devRoute(text));
+  }
+  /* Develop home → immersive chat */
+  function devRun(text){
+    text = (text || '').trim(); if (!text) return;
+    HOME_CHAT = null;
+    /* every prompt from Develop home starts from the same cluster, so its approvals are real each time */
+    CLUSTER.corsHas = false; CLUSTER.cspHas = false; CLUSTER.trustedAuth = false; CLUSTER.corsOrigins = 34; CLUSTER.cspOrigins = 12; CLUSTER.allowed = ORIGIN; renderCluster();
+    document.body.classList.remove('brand-preview');
+    var r = devRoute(text);
+    launchChat(text, function(){
+      if (!r.own){ useCtx('main'); resetConvo(); setAgent('operator'); goConvo(); }
+      chatBegin(text, r);
+    });
+  }
+  /* Admin, Data and Insights homes → immersive chat, with that tab's nav */
+  function homeLaunch(text, tab){
     text = (text || '').trim(); if (!text) return;
     if (railOpen){ railReset(); closeRailQuiet(); }
     stash();
-    ADM_CHAT = true;
-    useCtx('main'); resetConvo();
+    HOME_CHAT = tab;
+    useCtx('main'); resetConvo(); setAgent('operator');
     var id = 'a' + Date.now(), title = text.length > 46 ? text.slice(0, 44) + '…' : text;
-    CHATS.unshift({ id:id, a:'operator', t:title, adm:true });
+    CHATS.unshift({ id:id, a:'operator', t:title, tab:tab });
     CUR = { id:id, loc:'main' };
     document.getElementById('convo-name').textContent = title;
     show('convo');
     if (typeof cvWashOn === 'function') cvWashOn();
-    var q = text.toLowerCase();
-    add('<div class="user-msg">' + text.replace(/</g, '&lt;') + '</div>');
-    after(t(160), function(){ opQuip(q); });
-    var go = function(){
-      if (/(add|create|new|invite|onboard).{0,24}(user|person|teammate|account)|user to (my|the) org/.test(q)) railAddUser(text);
-      else railTabHome(text, 'adminhome');
-    };
-    if (isChange(q)) after(t(520), function(){ admScope(go); });
-    else after(t(400), go);
+    var r = tab === 'admin' ? adminRoute(text) : tab === 'data' ? { go:function(){ railTabHome(text, 'datahome'); } } : devRoute(text);
+    if (r.own){ r.go(); document.getElementById('convo-name').textContent = title; CUR = { id:id, loc:'main' }; show('convo'); return; }
+    chatBegin(text, r);
   }
+  function adminLaunch(text){ homeLaunch(text, 'admin'); }
   /* the Admin home prompt (and its starters, tasks and overview actions) open the immersive chat */
   document.getElementById('ah-form').addEventListener('submit', function(e){
     e.preventDefault(); e.stopImmediatePropagation();
     var box = document.getElementById('ah-form-in'), v = box.value; box.value = '';
-    adminLaunch(v);
+    homeLaunch(v, 'admin');
   }, true);
 
   /* ================= Share chat ================= */
@@ -16683,6 +16844,7 @@ brand +
       setTimeout(function(){ adminLaunch(x.q); }, 300);
       return;
     }
+    HOME_CHAT = null;
     jumpUC(parseInt(v, 10));
   });
   syncEPView();
