@@ -16544,6 +16544,19 @@ brand +
     chatBegin(text, r);
   }
   function adminLaunch(text){ homeLaunch(text, 'admin'); }
+  /* In-layout pane: open by default on every page it can live on (never on a home page or the immersive chat).
+     Collapse closes it for the page you are on; the next page opens it again, with the chat as it was. */
+  function layAutoOpen(){
+    if (PL !== 'layout' || isHomeView(currentView) || railOpen) return;
+    openRail(null, false);
+  }
+  (function(){
+    var _sh = show;
+    show = function(v){ _sh(v); setTimeout(layAutoOpen, 0); };
+    [].forEach.call(document.querySelectorAll('#pl [data-pl], #psbar [data-ps]'), function(b){
+      b.addEventListener('click', function(){ setTimeout(layAutoOpen, 0); });
+    });
+  })();
   /* the Admin home prompt (and its starters, tasks and overview actions) open the immersive chat */
   document.getElementById('ah-form').addEventListener('submit', function(e){
     e.preventDefault(); e.stopImmediatePropagation();
