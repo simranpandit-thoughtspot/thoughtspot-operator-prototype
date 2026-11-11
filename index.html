@@ -5477,6 +5477,14 @@ body:has(#view-datahome:not([hidden])) .opfab,body:has(#view-convo:not([hidden])
 body.rglow.proto .oprail:not(.open):not(.inlayout) #rg-rail,body.rglow.proto .oprail.inlayout:not(.open) #rg-rail,body .oprail:not(.open) #rg-rail{display:none!important}
 body.rglow.proto.it2:not(:has(.oprail.inlayout.open)) #rg-body{visibility:hidden}
 .home-radiance.rg-out{visibility:hidden;transition:opacity 5000ms cubic-bezier(0,0,.2,1),transform 5000ms cubic-bezier(0,0,.2,1),visibility 0s linear 5000ms}
+/* The top bar is always intact: the agent pane sits under it and only the content area gives way */
+body.proto.it2.unified:has(.oprail.inlayout.open) .topbar{margin:0!important;border-radius:0!important;box-shadow:none!important;clip-path:none!important}
+body.proto.it2.unified:has(.oprail.inlayout.open) .oprail.inlayout{margin-top:0!important;height:auto!important}
+body.proto.it2.unified:has(.oprail.inlayout.open) .app::before{display:none}
+/* The left nav opened from the hamburger comes out of the top bar: same surface, no top edge, shadow on the right only */
+body.proto .nav.collapsed.open{top:0!important;border-top:0!important;box-shadow:16px 0 32px -12px rgba(25,35,49,.22)!important;clip-path:inset(0 -56px 0 0)!important;background:var(--fh-surf,#f6f8fa)!important}
+body.proto.unified .nav.collapsed.open{background:var(--bg-base)!important}
+:root[data-theme="dark"] body.proto .nav.collapsed.open{box-shadow:16px 0 32px -12px rgba(0,0,0,.5)!important;background:var(--fh-surf,#16181D)!important}
 /* Admin nav and Feature delegation: All Orgs and Primary Org each have their own */
 body.proto:not(.allorg) #nav-admin .only-all,body.proto.allorg #nav-admin .only-pri{display:none!important}
 body.proto:not(.allorg) #view-feature .px-wrap:not(.fd-pri),body.proto.allorg #view-feature .fd-pri{display:none!important}
@@ -5589,12 +5597,12 @@ body.proto:not(.allorg) #nav-admin [data-admin="orgs"]{display:none}
       <button type="button" role="tab" aria-selected="false" data-ps="left">Left</button>
       <button type="button" role="tab" class="on" aria-selected="true" data-ps="right">Right</button>
     </div>
-    <span class="uclabel" id="lay-l" hidden>Layout</span>
+    <span class="uclabel" id="lay-l" hidden>Left nav</span>
     <div class="itbar" id="laybar" role="tablist" aria-label="In-layout structure" hidden>
-      <button type="button" role="tab" class="on" aria-selected="true" data-lay="nav">Pane · nav · page</button>
-      <button type="button" role="tab" aria-selected="false" data-lay="hover">Hover nav</button>
-      <button type="button" role="tab" aria-selected="false" data-lay="navfirst">Nav · pane · page</button>
-      <button type="button" role="tab" aria-selected="false" data-lay="float">Floating on settings</button>
+      <button type="button" role="tab" class="on" aria-selected="true" data-lay="hover">Hamburger menu</button>
+      <button type="button" role="tab" aria-selected="false" data-lay="nav">Nav in the page</button>
+      <button type="button" role="tab" aria-selected="false" data-lay="navfirst" hidden>Nav · pane · page</button>
+      <button type="button" role="tab" aria-selected="false" data-lay="float" hidden>Floating on settings</button>
     </div>
     <span class="uclabel" id="hm-l">Hand-off</span>
     <div class="itbar" id="hm" role="tablist" aria-label="Hand-off">
@@ -15651,7 +15659,8 @@ brand +
   }
 
   /* ---- pane-left · In the layout: structural iterations ---- */
-  var LAY = 'nav';
+  var LAY = 'hover';   /* hamburger menu is the default; 'nav' keeps the left nav inside the page */
+  document.body.classList.add('lay-hover');
   var layBar = document.getElementById('laybar'), layLbl = document.getElementById('lay-l');
   var layfab = document.getElementById('layfab');
   var LAY_SETTINGS = { links:1, feature:1, orgs:1, users:1, adminhome:1 };
@@ -15661,7 +15670,7 @@ brand +
   var NAV_PIN = true;
   function layWantsFold(view){
     if (!layOn()) return false;
-    if (LAY === 'hover') return !!LAY_SETTINGS[view];
+    if (LAY === 'hover') return railOpen && !isHomeView(view);   /* agent open: the nav folds behind the hamburger */
     if (LAY === 'navfirst') return !NAV_PIN;
     return false;
   }
@@ -16547,14 +16556,31 @@ brand +
   /* In-layout pane: open by default on every page it can live on (never on a home page or the immersive chat).
      Collapse closes it for the page you are on; the next page opens it again, with the chat as it was. */
   function layAutoOpen(){
-    if (PL !== 'layout' || isHomeView(currentView) || railOpen) return;
+    if ((PL !== 'layout' && PL !== 'overlay') || isHomeView(currentView) || railOpen) return;
     openRail(null, false);
+  }
+  /* the left nav follows the pane without re-running the page: folded behind the hamburger while the agent is
+     open (Hamburger menu option), back in the layout when it is collapsed */
+  function navSync(){
+    var v = currentView, fb = document.body.classList.contains('fullbleed');
+    var fold = fb || layWantsFold(v) || v === 'docs';
+    navToggle.hidden = !(fold || layShowToggle());
+    if (leftnav.classList.contains('collapsed') === fold) return;
+    if (!fold) closeDrawer();
+    leftnav.classList.toggle('collapsed', fold);
+    document.body.classList.toggle('navfold', fold);
+    navToggle.setAttribute('aria-expanded', fold ? 'false' : 'true');
+    if (typeof paintGrid === 'function'){ after(t(20), paintGrid); after(t(400), paintGrid); }
   }
   (function(){
     var _sh = show;
-    show = function(v){ _sh(v); setTimeout(layAutoOpen, 0); };
-    [].forEach.call(document.querySelectorAll('#pl [data-pl], #psbar [data-ps]'), function(b){
-      b.addEventListener('click', function(){ setTimeout(layAutoOpen, 0); });
+    show = function(v){ _sh(v); layAutoOpen(); navSync(); };
+    var _or2 = openRail;
+    openRail = function(){ _or2.apply(this, arguments); navSync(); };
+    var _fc2 = finishClose;
+    finishClose = function(){ _fc2.apply(this, arguments); navSync(); };
+    [].forEach.call(document.querySelectorAll('#pl [data-pl], #psbar [data-ps], #laybar [data-lay]'), function(b){
+      b.addEventListener('click', function(){ setTimeout(function(){ layAutoOpen(); navSync(); }, 0); });
     });
   })();
   /* the Admin home prompt (and its starters, tasks and overview actions) open the immersive chat */
